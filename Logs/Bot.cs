@@ -14,8 +14,11 @@ public class Bot : Leyla
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.Guilds
                       | DiscordIntents.GuildMessages
+                      | DiscordIntents.GuildMembers
         });
         client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
+        client.GuildMemberAdded += ClientOnGuildMemberAdded.HandleEvent;
+        client.GuildMemberRemoved += ClientOnGuildMemberRemoved.HandleEvent;
         client.MessageDeleted += ClientOnMessageDeleted.HandleEvent;
         client.MessageUpdated += ClientOnMessageUpdated.HandleEvent;
         return client;
