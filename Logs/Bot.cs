@@ -17,6 +17,7 @@ public class Bot : Leyla
         });
         client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
         client.MessageDeleted += ClientOnMessageDeleted.HandleEvent;
+        client.MessageUpdated += ClientOnMessageUpdated.HandleEvent;
         return client;
     }
 
