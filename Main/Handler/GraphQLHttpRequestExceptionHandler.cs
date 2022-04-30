@@ -1,14 +1,10 @@
 using System.Net;
-using System.Runtime.CompilerServices;
-using DSharpPlus;
 using DSharpPlus.Entities;
-using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using GraphQL.Client.Http;
-using Main.Extensions;
+using Main.Handler.BaseClasses;
 
 namespace Main.Handler;
-
 
 public class GraphQlHttpRequestExceptionHandler : SlashCommandErrorHandler
 {
@@ -19,14 +15,14 @@ public class GraphQlHttpRequestExceptionHandler : SlashCommandErrorHandler
     {
         _ex = ex;
     }
-    
+
     public override async Task HandleException()
     {
         switch (_ex.StatusCode)
         {
             case HttpStatusCode.NotFound:
                 var embed = GetNotFoundEmbed();
-                await _args.Context.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+                await Args.Context.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                 break;
             default:
                 return;
@@ -40,7 +36,7 @@ public class GraphQlHttpRequestExceptionHandler : SlashCommandErrorHandler
             Title = "Not found"
         };
         // TODO show more details?
-        
+
         embed.WithColor(DiscordColor.IndianRed);
 
         return embed.Build();

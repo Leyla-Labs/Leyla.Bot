@@ -1,5 +1,6 @@
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
+using GraphQL.Client.Http;
 using Main.Handler;
 
 namespace Main.Events;
@@ -10,10 +11,10 @@ public static class CommandsOnSlashCommandErroredEvent
     {
         switch (e.Exception)
         {
-            case SlashExecutionChecksFailedException ex:
+            case SlashExecutionChecksFailedException:
                 // TODO
                 throw new NotImplementedException();
-            case GraphQL.Client.Http.GraphQLHttpRequestException ex:
+            case GraphQLHttpRequestException ex:
                 await new GraphQlHttpRequestExceptionHandler(e, ex).HandleException();
                 break;
         }

@@ -14,12 +14,6 @@ public static class Character
 
         var character = await new Client().GetCharacterBySearch(name);
 
-        if (character == null)
-        {
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Character \"{name}\" not found"));
-            return;
-        }
-
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle(character.FullName);
         embed.WithDescription(character.NativeName);
