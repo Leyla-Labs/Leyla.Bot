@@ -6,6 +6,7 @@ using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using Main.Interfaces;
+using Main.Modules;
 
 namespace Main;
 
@@ -47,6 +48,12 @@ public class Bot : IBot
     private void RegisterCommands()
     {
         var commands = _bot.UseSlashCommands();
+
+#if DEBUG
+        commands.RegisterCommands<AniList>(640467169733246976);
+#else
+        commands.RegisterCommands<AniList>();
+#endif
     }
 
     private void RegisterInteractivity()
