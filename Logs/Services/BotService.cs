@@ -1,6 +1,6 @@
-namespace Main.Services;
+namespace Logs.Services;
 
-internal class BotService : IHostedService
+public class BotService : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {

@@ -1,9 +1,8 @@
 using DSharpPlus;
 
-namespace Main.Interfaces;
+namespace Common.Interfaces;
 
 public interface IBot
 {
     Task MainAsync();
-    DiscordClient GetBot();
 }

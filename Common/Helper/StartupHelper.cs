@@ -1,7 +1,7 @@
 using DSharpPlus;
 using DSharpPlus.Entities;
 
-namespace Db.Helper;
+namespace Common.Helper;
 
 public class StartupHelper
 {

@@ -1,13 +1,8 @@
 using Common.Classes;
-using Common.Helper;
-using Db.Helper;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
-using DSharpPlus.SlashCommands;
-using Main.Events;
-using Main.Modules;
 
-namespace Main;
+namespace Logs;
 
 public class Bot : Leyla
 {
@@ -18,6 +13,7 @@ public class Bot : Leyla
             Token = Environment.GetEnvironmentVariable("TOKEN"),
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.Guilds
+                | DiscordIntents.GuildMessages
         });
         client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
         return client;
@@ -25,14 +21,6 @@ public class Bot : Leyla
 
     protected override void RegisterCommands()
     {
-        var commands = Client.UseSlashCommands();
-
-#if DEBUG
-        commands.RegisterCommands<AniList>(640467169733246976);
-#else
-        commands.RegisterCommands<AniList>();
-#endif
-
-        commands.SlashCommandErrored += CommandsOnSlashCommandErroredEvent.CommandsOnSlashCommandErrored;
+        // TODO
     }
 }
