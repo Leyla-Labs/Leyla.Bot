@@ -1,8 +1,5 @@
 using Common.Classes;
-using Common.Helper;
-using Db.Helper;
 using DSharpPlus;
-using DSharpPlus.EventArgs;
 using DSharpPlus.SlashCommands;
 using Main.Events;
 using Main.Modules;

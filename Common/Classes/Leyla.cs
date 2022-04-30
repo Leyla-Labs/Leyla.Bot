@@ -26,7 +26,7 @@ public abstract class Leyla : IBot
         // Block this task until the program is closed.
         await Task.Delay(-1);
     }
-    
+
     private void RegisterInteractivity()
     {
         Client.UseInteractivity(new InteractivityConfiguration
@@ -39,9 +39,9 @@ public abstract class Leyla : IBot
     {
         await new StartupHelper(Client).SendStartupMessage();
     }
-    
+
     #region Abstract methods
-    
+
     protected abstract DiscordClient InitBot();
     protected abstract void RegisterCommands();
 

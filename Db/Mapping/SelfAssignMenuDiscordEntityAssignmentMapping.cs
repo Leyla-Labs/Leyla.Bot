@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Db.Mapping;
 
-public class SelfAssignMenuDiscordEntityAssignmentMapping : IEntityTypeConfiguration<SelfAssignMenuDiscordEntityAssignment>
+public class
+    SelfAssignMenuDiscordEntityAssignmentMapping : IEntityTypeConfiguration<SelfAssignMenuDiscordEntityAssignment>
 {
     public void Configure(EntityTypeBuilder<SelfAssignMenuDiscordEntityAssignment> b)
     {

@@ -1,6 +1,5 @@
 using Common.Classes;
 using DSharpPlus;
-using DSharpPlus.EventArgs;
 
 namespace Logs;
 
@@ -13,7 +12,7 @@ public class Bot : Leyla
             Token = Environment.GetEnvironmentVariable("TOKEN"),
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.Guilds
-                | DiscordIntents.GuildMessages
+                      | DiscordIntents.GuildMessages
         });
         client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
         return client;
