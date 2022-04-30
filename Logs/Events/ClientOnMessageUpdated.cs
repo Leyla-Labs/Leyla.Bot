@@ -18,8 +18,8 @@ public static class ClientOnMessageUpdated
         var em = new DiscordEmbedBuilder();
 
         AddTitle(em, e);
-        AddChannel(em, e);
         AddMsgAuthor(em, e);
+        AddChannel(em, e);
         AddJumpLink(em, e);
         AddContentNew(em, e);
         AddContentOld(em, e);
@@ -33,15 +33,15 @@ public static class ClientOnMessageUpdated
         em.WithTitle("Message edited");
     }
 
-    private static void AddChannel(DiscordEmbedBuilder em, MessageUpdateEventArgs e)
-    {
-        em.AddField("Channel", e.Message.Channel.Mention, true);
-    }
-
     private static void AddMsgAuthor(DiscordEmbedBuilder em, MessageUpdateEventArgs e)
     {
         if (e.Message.Author != null)
             em.AddField("User", e.Message.Author.Mention, true);
+    }
+    
+    private static void AddChannel(DiscordEmbedBuilder em, MessageUpdateEventArgs e)
+    {
+        em.AddField("Channel", e.Message.Channel.Mention, true);
     }
 
     private static void AddJumpLink(DiscordEmbedBuilder em, MessageUpdateEventArgs e)

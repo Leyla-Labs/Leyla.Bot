@@ -18,8 +18,8 @@ public static class ClientOnMessageDeleted
         
         var em = new DiscordEmbedBuilder();
         AddTitle(em, e);
-        AddChannel(em, e);
         AddMsgAuthor(em, e);
+        AddChannel(em, e);
         AddContent(em, e);
         AddEmbed(em, e);
         AddFooter(em, e);
@@ -33,15 +33,15 @@ public static class ClientOnMessageDeleted
         em.WithTitle($"Message deleted{titleSuffix}");
     }
 
-    private static void AddChannel(DiscordEmbedBuilder em, MessageDeleteEventArgs e)
-    {
-        em.AddField("Channel", e.Message.Channel.Mention, true);
-    }
-
     private static void AddMsgAuthor(DiscordEmbedBuilder em, MessageDeleteEventArgs e)
     {
         if (e.Message.Author != null)
             em.AddField("User", e.Message.Author.Mention, true);
+    }
+    
+    private static void AddChannel(DiscordEmbedBuilder em, MessageDeleteEventArgs e)
+    {
+        em.AddField("Channel", e.Message.Channel.Mention, true);
     }
 
     private static void AddContent(DiscordEmbedBuilder em, MessageDeleteEventArgs e)
