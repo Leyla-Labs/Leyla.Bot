@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Db.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20220429104802_Initial")]
+    [Migration("20220430115002_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -187,7 +187,7 @@ namespace Db.Migrations
             modelBuilder.Entity("Db.Models.SelfAssignMenu", b =>
                 {
                     b.HasOne("Db.Models.Guild", "Guild")
-                        .WithMany()
+                        .WithMany("SelfAssignMenus")
                         .HasForeignKey("GuildId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -236,6 +236,8 @@ namespace Db.Migrations
                     b.Navigation("Configs");
 
                     b.Navigation("DiscordEntities");
+
+                    b.Navigation("SelfAssignMenus");
                 });
 
             modelBuilder.Entity("Db.Models.SelfAssignMenu", b =>
