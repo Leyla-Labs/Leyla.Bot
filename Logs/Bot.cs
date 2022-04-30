@@ -1,5 +1,6 @@
 using Common.Classes;
 using DSharpPlus;
+using Logs.Events;
 
 namespace Logs;
 
@@ -15,6 +16,7 @@ public class Bot : Leyla
                       | DiscordIntents.GuildMessages
         });
         client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
+        client.MessageDeleted += ClientOnMessageDeleted.HandleEvent;
         return client;
     }
 

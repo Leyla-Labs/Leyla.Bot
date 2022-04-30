@@ -19,16 +19,19 @@ public static class ConfigHelper
         Configuration.GuildConfigs = dicts;
     }
 
-    public static async Task<string?> GetString(string option, ulong? guildId = null)
+    public static Task<string?> GetString(string option)
+    {
+        // when no guildId provided, return default value
+        return Task.FromResult(new ConfigOptions().Get(option).DefaultValue);
+    }
+    
+    public static async Task<string?> GetString(string option, ulong guildId)
     {
         var defaultOption = new ConfigOptions().Get(option);
-
-        // when no guildId provided, return default value
-        if (guildId == null) return defaultOption.DefaultValue;
-
+        
         // check if guild in dictionary
         // if so, get config for that specific option
-        var cfgGuild = Configuration.GuildConfigs.TryGetValue(guildId.Value, out var configs)
+        var cfgGuild = Configuration.GuildConfigs.TryGetValue(guildId, out var configs)
             ? configs.FirstOrDefault(x => x.ConfigOptionId == defaultOption.Id)
             : null;
 
@@ -36,9 +39,9 @@ public static class ConfigHelper
 
         // if no config set, get default value, set for guild, and return
         // this avoids user confusion if default bot behaviour is ever changed
-        await Set(option, guildId.Value,
+        await Set(option, guildId,
             defaultOption.DefaultValue ??
-            throw new InvalidOperationException("Default option not found, cannot set default value"));
+            throw new InvalidOperationException("Default option not found or no default value"));
         return defaultOption.DefaultValue;
     }
 
