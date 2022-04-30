@@ -5,6 +5,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
+using Main.Events;
 using Main.Interfaces;
 using Main.Modules;
 
@@ -54,6 +55,8 @@ public class Bot : IBot
 #else
         commands.RegisterCommands<AniList>();
 #endif
+
+        commands.SlashCommandErrored += CommandsOnSlashCommandErroredEvent.CommandsOnSlashCommandErrored;
     }
 
     private void RegisterInteractivity()
