@@ -43,6 +43,7 @@ public class DatabaseContext : DbContext
     public DbSet<DiscordEntity> DiscordEntities => Set<DiscordEntity>();
     public DbSet<Guild> Guilds => Set<Guild>();
     public DbSet<SelfAssignMenu> SelfAssignMenus => Set<SelfAssignMenu>();
+
     public DbSet<SelfAssignMenuDiscordEntityAssignment> SelfAssignMenuDiscordEntityAssignments =>
         Set<SelfAssignMenuDiscordEntityAssignment>();
 

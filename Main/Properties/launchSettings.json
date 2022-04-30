@@ -14,7 +14,10 @@
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7280;http://localhost:5276",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "TOKEN": "abc123",
+        "CONNECTION_STRING": "Host=localhost;Database=leyla_dev;Username=tawmy",
+        "MAIN_CHANNEL": "640470225329848361"
       }
     },
     "IIS Express": {

@@ -12,6 +12,7 @@ public class DiscordEntity
     public DiscordEntityType DiscordEntityType { get; set; }
 
     public ICollection<SelfAssignMenu> SelfAssignMenus { get; set; } = null!;
+
     public ICollection<SelfAssignMenuDiscordEntityAssignment> SelfAssignMenuDiscordEntityAssignments { get; set; } =
         null!;
 }
