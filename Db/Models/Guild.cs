@@ -6,5 +6,6 @@ public class Guild
 
     public ICollection<Config> Configs { get; set; } = null!;
     public ICollection<DiscordEntity> DiscordEntities { get; set; } = null!;
+    public ICollection<Member> Members { get; set; } = null!;
     public ICollection<SelfAssignMenu> SelfAssignMenus { get; set; } = null!;
 }

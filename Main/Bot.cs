@@ -26,9 +26,11 @@ public class Bot : Leyla
 
 #if DEBUG
         commands.RegisterCommands<Moderation>(640467169733246976);
+        commands.RegisterCommands<Quotes>(640467169733246976);
         commands.RegisterCommands<AniList>(640467169733246976);
 #else
         commands.RegisterCommands<Moderation>();
+        commands.RegisterCommands<Quotes>();
         commands.RegisterCommands<AniList>();
 #endif
 

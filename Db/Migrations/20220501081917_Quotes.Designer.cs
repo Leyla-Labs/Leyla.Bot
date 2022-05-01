@@ -4,6 +4,7 @@ using Db;
 using Db.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Db.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220501081917_Quotes")]
+    partial class Quotes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,12 +106,12 @@ namespace Db.Migrations
                         .HasColumnName("guild_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_members");
+                        .HasName("pk_member");
 
                     b.HasIndex("GuildId")
-                        .HasDatabaseName("ix_members_guild_id");
+                        .HasDatabaseName("ix_member_guild_id");
 
-                    b.ToTable("members", (string)null);
+                    b.ToTable("member", (string)null);
                 });
 
             modelBuilder.Entity("Db.Models.Quote", b =>
@@ -139,12 +141,12 @@ namespace Db.Migrations
                         .HasColumnName("text");
 
                     b.HasKey("Id")
-                        .HasName("pk_quotes");
+                        .HasName("pk_quote");
 
                     b.HasIndex("MemberId")
-                        .HasDatabaseName("ix_quotes_member_id");
+                        .HasDatabaseName("ix_quote_member_id");
 
-                    b.ToTable("quotes", (string)null);
+                    b.ToTable("quote", (string)null);
                 });
 
             modelBuilder.Entity("Db.Models.SelfAssignMenu", b =>
@@ -245,7 +247,7 @@ namespace Db.Migrations
                         .HasForeignKey("GuildId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_members_guilds_guild_id");
+                        .HasConstraintName("fk_member_guilds_guild_id");
 
                     b.Navigation("Guild");
                 });
@@ -257,7 +259,7 @@ namespace Db.Migrations
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_quotes_members_member_id");
+                        .HasConstraintName("fk_quote_member_member_id");
 
                     b.Navigation("Member");
                 });
