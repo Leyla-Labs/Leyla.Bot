@@ -8,6 +8,34 @@ namespace Main.Commands.Moderation;
 
 public static class Verify
 {
+    public static async Task RunMenu(ContextMenuContext ctx)
+    {
+        await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+        if (ctx.TargetMember == null)
+        {
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Member not found."));
+            return;
+        }
+
+        var role = await ConfigHelper.GetRole("Verification Role", ctx.Guild);
+        if (role == null)
+        {
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Verification role not found."));
+            return;
+        }
+
+        if (ctx.TargetMember?.Roles.Contains(role) == true)
+        {
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(
+                $"{ctx.TargetMember.Nickname ?? ctx.TargetMember.Username} is already verified."));
+            return;
+        }
+
+        var embed = await GrantRoleAndGetEmbed(ctx.TargetMember!, ctx.Member, role);
+        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+    }
+    
     public static async Task RunSlash(InteractionContext ctx, DiscordUser user)
     {
         await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
@@ -48,7 +76,7 @@ public static class Verify
         }
         catch (Exception e)
         {
-            if (e is not UnauthorizedException ex) throw;
+            if (e is not UnauthorizedException) throw;
 
             // TODO check if this can be replaced with global exception handler
             var description =
@@ -69,7 +97,7 @@ public static class Verify
         };
 
         embed.WithThumbnail(targetMember.AvatarUrl);
-        embed.WithColor(DiscordColor.Blurple);
+        embed.WithColor(role.Color);
         return embed.Build();
     }
 }
