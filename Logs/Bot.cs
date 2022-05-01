@@ -26,6 +26,6 @@ public class Bot : Leyla
 
     protected override void RegisterCommands()
     {
-        // TODO
+        // do nothing
     }
 }

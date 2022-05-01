@@ -18,18 +18,14 @@ public class GraphQlHttpRequestExceptionHandler : SlashCommandErrorHandler
 
     public override async Task HandleException()
     {
-        switch (_ex.StatusCode)
+        if (_ex.StatusCode == HttpStatusCode.NotFound)
         {
-            case HttpStatusCode.NotFound:
-                var embed = GetNotFoundEmbed();
-                await Args.Context.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
-                break;
-            default:
-                return;
+            var embed = GetNotFoundEmbed();
+            await Args.Context.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
         }
     }
 
-    private DiscordEmbed GetNotFoundEmbed()
+    private static DiscordEmbed GetNotFoundEmbed()
     {
         var embed = new DiscordEmbedBuilder
         {

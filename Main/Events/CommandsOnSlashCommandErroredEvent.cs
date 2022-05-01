@@ -11,9 +11,9 @@ public static class CommandsOnSlashCommandErroredEvent
     {
         switch (e.Exception)
         {
-            case SlashExecutionChecksFailedException:
-                // TODO
-                throw new NotImplementedException();
+            case SlashExecutionChecksFailedException ex:
+                await new SlashExecutionChecksFailedExceptionHandler(e, ex).HandleException();
+                break;
             case GraphQLHttpRequestException ex:
                 await new GraphQlHttpRequestExceptionHandler(e, ex).HandleException();
                 break;
