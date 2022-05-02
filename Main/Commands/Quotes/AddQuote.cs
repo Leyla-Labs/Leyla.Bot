@@ -1,3 +1,4 @@
+using Common.Extensions;
 using Db;
 using Db.Helper;
 using Db.Models;
@@ -18,7 +19,8 @@ public static class AddQuote
         // check if quote already exists
         if (await CheckDuplicate(msg) is { } duplicateEmbed)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(duplicateEmbed));
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AddEmbed(duplicateEmbed));
             return;
         }
 
@@ -37,7 +39,7 @@ public static class AddQuote
         var modalInteraction = userResponse.Result.Interaction;
         var text = userResponse.Result.Values["text"];
         await AddToDatabase(msg, ctx.TargetMessage.Author.Id, ctx.Guild.Id, text);
-        
+
         // show confirmation embed
         var embed = GetConfirmationEmbed(msg, displayName, text);
         await modalInteraction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
@@ -59,8 +61,7 @@ public static class AddQuote
 
     private static async Task<string> GetDisplayName(ContextMenuContext ctx)
     {
-        var member = ctx.Guild.Members.FirstOrDefault(x => x.Value.Id == ctx.TargetMessage.Author.Id).Value;
-        if (member == null) member = await ctx.Guild.GetMemberAsync(ctx.TargetMessage.Author.Id);
+        var member = await ctx.GetMember(ctx.TargetMessage.Author.Id);
         return member?.DisplayName ?? ctx.TargetMessage.Author.Username;
     }
 
