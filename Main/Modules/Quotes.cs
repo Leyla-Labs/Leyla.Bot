@@ -28,6 +28,15 @@ public class Quotes : ApplicationCommandModule
         await ShowQuote.RunSlash(ctx, (DiscordMember) user, n);
     }
 
+    [SlashCommand("list", "Lists all quotes from given user.")]
+    public async Task SlashRandomQuote(InteractionContext ctx,
+        [Option("user", "User to list quotes of")]
+        DiscordUser user)
+    {
+        // TODO check if SlashRequireGuild on command group level is enough
+        await ListQuotes.RunSlash(ctx, (DiscordMember) user);
+    }
+
     [SlashCommand("random", "Shows a random quote.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
     public async Task SlashRandomQuote(InteractionContext ctx)
