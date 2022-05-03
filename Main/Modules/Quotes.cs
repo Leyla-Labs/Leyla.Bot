@@ -29,7 +29,7 @@ public class Quotes : ApplicationCommandModule
     }
 
     [SlashCommand("list", "Lists all quotes from given user.")]
-    public async Task SlashRandomQuote(InteractionContext ctx,
+    public async Task SlashListQuotes(InteractionContext ctx,
         [Option("user", "User to list quotes of")]
         DiscordUser user)
     {
