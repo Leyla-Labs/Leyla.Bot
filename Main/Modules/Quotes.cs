@@ -28,6 +28,16 @@ public class Quotes : ApplicationCommandModule
         await ShowQuote.RunSlash(ctx, (DiscordMember) user, n);
     }
 
+    [SlashCommand("edit", "Edits a quote.")]
+    public async Task SlashEditQuote(InteractionContext ctx,
+        [Option("user", "User to edit quote of")]
+        DiscordUser user,
+        [Option("n", "Number of the quote to edit")]
+        long n)
+    {
+        await EditQuote.RunSlash(ctx, (DiscordMember) user, n);
+    }
+
     [SlashCommand("list", "Lists all quotes from given user.")]
     public async Task SlashListQuotes(InteractionContext ctx,
         [Option("user", "User to list quotes of")]
