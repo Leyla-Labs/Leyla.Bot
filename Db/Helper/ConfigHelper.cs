@@ -28,12 +28,12 @@ public sealed class ConfigHelper
     public static Task<string?> GetString(string option)
     {
         // when no guildId provided, return default value
-        return Task.FromResult(new ConfigOptions().Get(option).DefaultValue);
+        return Task.FromResult(ConfigOptions.Instance.Get(option).DefaultValue);
     }
 
     public async Task<string?> GetString(string option, ulong guildId)
     {
-        var defaultOption = new ConfigOptions().Get(option);
+        var defaultOption = ConfigOptions.Instance.Get(option);
 
         // check if guild in dictionary
         // if so, get config for that specific option
@@ -103,13 +103,13 @@ public sealed class ConfigHelper
 
     public async Task<bool> Set(int optionId, ulong guildId, object value)
     {
-        var opt = new ConfigOptions().Get(optionId);
+        var opt = ConfigOptions.Instance.Get(optionId);
         return await SetInternal(opt, guildId, value);
     }
 
     public async Task<bool> Set(string option, ulong guildId, object value)
     {
-        var opt = new ConfigOptions().Get(option);
+        var opt = ConfigOptions.Instance.Get(option);
         return await SetInternal(opt, guildId, value);
     }
 

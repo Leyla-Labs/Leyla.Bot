@@ -2,9 +2,9 @@ using Db.Statics.BaseClasses;
 
 namespace Db.Statics;
 
-public class ConfigOptionCategories : StaticClass<ConfigOptionCategory>
+public sealed class ConfigOptionCategories : StaticClass<ConfigOptionCategory>
 {
-    public ConfigOptionCategories() : base(new List<ConfigOptionCategory>
+    private ConfigOptionCategories() : base(new List<ConfigOptionCategory>
     {
         new(1, 1, "General", "todo"),
         new(2, 2, "Roles", "todo"),
@@ -12,6 +12,13 @@ public class ConfigOptionCategories : StaticClass<ConfigOptionCategory>
     })
     {
     }
+    
+    #region Singleton
+
+    private static readonly Lazy<ConfigOptionCategories> Lazy = new(() => new ConfigOptionCategories());
+    public static ConfigOptionCategories Instance => Lazy.Value;
+
+    #endregion
 }
 
 public class ConfigOptionCategory : StaticField

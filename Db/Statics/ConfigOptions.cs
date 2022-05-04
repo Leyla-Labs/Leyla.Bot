@@ -3,9 +3,9 @@ using Db.Statics.BaseClasses;
 
 namespace Db.Statics;
 
-public class ConfigOptions : StaticClass<ConfigOption>
+public sealed class ConfigOptions : StaticClass<ConfigOption>
 {
-    public ConfigOptions() : base(new List<ConfigOption>
+    private ConfigOptions() : base(new List<ConfigOption>
     {
         new(1, 1, "Moderator Role", "todo", ConfigType.Role, null, 2),
         new(2, 1, "Moderator Channel", "todo", ConfigType.Channel, null, 3),
@@ -15,6 +15,13 @@ public class ConfigOptions : StaticClass<ConfigOption>
     })
     {
     }
+    
+    #region Singleton
+
+    private static readonly Lazy<ConfigOptions> Lazy = new(() => new ConfigOptions());
+    public static ConfigOptions Instance => Lazy.Value;
+
+    #endregion
 }
 
 public class ConfigOption : StaticField
@@ -32,5 +39,5 @@ public class ConfigOption : StaticField
         ConfigOptionCategoryId = ci;
     }
 
-    public ConfigOptionCategory ConfigOptionCategory => new ConfigOptionCategories().Get(ConfigOptionCategoryId);
+    public ConfigOptionCategory ConfigOptionCategory => ConfigOptionCategories.Instance.Get(ConfigOptionCategoryId);
 }

@@ -8,7 +8,7 @@ public class Config
     public int Id { get; set; }
 
     public int ConfigOptionId { get; set; } // statics
-    [NotMapped] ConfigOption ConfigOption => new ConfigOptions().Get(ConfigOptionId);
+    [NotMapped] ConfigOption ConfigOption => ConfigOptions.Instance.Get(ConfigOptionId);
 
     public ulong GuildId { get; set; }
     public Guild Guild { get; set; } = null!;
