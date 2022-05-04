@@ -14,17 +14,15 @@ public static class SearchQuotes
         const int i = 4;
         if (searchQuery.Length < i)
         {
-            // TODO make pretty
             await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
-                .WithContent($"Search query must be at least {i} characters.").AsEphemeral());
+                .AddErrorEmbed($"Search query must be at least {i} characters.").AsEphemeral());
             return;
         }
 
         var guildQuotes = await GetQuotesForGuild(ctx.Guild.Id);
         if (guildQuotes.Count == 0)
         {
-            // TODO make pretty
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("Guild has no quotes.")
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("Guild has no quotes.")
                 .AsEphemeral());
             return;
         }
@@ -32,8 +30,7 @@ public static class SearchQuotes
         var filteredQuotes = guildQuotes.Where(x => x.Text.Contains(searchQuery)).ToList();
         if (filteredQuotes.Count == 0)
         {
-            // TODO make pretty
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("No search results.")
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("No search results.")
                 .AsEphemeral());
             return;
         }

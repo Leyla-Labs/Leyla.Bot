@@ -1,7 +1,6 @@
 using Common.Extensions;
 using Db;
 using Db.Models;
-using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
@@ -14,17 +13,11 @@ public static class RandomQuote
     {
         var quote = await GetRandomQuote(ctx.Guild.Id);
         if (quote == null)
-        {
-            // TODO make pretty
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("No quotes found."));
-        }
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("No quotes found."));
 
         var member = await ctx.GetMember(quote!.MemberId);
         if (member == null)
-        {
-            // TODO make pretty
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("Member not found."));
-        }
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("Member not found."));
 
         var embed = GetQuoteEmbed(member!.DisplayName, quote);
         await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed));
@@ -34,11 +27,11 @@ public static class RandomQuote
     {
         await using var context = new DatabaseContext();
         return await context.Quotes.Where(x =>
-            x.Member.GuildId == guildId)
-        .OrderBy(x => Guid.NewGuid())
-        .FirstOrDefaultAsync();
+                x.Member.GuildId == guildId)
+            .OrderBy(x => Guid.NewGuid())
+            .FirstOrDefaultAsync();
     }
-    
+
     private static DiscordEmbed GetQuoteEmbed(string displayName, Quote quote)
     {
         var embed = new DiscordEmbedBuilder();

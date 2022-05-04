@@ -17,10 +17,11 @@ public static class AddQuote
         var msg = ctx.TargetMessage;
 
         // check if quote already exists
-        if (await CheckDuplicate(msg) is { } duplicateEmbed)
+        if (await CheckDuplicate(msg))
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AddEmbed(duplicateEmbed));
+                new DiscordInteractionResponseBuilder().AddErrorEmbed("Duplicate Quote",
+                    "That message has already been quoted."));
             return;
         }
 
@@ -46,17 +47,10 @@ public static class AddQuote
             new DiscordInteractionResponseBuilder().AddEmbed(embed));
     }
 
-    private static async Task<DiscordEmbed?> CheckDuplicate(SnowflakeObject msg)
+    private static async Task<bool> CheckDuplicate(SnowflakeObject msg)
     {
         await using var context = new DatabaseContext();
-        if (await context.Quotes.AnyAsync(x => x.MessageId == msg.Id))
-            return new DiscordEmbedBuilder
-            {
-                Title = "Duplicate Quote",
-                Description = "That message has already been quoted."
-            }.WithColor(DiscordColor.IndianRed).Build();
-
-        return null;
+        return await context.Quotes.AnyAsync(x => x.MessageId == msg.Id);
     }
 
     private static async Task<string> GetDisplayName(ContextMenuContext ctx)

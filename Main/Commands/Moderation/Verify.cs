@@ -1,5 +1,5 @@
+using Common.Extensions;
 using Db.Helper;
-using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 using DSharpPlus.SlashCommands;
@@ -10,22 +10,17 @@ public static class Verify
 {
     public static async Task RunMenu(ContextMenuContext ctx)
     {
-        if (ctx.TargetMember == null)
-        {
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("Member not found."));
-            return;
-        }
-
         var role = await ConfigHelper.Instance.GetRole("Verification Role", ctx.Guild);
         if (role == null)
         {
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("Verification role not found."));
+            await ctx.CreateResponseAsync(
+                new DiscordInteractionResponseBuilder().AddErrorEmbed("Verification role not found"));
             return;
         }
 
-        if (ctx.TargetMember?.Roles.Contains(role) == true)
+        if (ctx.TargetMember.Roles.Contains(role))
         {
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent(
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed(
                 $"{ctx.TargetMember.Nickname ?? ctx.TargetMember.Username} is already verified."));
             return;
         }

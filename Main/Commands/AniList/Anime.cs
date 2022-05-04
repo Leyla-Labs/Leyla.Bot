@@ -1,5 +1,6 @@
 using Anilist4Net;
 using Anilist4Net.Enums;
+using Common.Extensions;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -26,7 +27,7 @@ public static class Anime
                 MediaFormats.MUSIC, MediaFormats.SPECIAL, MediaFormats.TV_SHORT
             }.Contains(anime.Format))
         {
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Anime \"{title}\" not found"));
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddErrorEmbed($"\"{title}\" not found"));
             return;
         }
 

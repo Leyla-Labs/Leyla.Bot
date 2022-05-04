@@ -14,18 +14,17 @@ public static class DeleteQuote
     {
         if (n > int.MaxValue)
         {
-            // TODO make pretty
             await ctx.CreateResponseAsync(
-                new DiscordInteractionResponseBuilder().WithContent("Number bigger than MaxInt."));
+                new DiscordInteractionResponseBuilder().AddErrorEmbed("That number is way too high!"));
             return;
         }
-        
+
         var quote = await QuoteHelper.GetQuote(ctx.Guild.Id, member.Id, (int) n);
-        
+
         if (quote == null)
         {
             // TODO make pretty
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("Quote not found."));
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("Quote not found."));
             return;
         }
 
