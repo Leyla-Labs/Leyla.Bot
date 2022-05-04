@@ -12,24 +12,22 @@ public static class RandomQuote
 {
     public static async Task RunSlash(InteractionContext ctx)
     {
-        await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-
         var quote = await GetRandomQuote(ctx.Guild.Id);
         if (quote == null)
         {
             // TODO make pretty
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("No quotes found."));
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("No quotes found."));
         }
 
         var member = await ctx.GetMember(quote!.MemberId);
         if (member == null)
         {
             // TODO make pretty
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Member not found."));
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("Member not found."));
         }
 
         var embed = GetQuoteEmbed(member!.DisplayName, quote);
-        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+        await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed));
     }
 
     private static async Task<Quote?> GetRandomQuote(ulong guildId)

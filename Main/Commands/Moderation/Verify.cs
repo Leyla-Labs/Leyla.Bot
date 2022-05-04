@@ -10,30 +10,28 @@ public static class Verify
 {
     public static async Task RunMenu(ContextMenuContext ctx)
     {
-        await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-
         if (ctx.TargetMember == null)
         {
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Member not found."));
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("Member not found."));
             return;
         }
 
         var role = await ConfigHelper.Instance.GetRole("Verification Role", ctx.Guild);
         if (role == null)
         {
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Verification role not found."));
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("Verification role not found."));
             return;
         }
 
         if (ctx.TargetMember?.Roles.Contains(role) == true)
         {
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(
+            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent(
                 $"{ctx.TargetMember.Nickname ?? ctx.TargetMember.Username} is already verified."));
             return;
         }
 
         var embed = await GrantRoleAndGetEmbed(ctx.TargetMember!, ctx.Member, role);
-        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+        await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed));
     }
 
     private static async Task<DiscordEmbed> GrantRoleAndGetEmbed(DiscordMember targetMember, DiscordUser actingUser,
