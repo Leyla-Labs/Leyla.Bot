@@ -13,11 +13,15 @@ public static class RandomQuote
     {
         var quote = await GetRandomQuote(ctx.Guild.Id);
         if (quote == null)
+        {
             await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("No quotes found."));
+        }
 
         var member = await ctx.GetMember(quote!.MemberId);
         if (member == null)
+        {
             await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("Member not found."));
+        }
 
         var embed = GetQuoteEmbed(member!.DisplayName, quote);
         await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed));

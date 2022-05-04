@@ -19,7 +19,10 @@ public static class Character
         embed.WithDescription(character.NativeName);
 
         var altNames = string.Join(", ", character.AlternativeNames);
-        if (altNames.Length > 0) embed.AddField("Alternative Names", altNames);
+        if (altNames.Length > 0)
+        {
+            embed.AddField("Alternative Names", altNames);
+        }
 
         embed.AddField("Description",
             character.DescriptionMd.StripHtml().ToDiscordMarkup().TruncateAndCloseSpoiler(210));

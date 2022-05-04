@@ -33,7 +33,7 @@ public class GraphQlHttpRequestExceptionHandler : SlashCommandErrorHandler
         };
         // TODO show more details?
 
-        embed.WithColor(DiscordColor.IndianRed);
+        embed.WithColor(DiscordColor.Red);
 
         return embed.Build();
     }

@@ -38,7 +38,10 @@ public static class EditQuote
         // wait for user response to modal
         var interactivity = ctx.Client.GetInteractivity();
         var userResponse = await interactivity.WaitForModalAsync($"modal-editquote-{ctx.User.Id}", ctx.User);
-        if (userResponse.TimedOut) return;
+        if (userResponse.TimedOut)
+        {
+            return;
+        }
 
         // get value from modal and edit in database
         var modalInteraction = userResponse.Result.Interaction;

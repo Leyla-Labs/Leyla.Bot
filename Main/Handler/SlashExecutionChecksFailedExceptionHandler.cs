@@ -19,7 +19,10 @@ public class SlashExecutionChecksFailedExceptionHandler : SlashCommandErrorHandl
 
     public override async Task HandleException()
     {
-        if (_ex.FailedChecks.Count <= 0) throw new NotImplementedException();
+        if (_ex.FailedChecks.Count <= 0)
+        {
+            throw new NotImplementedException();
+        }
 
         if (_ex.FailedChecks[0] is SlashRequireBotPermissionsAttribute attr)
         {

@@ -9,7 +9,10 @@ public static class EmbedHelper
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle(title);
 
-        if (description != null) embed.WithDescription(description);
+        if (description != null)
+        {
+            embed.WithDescription(description);
+        }
 
         embed.WithColor(DiscordColor.Red);
         return embed.Build();

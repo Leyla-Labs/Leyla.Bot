@@ -37,7 +37,14 @@ public static class Manga
 
     private static void AddFields(this DiscordEmbedBuilder embed, Media media)
     {
-        if (media.Volumes > 0) embed.AddField("Volumes", media.Volumes.ToString(), true);
-        if (media.Chapters > 0) embed.AddField("Chapters", media.Chapters.ToString(), true);
+        if (media.Volumes > 0)
+        {
+            embed.AddField("Volumes", media.Volumes.ToString(), true);
+        }
+
+        if (media.Chapters > 0)
+        {
+            embed.AddField("Chapters", media.Chapters.ToString(), true);
+        }
     }
 }

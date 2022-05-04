@@ -1,6 +1,6 @@
 namespace Common.Helper;
 
-public class DiscordHelper
+public static class DiscordHelper
 {
     public static IEnumerable<string> ImageFormats()
     {

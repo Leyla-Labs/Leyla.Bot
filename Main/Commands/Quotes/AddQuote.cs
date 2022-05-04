@@ -34,7 +34,10 @@ public static class AddQuote
         // wait for user response to modal
         var interactivity = ctx.Client.GetInteractivity();
         var userResponse = await interactivity.WaitForModalAsync($"modal-addquote-{ctx.User.Id}", ctx.User);
-        if (userResponse.TimedOut) return;
+        if (userResponse.TimedOut)
+        {
+            return;
+        }
 
         // get value from modal and add to database
         var modalInteraction = userResponse.Result.Interaction;

@@ -19,11 +19,16 @@ public static class AniListHelper
         embed.AddField("Status", media.Status.ToFriendlyString(), true);
         embed.AddField("Average Score", media.AverageScore != null ? $"{media.AverageScore}%" : "-", true);
         embed.AddField("Mean Score", media.MeanScore != null ? $"{media.MeanScore}%" : "-", true);
-        if (media.Genres?.Length > 0) embed.AddField("Genres", string.Join(", ", media.Genres));
+        if (media.Genres?.Length > 0)
+        {
+            embed.AddField("Genres", string.Join(", ", media.Genres));
+        }
 
         if (media.DescriptionMd != null)
+        {
             embed.AddField("Description",
                 media.DescriptionMd.StripHtml().ToDiscordMarkup().TruncateAndCloseSpoiler(140));
+        }
     }
 
     public static void AddCommonMediaEmbedProperties(DiscordEmbedBuilder embed, Media media)

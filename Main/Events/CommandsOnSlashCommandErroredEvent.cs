@@ -11,11 +11,11 @@ public static class CommandsOnSlashCommandErroredEvent
     {
         switch (e.Exception)
         {
-            case SlashExecutionChecksFailedException ex:
-                await new SlashExecutionChecksFailedExceptionHandler(e, ex).HandleException();
+            case SlashExecutionChecksFailedException ex1:
+                await new SlashExecutionChecksFailedExceptionHandler(e, ex1).HandleException();
                 break;
-            case GraphQLHttpRequestException ex:
-                await new GraphQlHttpRequestExceptionHandler(e, ex).HandleException();
+            case GraphQLHttpRequestException ex2:
+                await new GraphQlHttpRequestExceptionHandler(e, ex2).HandleException();
                 break;
         }
     }

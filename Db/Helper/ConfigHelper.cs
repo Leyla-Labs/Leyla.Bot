@@ -41,7 +41,10 @@ public sealed class ConfigHelper
             ? configs.FirstOrDefault(x => x.ConfigOptionId == defaultOption.Id)
             : null;
 
-        if (cfgGuild != null) return cfgGuild.Value;
+        if (cfgGuild != null)
+        {
+            return cfgGuild.Value;
+        }
 
         // if no config set, get default value, set for guild, and return
         // this avoids user confusion if default bot behaviour is ever changed

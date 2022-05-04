@@ -10,10 +10,16 @@ public static class ClientOnMessageUpdated
 {
     public static async Task HandleEvent(DiscordClient sender, MessageUpdateEventArgs e)
     {
-        if (e.Guild == null) return;
+        if (e.Guild == null)
+        {
+            return;
+        }
 
         var channel = await ConfigHelper.Instance.GetChannel("Log Channel", e.Guild);
-        if (channel == null) return;
+        if (channel == null)
+        {
+            return;
+        }
 
         var em = new DiscordEmbedBuilder();
 
@@ -36,7 +42,9 @@ public static class ClientOnMessageUpdated
     private static void AddMsgAuthor(DiscordEmbedBuilder em, MessageUpdateEventArgs e)
     {
         if (e.Message.Author != null)
+        {
             em.AddField("User", e.Message.Author.Mention, true);
+        }
     }
 
     private static void AddChannel(DiscordEmbedBuilder em, MessageUpdateEventArgs e)
@@ -52,7 +60,9 @@ public static class ClientOnMessageUpdated
     private static void AddContentNew(DiscordEmbedBuilder em, MessageUpdateEventArgs e)
     {
         if (!string.IsNullOrWhiteSpace(e.Message.Content))
+        {
             em.AddField("Content (new)", e.Message.Content.Trim());
+        }
     }
 
     private static void AddContentOld(DiscordEmbedBuilder em, MessageUpdateEventArgs e)
@@ -63,7 +73,10 @@ public static class ClientOnMessageUpdated
                 ? e.MessageBefore.Content.Trim()
                 : null;
 
-        if (s != null) em.AddField("Content (old)", s);
+        if (s != null)
+        {
+            em.AddField("Content (old)", s);
+        }
     }
 
     private static void AddFooter(DiscordEmbedBuilder em, MessageUpdateEventArgs e)

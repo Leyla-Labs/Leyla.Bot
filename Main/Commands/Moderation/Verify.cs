@@ -39,7 +39,10 @@ public static class Verify
         }
         catch (Exception e)
         {
-            if (e is not UnauthorizedException) throw;
+            if (e is not UnauthorizedException)
+            {
+                throw;
+            }
 
             // TODO check if this can be replaced with global exception handler
             var description =

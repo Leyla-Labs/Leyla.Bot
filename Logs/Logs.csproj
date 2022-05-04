@@ -7,12 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Common\Common.csproj" />
+        <ProjectReference Include="..\Common\Common.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DSharpPlus.SlashCommands" Version="4.2.0" />
-        <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+        <PackageReference Include="DSharpPlus.SlashCommands" Version="4.2.0"/>
+        <PackageReference Include="Humanizer.Core" Version="2.14.1"/>
     </ItemGroup>
 
 </Project>

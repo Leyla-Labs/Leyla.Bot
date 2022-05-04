@@ -11,10 +11,16 @@ public static class ClientOnMessageDeleted
 {
     public static async Task HandleEvent(DiscordClient sender, MessageDeleteEventArgs e)
     {
-        if (e.Guild == null) return;
+        if (e.Guild == null)
+        {
+            return;
+        }
 
         var channel = await ConfigHelper.Instance.GetChannel("Log Channel", e.Guild);
-        if (channel == null) return;
+        if (channel == null)
+        {
+            return;
+        }
 
         var em = new DiscordEmbedBuilder();
         AddTitle(em, e);
@@ -36,7 +42,9 @@ public static class ClientOnMessageDeleted
     private static void AddMsgAuthor(DiscordEmbedBuilder em, MessageDeleteEventArgs e)
     {
         if (e.Message.Author != null)
+        {
             em.AddField("User", e.Message.Author.Mention, true);
+        }
     }
 
     private static void AddChannel(DiscordEmbedBuilder em, MessageDeleteEventArgs e)
@@ -47,16 +55,30 @@ public static class ClientOnMessageDeleted
     private static void AddContent(DiscordEmbedBuilder em, MessageDeleteEventArgs e)
     {
         if (!string.IsNullOrWhiteSpace(e.Message.Content))
+        {
             em.AddField("Content", e.Message.Content.Trim());
+        }
     }
 
     private static void AddEmbed(DiscordEmbedBuilder em, MessageDeleteEventArgs e)
     {
-        if (e.Message.Embeds.Count == 0) return;
+        if (e.Message.Embeds.Count == 0)
+        {
+            return;
+        }
+
         foreach (var mEmb in e.Message.Embeds)
         {
-            if (!mEmb.Type.Equals("image")) continue;
-            if (!DiscordHelper.ImageFormats().Any(x => mEmb.Url.ToString().EndsWith($".{x}"))) continue;
+            if (!mEmb.Type.Equals("image"))
+            {
+                continue;
+            }
+
+            if (!DiscordHelper.ImageFormats().Any(x => mEmb.Url.ToString().EndsWith($".{x}")))
+            {
+                continue;
+            }
+
             em.WithImageUrl(mEmb.Url);
             break;
         }

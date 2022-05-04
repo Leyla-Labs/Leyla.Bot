@@ -1,6 +1,6 @@
+using System.Text;
 using Db;
 using Db.Models;
-using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
@@ -13,23 +13,21 @@ public static class ListQuotes
     {
         var quotes = await GetQuotesForMember(ctx.Guild.Id, member.Id);
 
-        var quotesStr = string.Empty;
-
+        var b = new StringBuilder();
         for (var i = 0; i < quotes.Count; i++)
         {
-            quotesStr += $"**{i + 1}.** {quotes[i].Text}{Environment.NewLine}";
+            b.Append($"**{i + 1}.** {quotes[i].Text}{Environment.NewLine}");
         }
-        
-        if (quotes.Count == 0)
-        {
-            quotesStr = "No quotes";
-        }
-        
+
+        var quotesStr = quotes.Count > 0
+            ? b.ToString()
+            : "No quotes";
+
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle($"Quotes for {member.DisplayName}");
         embed.WithDescription(quotesStr);
         embed.WithColor(DiscordColor.Blurple);
-        
+
         await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed.Build()).AsEphemeral());
     }
 

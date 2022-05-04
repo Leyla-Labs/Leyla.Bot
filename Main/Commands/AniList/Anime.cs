@@ -42,9 +42,15 @@ public static class Anime
 
     private static void AddFields(this DiscordEmbedBuilder embed, Media anime)
     {
-        if (anime.Episodes > 1) embed.AddField("Episodes", anime.Episodes.ToString(), true);
+        if (anime.Episodes > 1)
+        {
+            embed.AddField("Episodes", anime.Episodes.ToString(), true);
+        }
 
-        if (anime.Format != MediaFormats.MOVIE || anime.Duration == null) return;
+        if (anime.Format != MediaFormats.MOVIE || anime.Duration == null)
+        {
+            return;
+        }
 
         var duration = TimeSpan.FromMinutes((int) anime.Duration);
         var durationString = duration.Humanize(maxUnit: TimeUnit.Hour, minUnit: TimeUnit.Minute, precision: 2);
