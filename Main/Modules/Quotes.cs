@@ -38,6 +38,16 @@ public class Quotes : ApplicationCommandModule
         await EditQuote.RunSlash(ctx, (DiscordMember) user, n);
     }
 
+    [SlashCommand("delete", "Deletes a quote.")]
+    public async Task SlashDeleteQuote(InteractionContext ctx,
+        [Option("user", "User to delete quote of")]
+        DiscordUser user,
+        [Option("n", "Number of the quote to delete")]
+        long n)
+    {
+        await DeleteQuote.RunSlash(ctx, (DiscordMember) user, n);
+    }
+
     [SlashCommand("list", "Lists all quotes from given user.")]
     public async Task SlashListQuotes(InteractionContext ctx,
         [Option("user", "User to list quotes of")]

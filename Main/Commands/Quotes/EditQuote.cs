@@ -21,18 +21,18 @@ public static class EditQuote
                 new DiscordInteractionResponseBuilder().WithContent("Number bigger than MaxInt."));
             return;
         }
-        
+
         var quote = await QuoteHelper.GetQuote(ctx.Guild.Id, member.Id, (int) n);
-        
+
         if (quote == null)
         {
             // TODO make pretty
             await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().WithContent("Quote not found."));
             return;
         }
-        
-        var displayName = await GetDisplayName(ctx, quote.MemberId);
-        
+
+        var displayName = await ctx.GetDisplayName(quote.MemberId);
+
         // show modal
         var responseBuilder = GetModal(ctx, quote, displayName);
         await ctx.CreateResponseAsync(InteractionResponseType.Modal, responseBuilder);
@@ -41,18 +41,18 @@ public static class EditQuote
         var interactivity = ctx.Client.GetInteractivity();
         var userResponse = await interactivity.WaitForModalAsync($"modal-editquote-{ctx.User.Id}", ctx.User);
         if (userResponse.TimedOut) return;
-        
+
         // get value from modal and edit in database
         var modalInteraction = userResponse.Result.Interaction;
         var text = userResponse.Result.Values["text"];
         await EditInDatabase(quote, text);
-        
+
         // show confirmation embed
         var embed = GetConfirmationEmbed(quote, displayName);
         await modalInteraction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
-    
+
     private static DiscordInteractionResponseBuilder GetModal(BaseContext ctx, Quote quote, string displayName)
     {
         var response = new DiscordInteractionResponseBuilder();
@@ -61,12 +61,6 @@ public static class EditQuote
             .AddComponents(new TextInputComponent("Quote", "text", max_length: 2000, min_length: 1,
                 style: TextInputStyle.Paragraph, value: quote.Text));
         return response;
-    }
-    
-    private static async Task<string> GetDisplayName(BaseContext ctx, ulong userId)
-    {
-        var member = await ctx.GetMember(userId);
-        return member?.DisplayName ?? userId.ToString();
     }
 
     private static async Task EditInDatabase(Quote quote, string text)
