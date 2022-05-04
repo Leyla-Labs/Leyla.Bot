@@ -35,5 +35,6 @@ public class Bot : Leyla
 #endif
 
         commands.SlashCommandErrored += CommandsOnSlashCommandErroredEvent.CommandsOnSlashCommandErrored;
+        commands.ContextMenuErrored += CommandsOnContextMenuErroredEvent.CommandsOnContextMenuErrored;
     }
 }
