@@ -12,7 +12,7 @@ public static class ClientOnMessageUpdated
     {
         if (e.Guild == null) return;
 
-        var channel = await ConfigHelper.GetChannel("Log Channel", e.Guild);
+        var channel = await ConfigHelper.Instance.GetChannel("Log Channel", e.Guild);
         if (channel == null) return;
 
         var em = new DiscordEmbedBuilder();

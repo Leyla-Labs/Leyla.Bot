@@ -10,7 +10,7 @@ public static class ClientOnGuildMemberRemoved
 {
     public static async Task HandleEvent(DiscordClient sender, GuildMemberRemoveEventArgs e)
     {
-        var channel = await ConfigHelper.GetChannel("Moderator Channel", e.Guild);
+        var channel = await ConfigHelper.Instance.GetChannel("Moderator Channel", e.Guild);
         if (channel == null) return;
 
         var embed = new DiscordEmbedBuilder();

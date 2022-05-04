@@ -18,7 +18,7 @@ public static class Verify
             return;
         }
 
-        var role = await ConfigHelper.GetRole("Verification Role", ctx.Guild);
+        var role = await ConfigHelper.Instance.GetRole("Verification Role", ctx.Guild);
         if (role == null)
         {
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Verification role not found."));

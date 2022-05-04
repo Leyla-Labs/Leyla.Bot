@@ -1,7 +1,6 @@
 using Common.Helper;
 using Common.Interfaces;
 using Db;
-using Db.Helper;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
@@ -16,7 +15,6 @@ public abstract class Leyla : IBot
     public async Task MainAsync()
     {
         Configuration.ConnectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")!;
-        await ConfigHelper.LoadGuildConfigs();
         Client = InitBot();
         RegisterCommands();
         RegisterInteractivity();

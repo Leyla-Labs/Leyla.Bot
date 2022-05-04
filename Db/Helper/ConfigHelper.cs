@@ -6,17 +6,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Db.Helper;
 
-public static class ConfigHelper
+public sealed class ConfigHelper
 {
-    public static async Task LoadGuildConfigs()
+    private readonly Dictionary<ulong, List<Config>> _guildConfigs;
+
+    private ConfigHelper()
+    {
+        _guildConfigs = LoadGuildConfigs().Result;
+    }
+
+    private static async Task<Dictionary<ulong, List<Config>>> LoadGuildConfigs()
     {
         await using var context = new DatabaseContext();
+
         var configs = await context.Configs.ToListAsync();
         var guilds = configs.Select(x => x.GuildId).Distinct().ToList();
 
-        var dicts = new Dictionary<ulong, List<Config>>();
-        guilds.ForEach(x => dicts.Add(x, configs.Where(y => y.GuildId == x).ToList()));
-        Configuration.GuildConfigs = dicts;
+        return guilds.ToDictionary(x => x, x => configs.Where(y => y.GuildId == x).ToList());
     }
 
     public static Task<string?> GetString(string option)
@@ -24,14 +30,14 @@ public static class ConfigHelper
         // when no guildId provided, return default value
         return Task.FromResult(new ConfigOptions().Get(option).DefaultValue);
     }
-    
-    public static async Task<string?> GetString(string option, ulong guildId)
+
+    public async Task<string?> GetString(string option, ulong guildId)
     {
         var defaultOption = new ConfigOptions().Get(option);
-        
+
         // check if guild in dictionary
         // if so, get config for that specific option
-        var cfgGuild = Configuration.GuildConfigs.TryGetValue(guildId, out var configs)
+        var cfgGuild = _guildConfigs.TryGetValue(guildId, out var configs)
             ? configs.FirstOrDefault(x => x.ConfigOptionId == defaultOption.Id)
             : null;
 
@@ -45,7 +51,7 @@ public static class ConfigHelper
         return defaultOption.DefaultValue;
     }
 
-    public static async Task<char?> GetChar(string option, ulong guildId)
+    public async Task<char?> GetChar(string option, ulong guildId)
     {
         return await GetString(option, guildId) is { } s ? s[0] : null;
     }
@@ -55,17 +61,12 @@ public static class ConfigHelper
         return await GetString(option) is { } s ? s[0] : null;
     }
 
-    public static async Task<int?> GetInt(string option, ulong guildId)
+    public async Task<int?> GetInt(string option, ulong guildId)
     {
         return await GetString(option, guildId) is { } s ? Convert.ToInt32(s) : null;
     }
 
-    public static async Task<int?> GetInt(string option)
-    {
-        return await GetString(option) is { } s ? Convert.ToInt32(s) : null;
-    }
-
-    public static async Task<bool?> GetBool(string option, ulong guildId)
+    public async Task<bool?> GetBool(string option, ulong guildId)
     {
         return await GetString(option, guildId) is { } s ? s.Equals("1") : null;
     }
@@ -75,7 +76,7 @@ public static class ConfigHelper
         return await GetString(option) is { } s ? s.Equals("1") : null;
     }
 
-    public static async Task<ulong?> GetUlong(string option, ulong guildId)
+    public async Task<ulong?> GetUlong(string option, ulong guildId)
     {
         return await GetString(option, guildId) is { } s ? Convert.ToUInt64(s) : null;
     }
@@ -85,31 +86,31 @@ public static class ConfigHelper
         return await GetString(option) is { } s ? Convert.ToUInt64(s) : null;
     }
 
-    public static async Task<DiscordRole?> GetRole(string option, DiscordGuild guild)
+    public async Task<DiscordRole?> GetRole(string option, DiscordGuild guild)
     {
         var roleId = await GetString(option, guild.Id) is { } s ? Convert.ToUInt64(s) : default;
         return guild.Roles.TryGetValue(roleId, out var result) ? result : null;
     }
 
-    public static async Task<DiscordChannel?> GetChannel(string option, DiscordGuild guild)
+    public async Task<DiscordChannel?> GetChannel(string option, DiscordGuild guild)
     {
         var channelId = await GetString(option, guild.Id) is { } s ? Convert.ToUInt64(s) : default;
         return guild.Channels.TryGetValue(channelId, out var result) ? result : null;
     }
 
-    public static async Task<bool> Set(int optionId, ulong guildId, object value)
+    public async Task<bool> Set(int optionId, ulong guildId, object value)
     {
         var opt = new ConfigOptions().Get(optionId);
         return await SetInternal(opt, guildId, value);
     }
 
-    public static async Task<bool> Set(string option, ulong guildId, object value)
+    public async Task<bool> Set(string option, ulong guildId, object value)
     {
         var opt = new ConfigOptions().Get(option);
         return await SetInternal(opt, guildId, value);
     }
 
-    private static async Task<bool> SetInternal(ConfigOption opt, ulong guildId, object value)
+    private async Task<bool> SetInternal(ConfigOption opt, ulong guildId, object value)
     {
         string valueStr;
         switch (opt.Type)
@@ -138,7 +139,7 @@ public static class ConfigHelper
                 return false;
         }
 
-        if (Configuration.GuildConfigs.TryGetValue(guildId, out var guildConfigs))
+        if (_guildConfigs.TryGetValue(guildId, out var guildConfigs))
         {
             // guild exists in cached configs
 
@@ -163,7 +164,7 @@ public static class ConfigHelper
             // -> create cached config for guild, add option to that and database
             var cCfg = new Config {ConfigOptionId = opt.Id, GuildId = guildId, Value = valueStr};
             var cConfigs = new List<Config> {cCfg};
-            Configuration.GuildConfigs.Add(guildId, cConfigs);
+            _guildConfigs.Add(guildId, cConfigs);
             return await AddConfig(cCfg);
         }
     }
@@ -197,4 +198,11 @@ public static class ConfigHelper
             return false;
         }
     }
+
+    #region Singleton
+
+    private static readonly Lazy<ConfigHelper> Lazy = new(() => new ConfigHelper());
+    public static ConfigHelper Instance => Lazy.Value;
+
+    #endregion
 }

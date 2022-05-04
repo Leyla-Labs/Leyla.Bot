@@ -12,10 +12,10 @@ public static class ClientOnMessageDeleted
     public static async Task HandleEvent(DiscordClient sender, MessageDeleteEventArgs e)
     {
         if (e.Guild == null) return;
-        
-        var channel = await ConfigHelper.GetChannel("Log Channel", e.Guild);
+
+        var channel = await ConfigHelper.Instance.GetChannel("Log Channel", e.Guild);
         if (channel == null) return;
-        
+
         var em = new DiscordEmbedBuilder();
         AddTitle(em, e);
         AddMsgAuthor(em, e);
@@ -23,10 +23,10 @@ public static class ClientOnMessageDeleted
         AddContent(em, e);
         AddEmbed(em, e);
         AddFooter(em, e);
-        
+
         await channel.SendMessageAsync(em.Build());
     }
-    
+
     private static void AddTitle(DiscordEmbedBuilder em, MessageDeleteEventArgs e)
     {
         var titleSuffix = e.Message.Author == null ? " (not cached)" : string.Empty;
@@ -38,7 +38,7 @@ public static class ClientOnMessageDeleted
         if (e.Message.Author != null)
             em.AddField("User", e.Message.Author.Mention, true);
     }
-    
+
     private static void AddChannel(DiscordEmbedBuilder em, MessageDeleteEventArgs e)
     {
         em.AddField("Channel", e.Message.Channel.Mention, true);
