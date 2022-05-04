@@ -1,5 +1,6 @@
 using Anilist4Net;
 using Anilist4Net.Enums;
+using Common.Classes;
 using Common.Extensions;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -8,34 +9,41 @@ using Main.Helper;
 
 namespace Main.Commands.AniList;
 
-public static class Manga
+public sealed class Manga : SlashCommand
 {
-    public static async Task RunSlash(InteractionContext ctx, string title)
-    {
-        await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+    private readonly string _title;
 
-        var manga = int.TryParse(title, out var result)
+    public Manga(InteractionContext ctx, string title) : base(ctx)
+    {
+        _title = title;
+    }
+
+    public override async Task RunAsync()
+    {
+        await Ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+        var manga = int.TryParse(_title, out var result)
             ? await new Client().GetMediaById(result)
-            : await new Client().GetMediaBySearch(title, MediaTypes.MANGA);
+            : await new Client().GetMediaBySearch(_title, MediaTypes.MANGA);
 
         if (manga == null ||
             !new[] {MediaFormats.MANGA, MediaFormats.NOVEL, MediaFormats.ONE_SHOT}.Contains(manga.Format))
         {
-            await ctx.EditResponseAsync(
-                new DiscordWebhookBuilder().AddErrorEmbed($"\"{title}\" not found"));
+            await Ctx.EditResponseAsync(
+                new DiscordWebhookBuilder().AddErrorEmbed($"\"{_title}\" not found"));
             return;
         }
 
         var embed = new DiscordEmbedBuilder();
         AniListHelper.AddCommonMediaFieldsTop(embed, manga);
-        embed.AddFields(manga);
+        AddFields(embed, manga);
         AniListHelper.AddCommonMediaFieldsBottom(embed, manga);
         AniListHelper.AddCommonMediaEmbedProperties(embed, manga);
         var btn = AniListHelper.GetSiteButton(manga);
-        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()).AddComponents(btn));
+        await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()).AddComponents(btn));
     }
 
-    private static void AddFields(this DiscordEmbedBuilder embed, Media media)
+    private static void AddFields(DiscordEmbedBuilder embed, Media media)
     {
         if (media.Volumes > 0)
         {

@@ -1,4 +1,5 @@
 using Anilist4Net;
+using Common.Classes;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -6,13 +7,20 @@ using Main.Extensions;
 
 namespace Main.Commands.AniList;
 
-public static class Character
+public sealed class Character : SlashCommand
 {
-    public static async Task RunSlash(InteractionContext ctx, string name)
-    {
-        await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+    private readonly string _name;
 
-        var character = await new Client().GetCharacterBySearch(name);
+    public Character(InteractionContext ctx, string name) : base(ctx)
+    {
+        _name = name;
+    }
+
+    public override async Task RunAsync()
+    {
+        await Ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+        var character = await new Client().GetCharacterBySearch(_name);
 
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle(character.FullName);
@@ -30,6 +38,6 @@ public static class Character
         embed.WithFooter("AniList", "https://i.imgur.com/zqa6OEk.png");
         embed.WithColor(2010108);
         var btn = new DiscordLinkButtonComponent(character.SiteUrl, "View all details on AniList");
-        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()).AddComponents(btn));
+        await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()).AddComponents(btn));
     }
 }

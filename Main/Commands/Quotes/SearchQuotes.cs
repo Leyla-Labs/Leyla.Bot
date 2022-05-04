@@ -1,3 +1,4 @@
+using Common.Classes;
 using Common.Extensions;
 using Db;
 using Db.Models;
@@ -7,47 +8,48 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Quotes;
 
-public static class SearchQuotes
+public sealed class SearchQuotes : SlashCommand
 {
-    public static async Task RunSlash(InteractionContext ctx, string searchQuery)
+    private readonly string _query;
+
+    public SearchQuotes(InteractionContext ctx, string query) : base(ctx)
+    {
+        _query = query;
+    }
+
+    public override async Task RunAsync()
     {
         const int i = 4;
-        if (searchQuery.Length < i)
+        if (_query.Length < i)
         {
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
+            await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
                 .AddErrorEmbed($"Search query must be at least {i} characters.").AsEphemeral());
             return;
         }
 
-        var guildQuotes = await GetQuotesForGuild(ctx.Guild.Id);
+        var guildQuotes = await GetQuotesForGuild(Ctx.Guild.Id);
         if (guildQuotes.Count == 0)
         {
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("Guild has no quotes.")
+            await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("Guild has no quotes.")
                 .AsEphemeral());
             return;
         }
 
-        var filteredQuotes = guildQuotes.Where(x => x.Text.Contains(searchQuery)).ToList();
+        var filteredQuotes = guildQuotes.Where(x => x.Text.Contains(_query)).ToList();
         if (filteredQuotes.Count == 0)
         {
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("No search results.")
+            await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("No search results.")
                 .AsEphemeral());
             return;
         }
 
-        var embed = await GetSearchEmbed(ctx, guildQuotes, filteredQuotes);
-        await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
+        var embed = await GetSearchEmbed(guildQuotes, filteredQuotes);
+        await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
-    private static async Task<List<Quote>> GetQuotesForGuild(ulong guildId)
-    {
-        await using var context = new DatabaseContext();
-        return await context.Quotes.Where(x =>
-                x.Member.GuildId == guildId)
-            .ToListAsync();
-    }
+    #region Instance methods
 
-    private static async Task<DiscordEmbed> GetSearchEmbed(BaseContext ctx, ICollection<Quote> guildQuotes,
+    private async Task<DiscordEmbed> GetSearchEmbed(ICollection<Quote> guildQuotes,
         List<Quote> filteredQuotes)
     {
         var embed = new DiscordEmbedBuilder();
@@ -56,7 +58,7 @@ public static class SearchQuotes
         var quoteStrings = new List<string>();
         foreach (var quote in filteredQuotes)
         {
-            var member = await ctx.GetMember(quote.MemberId);
+            var member = await Ctx.GetMember(quote.MemberId);
             var index = guildQuotes.Select((q, i) => new {quote = q, index = i}).First(x =>
                 x.quote.MemberId == quote.MemberId && x.quote.Text.Equals(quote.Text)).index;
             quoteStrings.Add($"**\"{quote.Text}\"**{Environment.NewLine}- {member?.DisplayName} • #{index}");
@@ -70,4 +72,18 @@ public static class SearchQuotes
         embed.WithColor(DiscordColor.Blurple);
         return embed.Build();
     }
+
+    #endregion
+
+    #region Static methods
+
+    private static async Task<List<Quote>> GetQuotesForGuild(ulong guildId)
+    {
+        await using var context = new DatabaseContext();
+        return await context.Quotes.Where(x =>
+                x.Member.GuildId == guildId)
+            .ToListAsync();
+    }
+
+    #endregion
 }

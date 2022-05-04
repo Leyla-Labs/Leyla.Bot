@@ -1,3 +1,4 @@
+using Common.Classes;
 using Common.Extensions;
 using Db;
 using Db.Models;
@@ -8,32 +9,43 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Quotes;
 
-public static class DeleteQuote
+public sealed class DeleteQuote : SlashCommand
 {
-    public static async Task RunSlash(InteractionContext ctx, DiscordMember member, long n)
+    private readonly DiscordMember _member;
+    private readonly long _n;
+
+    public DeleteQuote(InteractionContext ctx, DiscordMember member, long n) : base(ctx)
     {
-        if (n > int.MaxValue)
+        _member = member;
+        _n = n;
+    }
+
+    public override async Task RunAsync()
+    {
+        if (_n > int.MaxValue)
         {
-            await ctx.CreateResponseAsync(
+            await Ctx.CreateResponseAsync(
                 new DiscordInteractionResponseBuilder().AddErrorEmbed("That number is way too high!"));
             return;
         }
 
-        var quote = await QuoteHelper.GetQuote(ctx.Guild.Id, member.Id, (int) n);
+        var quote = await QuoteHelper.GetQuote(Ctx.Guild.Id, _member.Id, (int) _n);
 
         if (quote == null)
         {
             // TODO make pretty
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("Quote not found."));
+            await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("Quote not found."));
             return;
         }
 
         await DeleteFromDatabase(quote);
 
-        var displayName = await ctx.GetDisplayName(quote.MemberId);
+        var displayName = await Ctx.GetDisplayName(quote.MemberId);
         var embed = GetConfirmationEmbed(quote, displayName);
-        await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
+        await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
+
+    #region Static methods
 
     private static async Task DeleteFromDatabase(Quote quote)
     {
@@ -51,4 +63,6 @@ public static class DeleteQuote
         embed.WithColor(DiscordColor.DarkRed);
         return embed.Build();
     }
+
+    #endregion
 }

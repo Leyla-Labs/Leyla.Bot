@@ -1,3 +1,4 @@
+using Common.Classes;
 using Common.Extensions;
 using Db;
 using Db.Models;
@@ -7,25 +8,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Quotes;
 
-public static class RandomQuote
+public sealed class RandomQuote : SlashCommand
 {
-    public static async Task RunSlash(InteractionContext ctx)
+    public RandomQuote(InteractionContext ctx) : base(ctx)
     {
-        var quote = await GetRandomQuote(ctx.Guild.Id);
+    }
+
+    public override async Task RunAsync()
+    {
+        var quote = await GetRandomQuote(Ctx.Guild.Id);
         if (quote == null)
         {
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("No quotes found."));
+            await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("No quotes found."));
         }
 
-        var member = await ctx.GetMember(quote!.MemberId);
+        var member = await Ctx.GetMember(quote!.MemberId);
         if (member == null)
         {
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("Member not found."));
+            await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("Member not found."));
         }
 
         var embed = GetQuoteEmbed(member!.DisplayName, quote);
-        await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed));
+        await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed));
     }
+
+    #region Static methods
 
     private static async Task<Quote?> GetRandomQuote(ulong guildId)
     {
@@ -44,4 +51,6 @@ public static class RandomQuote
         embed.WithColor(DiscordColor.Blurple);
         return embed.Build();
     }
+
+    #endregion
 }

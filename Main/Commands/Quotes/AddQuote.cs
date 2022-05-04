@@ -1,3 +1,4 @@
+using Common.Classes;
 using Common.Extensions;
 using Db;
 using Db.Helper;
@@ -10,30 +11,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Quotes;
 
-public static class AddQuote
+public sealed class AddQuote : ContextMenuCommand
 {
-    public static async Task RunMenu(ContextMenuContext ctx)
+    public AddQuote(ContextMenuContext ctx) : base(ctx)
     {
-        var msg = ctx.TargetMessage;
+    }
+
+    public override async Task RunAsync()
+    {
+        var msg = Ctx.TargetMessage;
 
         // check if quote already exists
         if (await CheckDuplicate(msg))
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+            await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AddErrorEmbed("Duplicate Quote",
                     "That message has already been quoted."));
             return;
         }
 
-        var displayName = await GetDisplayName(ctx);
+        var displayName = await GetDisplayName();
 
         // show modal
-        var responseBuilder = GetModal(ctx, displayName);
-        await ctx.CreateResponseAsync(InteractionResponseType.Modal, responseBuilder);
+        var responseBuilder = GetModal(displayName);
+        await Ctx.CreateResponseAsync(InteractionResponseType.Modal, responseBuilder);
 
         // wait for user response to modal
-        var interactivity = ctx.Client.GetInteractivity();
-        var userResponse = await interactivity.WaitForModalAsync($"modal-addquote-{ctx.User.Id}", ctx.User);
+        var interactivity = Ctx.Client.GetInteractivity();
+        var userResponse = await interactivity.WaitForModalAsync($"modal-addquote-{Ctx.User.Id}", Ctx.User);
         if (userResponse.TimedOut)
         {
             return;
@@ -42,7 +47,7 @@ public static class AddQuote
         // get value from modal and add to database
         var modalInteraction = userResponse.Result.Interaction;
         var text = userResponse.Result.Values["text"];
-        await AddToDatabase(msg, ctx.TargetMessage.Author.Id, ctx.Guild.Id, text);
+        await AddToDatabase(msg, Ctx.TargetMessage.Author.Id, Ctx.Guild.Id, text);
 
         // show confirmation embed
         var embed = GetConfirmationEmbed(msg, displayName, text);
@@ -50,26 +55,32 @@ public static class AddQuote
             new DiscordInteractionResponseBuilder().AddEmbed(embed));
     }
 
+    #region Instance methods
+
+    private async Task<string> GetDisplayName()
+    {
+        var member = await Ctx.GetMember(Ctx.TargetMessage.Author.Id);
+        return member?.DisplayName ?? Ctx.TargetMessage.Author.Username;
+    }
+
+    private DiscordInteractionResponseBuilder GetModal(string displayName)
+    {
+        var response = new DiscordInteractionResponseBuilder();
+        response.WithTitle($"Add Quote: {displayName}")
+            .WithCustomId($"modal-addquote-{Ctx.User.Id}")
+            .AddComponents(new TextInputComponent("Quote", "text", max_length: 2000, min_length: 1,
+                style: TextInputStyle.Paragraph, value: Ctx.TargetMessage.Content));
+        return response;
+    }
+
+    #endregion
+
+    #region Static methods
+
     private static async Task<bool> CheckDuplicate(SnowflakeObject msg)
     {
         await using var context = new DatabaseContext();
         return await context.Quotes.AnyAsync(x => x.MessageId == msg.Id);
-    }
-
-    private static async Task<string> GetDisplayName(ContextMenuContext ctx)
-    {
-        var member = await ctx.GetMember(ctx.TargetMessage.Author.Id);
-        return member?.DisplayName ?? ctx.TargetMessage.Author.Username;
-    }
-
-    private static DiscordInteractionResponseBuilder GetModal(ContextMenuContext ctx, string displayName)
-    {
-        var response = new DiscordInteractionResponseBuilder();
-        response.WithTitle($"Add Quote: {displayName}")
-            .WithCustomId($"modal-addquote-{ctx.User.Id}")
-            .AddComponents(new TextInputComponent("Quote", "text", max_length: 2000, min_length: 1,
-                style: TextInputStyle.Paragraph, value: ctx.TargetMessage.Content));
-        return response;
     }
 
     private static async Task AddToDatabase(DiscordMessage m, ulong userId, ulong guildId,
@@ -98,4 +109,6 @@ public static class AddQuote
         embed.WithColor(DiscordColor.Blurple);
         return embed.Build();
     }
+
+    #endregion
 }

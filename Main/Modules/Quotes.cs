@@ -13,7 +13,7 @@ public class Quotes : ApplicationCommandModule
     [ContextMenu(ApplicationCommandType.MessageContextMenu, "Add Quote")]
     public async Task MenuAddQuote(ContextMenuContext ctx)
     {
-        await AddQuote.RunMenu(ctx);
+        await new AddQuote(ctx).RunAsync();
     }
 
     [SlashCommand("show", "Shows a specific quote.")]
@@ -25,7 +25,7 @@ public class Quotes : ApplicationCommandModule
         long n)
     {
         // TODO check if SlashRequireGuild on command group level is enough
-        await ShowQuote.RunSlash(ctx, (DiscordMember) user, n);
+        await new ShowQuote(ctx, (DiscordMember) user, n).RunAsync();
     }
 
     [SlashCommand("edit", "Edits a quote.")]
@@ -35,7 +35,7 @@ public class Quotes : ApplicationCommandModule
         [Option("n", "Number of the quote to edit")]
         long n)
     {
-        await EditQuote.RunSlash(ctx, (DiscordMember) user, n);
+        await new EditQuote(ctx, (DiscordMember) user, n).RunAsync();
     }
 
     [SlashCommand("delete", "Deletes a quote.")]
@@ -45,7 +45,7 @@ public class Quotes : ApplicationCommandModule
         [Option("n", "Number of the quote to delete")]
         long n)
     {
-        await DeleteQuote.RunSlash(ctx, (DiscordMember) user, n);
+        await new DeleteQuote(ctx, (DiscordMember) user, n).RunAsync();
     }
 
     [SlashCommand("list", "Lists all quotes from given user.")]
@@ -54,21 +54,21 @@ public class Quotes : ApplicationCommandModule
         DiscordUser user)
     {
         // TODO check if SlashRequireGuild on command group level is enough
-        await ListQuotes.RunSlash(ctx, (DiscordMember) user);
+        await new ListQuotes(ctx, (DiscordMember) user).RunAsync();
     }
 
     [SlashCommand("random", "Shows a random quote.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
     public async Task SlashRandomQuote(InteractionContext ctx)
     {
-        await RandomQuote.RunSlash(ctx);
+        await new RandomQuote(ctx).RunAsync();
     }
 
     [SlashCommand("search", "Search through quotes containing query.")]
     public async Task SlashSearchQuotes(InteractionContext ctx,
         [Option("query", "Query to search for")]
-        string searchQuery)
+        string query)
     {
-        await SearchQuotes.RunSlash(ctx, searchQuery);
+        await new SearchQuotes(ctx, query).RunAsync();
     }
 }

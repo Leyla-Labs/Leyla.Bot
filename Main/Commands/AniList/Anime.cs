@@ -1,5 +1,6 @@
 using Anilist4Net;
 using Anilist4Net.Enums;
+using Common.Classes;
 using Common.Extensions;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -10,15 +11,22 @@ using Main.Helper;
 
 namespace Main.Commands.AniList;
 
-public static class Anime
+public sealed class Anime : SlashCommand
 {
-    public static async Task RunSlash(InteractionContext ctx, string title)
-    {
-        await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+    private readonly string _title;
 
-        var anime = int.TryParse(title, out var result)
+    public Anime(InteractionContext ctx, string title) : base(ctx)
+    {
+        _title = title;
+    }
+
+    public override async Task RunAsync()
+    {
+        await Ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+        var anime = int.TryParse(_title, out var result)
             ? await new Client().GetMediaById(result)
-            : await new Client().GetMediaBySearch(title, MediaTypes.ANIME);
+            : await new Client().GetMediaBySearch(_title, MediaTypes.ANIME);
 
         if (anime == null ||
             !new[]
@@ -27,20 +35,22 @@ public static class Anime
                 MediaFormats.MUSIC, MediaFormats.SPECIAL, MediaFormats.TV_SHORT
             }.Contains(anime.Format))
         {
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddErrorEmbed($"\"{title}\" not found"));
+            await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddErrorEmbed($"\"{_title}\" not found"));
             return;
         }
 
         var embed = new DiscordEmbedBuilder();
         AniListHelper.AddCommonMediaFieldsTop(embed, anime);
-        embed.AddFields(anime);
+        AddFields(embed, anime);
         AniListHelper.AddCommonMediaFieldsBottom(embed, anime);
         AniListHelper.AddCommonMediaEmbedProperties(embed, anime);
         var btn = AniListHelper.GetSiteButton(anime);
-        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()).AddComponents(btn));
+        await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed.Build()).AddComponents(btn));
     }
 
-    private static void AddFields(this DiscordEmbedBuilder embed, Media anime)
+    #region Static methods
+
+    private static void AddFields(DiscordEmbedBuilder embed, Media anime)
     {
         if (anime.Episodes > 1)
         {
@@ -57,4 +67,6 @@ public static class Anime
 
         embed.AddField("Duration", durationString, true);
     }
+
+    #endregion
 }

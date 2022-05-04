@@ -14,7 +14,7 @@ public class AniList : ApplicationCommandModule
         [Option("Title", "Title of the anime to search for")]
         string title)
     {
-        await Anime.RunSlash(ctx, title);
+        await new Anime(ctx, title).RunAsync();
     }
 
     [SlashCommand("manga", "Shows information for the given manga.")]
@@ -23,15 +23,15 @@ public class AniList : ApplicationCommandModule
         [Option("Title", "Title of the manga to search for")]
         string title)
     {
-        await Manga.RunSlash(ctx, title);
+        await new Manga(ctx, title).RunAsync();
     }
 
     [SlashCommand("character", "Shows information for the given character.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
     public async Task SlashCharacter(InteractionContext ctx,
         [Option("Name", "Name of the character to search for")]
-        string title)
+        string name)
     {
-        await Character.RunSlash(ctx, title);
+        await new Character(ctx, name).RunAsync();
     }
 }

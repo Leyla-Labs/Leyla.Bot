@@ -11,6 +11,6 @@ public class Moderation : ApplicationCommandModule
     [SlashRequireBotPermissions(Permissions.ManageRoles)]
     public async Task MenuVerify(ContextMenuContext ctx)
     {
-        await Verify.RunMenu(ctx);
+        await new Verify(ctx).RunAsync();
     }
 }

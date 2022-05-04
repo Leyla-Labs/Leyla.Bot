@@ -1,3 +1,4 @@
+using Common.Classes;
 using Common.Extensions;
 using Db.Helper;
 using DSharpPlus.Entities;
@@ -6,36 +7,41 @@ using DSharpPlus.SlashCommands;
 
 namespace Main.Commands.Moderation;
 
-public static class Verify
+public sealed class Verify : ContextMenuCommand
 {
-    public static async Task RunMenu(ContextMenuContext ctx)
+    public Verify(ContextMenuContext ctx) : base(ctx)
     {
-        var role = await ConfigHelper.Instance.GetRole("Verification Role", ctx.Guild);
+    }
+
+    public override async Task RunAsync()
+    {
+        var role = await ConfigHelper.Instance.GetRole("Verification Role", Ctx.Guild);
         if (role == null)
         {
-            await ctx.CreateResponseAsync(
+            await Ctx.CreateResponseAsync(
                 new DiscordInteractionResponseBuilder().AddErrorEmbed("Verification role not found"));
             return;
         }
 
-        if (ctx.TargetMember.Roles.Contains(role))
+        if (Ctx.TargetMember.Roles.Contains(role))
         {
-            await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed(
-                $"{ctx.TargetMember.Nickname ?? ctx.TargetMember.Username} is already verified."));
+            await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed(
+                $"{Ctx.TargetMember.Nickname ?? Ctx.TargetMember.Username} is already verified."));
             return;
         }
 
-        var embed = await GrantRoleAndGetEmbed(ctx.TargetMember!, ctx.Member, role);
-        await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed));
+        var embed = await GrantRoleAndGetEmbed(role);
+        await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed));
     }
 
-    private static async Task<DiscordEmbed> GrantRoleAndGetEmbed(DiscordMember targetMember, DiscordUser actingUser,
-        DiscordRole role)
+    #region Instance methods
+
+    private async Task<DiscordEmbed> GrantRoleAndGetEmbed(DiscordRole role)
     {
         try
         {
-            await targetMember.GrantRoleAsync(role,
-                $"Verification by {actingUser.Username}#{actingUser.Discriminator}")!;
+            await Ctx.TargetMember.GrantRoleAsync(role,
+                $"Verification by {Ctx.Member.Username}#{Ctx.Member.Discriminator}")!;
         }
         catch (Exception e)
         {
@@ -46,7 +52,7 @@ public static class Verify
 
             // TODO check if this can be replaced with global exception handler
             var description =
-                $"Granting the role {role.Name} to {targetMember.Nickname ?? targetMember.Username} failed. " +
+                $"Granting the role {role.Name} to {Ctx.TargetMember.Nickname ?? Ctx.TargetMember.Username} failed. " +
                 "Please check the role hierarchy and make sure the verification role is not above the bot role.";
             return new DiscordEmbedBuilder
             {
@@ -59,11 +65,14 @@ public static class Verify
         var embed = new DiscordEmbedBuilder
         {
             Title = "Now Verified:",
-            Description = $"{targetMember.Mention}{Environment.NewLine}{targetMember.Nickname ?? targetMember.Username}"
+            Description =
+                $"{Ctx.TargetMember.Mention}{Environment.NewLine}{Ctx.TargetMember.Nickname ?? Ctx.TargetMember.Username}"
         };
 
-        embed.WithThumbnail(targetMember.AvatarUrl);
+        embed.WithThumbnail(Ctx.TargetMember.AvatarUrl);
         embed.WithColor(role.Color);
         return embed.Build();
     }
+
+    #endregion
 }
