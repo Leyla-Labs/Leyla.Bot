@@ -8,11 +8,13 @@ public sealed class ConfigOptionCategories : StaticClass<ConfigOptionCategory>
     {
         new(1, 1, "General", "todo"),
         new(2, 2, "Roles", "todo"),
-        new(3, 3, "Channels", "todo")
+        new(3, 3, "Channels", "todo"),
+
+        new(1000, 1000, "Test", "test category")
     })
     {
     }
-    
+
     #region Singleton
 
     private static readonly Lazy<ConfigOptionCategories> Lazy = new(() => new ConfigOptionCategories());

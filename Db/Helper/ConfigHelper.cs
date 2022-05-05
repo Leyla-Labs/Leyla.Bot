@@ -48,9 +48,11 @@ public sealed class ConfigHelper
 
         // if no config set, get default value, set for guild, and return
         // this avoids user confusion if default bot behaviour is ever changed
-        await Set(option, guildId,
-            defaultOption.DefaultValue ??
-            throw new InvalidOperationException("Default option not found or no default value"));
+        if (!string.IsNullOrEmpty(defaultOption.DefaultValue))
+        {
+            await Set(option, guildId, defaultOption.DefaultValue);
+        }
+
         return defaultOption.DefaultValue;
     }
 

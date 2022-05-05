@@ -9,9 +9,14 @@ public static class ClientOnComponentInteractionCreatedEvent
     public static async Task ClientOnComponentInteractionCreated(DiscordClient sender,
         ComponentInteractionCreateEventArgs e)
     {
-        if (e.Id.Equals("configCategories"))
+        switch (e.Id)
         {
-            await new ConfigurationCategorySelectedHandler(sender, e).RunAsync();
+            case "configCategories":
+                await new ConfigurationCategorySelectedHandler(sender, e).RunAsync();
+                break;
+            case "configOptions":
+                await new ConfigurationOptionSelectedHandler(sender, e).RunAsync();
+                break;
         }
     }
 }

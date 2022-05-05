@@ -38,7 +38,7 @@ public class ConfigurationCategorySelectedHandler : InteractionHandler
         var configOptions = ConfigOptions.Instance.Get().Where(x => x.ConfigOptionCategoryId == categoryId).ToList();
         var options = configOptions.Select(x =>
             new DiscordSelectComponentOption(x.Name, x.Id.ToString(), x.Description));
-        return new DiscordSelectComponent($"configOptions-{EventArgs.User.Id}", "Select option to configure", options,
+        return new DiscordSelectComponent("configOptions", "Select option to configure", options,
             minOptions: 1, maxOptions: 1);
     }
 }
