@@ -17,6 +17,8 @@ public class Bot : Leyla
             Intents = DiscordIntents.Guilds
         });
         client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
+        client.ComponentInteractionCreated +=
+            ClientOnComponentInteractionCreatedEvent.ClientOnComponentInteractionCreated;
         return client;
     }
 
@@ -29,6 +31,7 @@ public class Bot : Leyla
         commands.RegisterCommands<Quotes>(640467169733246976);
         commands.RegisterCommands<AniList>(640467169733246976);
 #else
+        commands.RegisterCommands<Configuration>();
         commands.RegisterCommands<Moderation>();
         commands.RegisterCommands<Quotes>();
         commands.RegisterCommands<AniList>();

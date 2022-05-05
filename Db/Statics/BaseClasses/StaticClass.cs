@@ -9,14 +9,14 @@ public class StaticClass<T> where T : StaticField
         _list = list;
     }
 
-    public List<T> Get()
+    public IOrderedEnumerable<T> Get()
     {
-        return _list.OrderBy(x => x.SortId).ToList();
+        return _list.OrderBy(x => x.SortId);
     }
 
-    public List<T> Get(IEnumerable<int> ids)
+    public IOrderedEnumerable<T> Get(IEnumerable<int> ids)
     {
-        return _list.Where(x => ids.Contains(x.Id)).OrderBy(x => x.SortId).ToList();
+        return _list.Where(x => ids.Contains(x.Id)).OrderBy(x => x.SortId);
     }
 
     public T Get(int id)
