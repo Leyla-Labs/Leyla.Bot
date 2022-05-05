@@ -1,6 +1,5 @@
 using Common.Classes;
 using Common.Extensions;
-using Db;
 using Db.Models;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -45,14 +44,13 @@ public sealed class DeleteQuote : SlashCommand
         await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
-    #region Static methods
-
-    private static async Task DeleteFromDatabase(Quote quote)
+    private async Task DeleteFromDatabase(Quote quote)
     {
-        await using var context = new DatabaseContext();
-        context.Entry(quote).State = EntityState.Deleted;
-        await context.SaveChangesAsync();
+        DbCtx.Entry(quote).State = EntityState.Deleted;
+        await DbCtx.SaveChangesAsync();
     }
+
+    #region Static methods
 
     private static DiscordEmbed GetConfirmationEmbed(Quote quote, string displayName)
     {

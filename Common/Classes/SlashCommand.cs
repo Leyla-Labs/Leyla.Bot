@@ -2,7 +2,7 @@ using DSharpPlus.SlashCommands;
 
 namespace Common.Classes;
 
-public abstract class SlashCommand
+public abstract class SlashCommand : CommandBase
 {
     protected readonly InteractionContext Ctx;
 
@@ -10,6 +10,4 @@ public abstract class SlashCommand
     {
         Ctx = ctx;
     }
-
-    public abstract Task RunAsync();
 }

@@ -1,6 +1,5 @@
 using Common.Classes;
 using Common.Extensions;
-using Db;
 using Db.Models;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -64,6 +63,20 @@ public sealed class EditQuote : SlashCommand
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
+    #region Static methods
+
+    private static DiscordEmbed GetConfirmationEmbed(Quote quote, string displayName)
+    {
+        var embed = new DiscordEmbedBuilder();
+        embed.WithTitle("Quote Edited");
+        embed.WithDescription(
+            $"**\"{quote.Text}\"**{Environment.NewLine}- {displayName}, {quote.Date.Year}");
+        embed.WithColor(DiscordColor.Blurple);
+        return embed.Build();
+    }
+
+    #endregion
+
     #region Instance methods
 
     private DiscordInteractionResponseBuilder GetModal(Quote quote, string displayName)
@@ -76,26 +89,11 @@ public sealed class EditQuote : SlashCommand
         return response;
     }
 
-    #endregion
-
-    #region Static methods
-
-    private static async Task EditInDatabase(Quote quote, string text)
+    private async Task EditInDatabase(Quote quote, string text)
     {
-        await using var context = new DatabaseContext();
         quote.Text = text;
-        context.Entry(quote).State = EntityState.Modified;
-        await context.SaveChangesAsync();
-    }
-
-    private static DiscordEmbed GetConfirmationEmbed(Quote quote, string displayName)
-    {
-        var embed = new DiscordEmbedBuilder();
-        embed.WithTitle("Quote Edited");
-        embed.WithDescription(
-            $"**\"{quote.Text}\"**{Environment.NewLine}- {displayName}, {quote.Date.Year}");
-        embed.WithColor(DiscordColor.Blurple);
-        return embed.Build();
+        DbCtx.Entry(quote).State = EntityState.Modified;
+        await DbCtx.SaveChangesAsync();
     }
 
     #endregion

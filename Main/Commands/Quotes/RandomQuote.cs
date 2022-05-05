@@ -1,6 +1,5 @@
 using Common.Classes;
 using Common.Extensions;
-using Db;
 using Db.Models;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -32,16 +31,19 @@ public sealed class RandomQuote : SlashCommand
         await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed));
     }
 
-    #region Static methods
+    #region Instance methods
 
-    private static async Task<Quote?> GetRandomQuote(ulong guildId)
+    private async Task<Quote?> GetRandomQuote(ulong guildId)
     {
-        await using var context = new DatabaseContext();
-        return await context.Quotes.Where(x =>
+        return await DbCtx.Quotes.Where(x =>
                 x.Member.GuildId == guildId)
             .OrderBy(x => Guid.NewGuid())
             .FirstOrDefaultAsync();
     }
+
+    #endregion
+
+    #region Static methods
 
     private static DiscordEmbed GetQuoteEmbed(string displayName, Quote quote)
     {

@@ -1,6 +1,5 @@
 using System.Text;
 using Common.Classes;
-using Db;
 using Db.Models;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -39,13 +38,11 @@ public sealed class ListQuotes : SlashCommand
         await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed.Build()).AsEphemeral());
     }
 
-    #region Static methods
+    #region Instance methods
 
-    private static async Task<List<Quote>> GetQuotesForMember(ulong guildId, ulong userId)
+    private async Task<List<Quote>> GetQuotesForMember(ulong guildId, ulong userId)
     {
-        await using var context = new DatabaseContext();
-
-        return await context.Quotes.Where(x =>
+        return await DbCtx.Quotes.Where(x =>
                 x.Member.GuildId == guildId &&
                 x.MemberId == userId)
             .ToListAsync();

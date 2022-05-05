@@ -2,7 +2,7 @@ using DSharpPlus.SlashCommands;
 
 namespace Common.Classes;
 
-public abstract class ContextMenuCommand
+public abstract class ContextMenuCommand : CommandBase
 {
     protected readonly ContextMenuContext Ctx;
 
@@ -10,6 +10,4 @@ public abstract class ContextMenuCommand
     {
         Ctx = ctx;
     }
-    
-    public abstract Task RunAsync();
 }

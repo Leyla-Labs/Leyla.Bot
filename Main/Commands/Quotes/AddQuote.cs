@@ -1,6 +1,5 @@
 using Common.Classes;
 using Common.Extensions;
-using Db;
 using Db.Helper;
 using Db.Models;
 using DSharpPlus;
@@ -22,7 +21,7 @@ public sealed class AddQuote : ContextMenuCommand
         var msg = Ctx.TargetMessage;
 
         // check if quote already exists
-        if (await CheckDuplicate(msg))
+        if (await DbCtx.Quotes.AnyAsync(x => x.MessageId == msg.Id))
         {
             await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AddErrorEmbed("Duplicate Quote",
@@ -55,6 +54,20 @@ public sealed class AddQuote : ContextMenuCommand
             new DiscordInteractionResponseBuilder().AddEmbed(embed));
     }
 
+    #region Static methods
+
+    private static DiscordEmbed GetConfirmationEmbed(SnowflakeObject m, string displayName, string text)
+    {
+        var embed = new DiscordEmbedBuilder();
+        embed.WithTitle("New Quote");
+        embed.WithDescription(
+            $"**\"{text}\"**{Environment.NewLine}- {displayName}, {m.CreationTimestamp.Date.Year}");
+        embed.WithColor(DiscordColor.Blurple);
+        return embed.Build();
+    }
+
+    #endregion
+
     #region Instance methods
 
     private async Task<string> GetDisplayName()
@@ -73,41 +86,19 @@ public sealed class AddQuote : ContextMenuCommand
         return response;
     }
 
-    #endregion
-
-    #region Static methods
-
-    private static async Task<bool> CheckDuplicate(SnowflakeObject msg)
-    {
-        await using var context = new DatabaseContext();
-        return await context.Quotes.AnyAsync(x => x.MessageId == msg.Id);
-    }
-
-    private static async Task AddToDatabase(DiscordMessage m, ulong userId, ulong guildId,
+    private async Task AddToDatabase(DiscordMessage m, ulong userId, ulong guildId,
         string text)
     {
         await MemberHelper.CreateIfNotExist(userId, guildId);
 
-        await using var context = new DatabaseContext();
-
-        await context.Quotes.AddAsync(new Quote
+        await DbCtx.Quotes.AddAsync(new Quote
         {
             Text = text,
             Date = m.CreationTimestamp.DateTime.ToUniversalTime(),
             MessageId = m.Id,
             MemberId = m.Author.Id
         });
-        await context.SaveChangesAsync();
-    }
-
-    private static DiscordEmbed GetConfirmationEmbed(SnowflakeObject m, string displayName, string text)
-    {
-        var embed = new DiscordEmbedBuilder();
-        embed.WithTitle("New Quote");
-        embed.WithDescription(
-            $"**\"{text}\"**{Environment.NewLine}- {displayName}, {m.CreationTimestamp.Date.Year}");
-        embed.WithColor(DiscordColor.Blurple);
-        return embed.Build();
+        await DbCtx.SaveChangesAsync();
     }
 
     #endregion

@@ -1,6 +1,5 @@
 using Common.Classes;
 using Common.Extensions;
-using Db;
 using Db.Models;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -73,14 +72,9 @@ public sealed class SearchQuotes : SlashCommand
         return embed.Build();
     }
 
-    #endregion
-
-    #region Static methods
-
-    private static async Task<List<Quote>> GetQuotesForGuild(ulong guildId)
+    private async Task<List<Quote>> GetQuotesForGuild(ulong guildId)
     {
-        await using var context = new DatabaseContext();
-        return await context.Quotes.Where(x =>
+        return await DbCtx.Quotes.Where(x =>
                 x.Member.GuildId == guildId)
             .ToListAsync();
     }
