@@ -3,7 +3,6 @@ using Db.Enums;
 using Db.Helper;
 using Db.Statics;
 using DSharpPlus;
-using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 
 namespace Main.Handler;
@@ -11,8 +10,9 @@ namespace Main.Handler;
 public class ConfigurationOptionValueSelectedHandler : InteractionHandler
 {
     private readonly ulong _optionId;
-    
-    public ConfigurationOptionValueSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e, ulong optionId) : base(sender, e)
+
+    public ConfigurationOptionValueSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e,
+        ulong optionId) : base(sender, e)
     {
         _optionId = optionId;
     }

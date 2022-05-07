@@ -10,8 +10,9 @@ namespace Main.Handler;
 public class ConfigurationOptionValueGivenHandler : ModalHandler
 {
     private readonly ulong _optionId;
-    
-    public ConfigurationOptionValueGivenHandler(DiscordClient sender, ModalSubmitEventArgs e, ulong optionId) : base(sender, e)
+
+    public ConfigurationOptionValueGivenHandler(DiscordClient sender, ModalSubmitEventArgs e, ulong optionId) :
+        base(sender, e)
     {
         _optionId = optionId;
     }
@@ -20,7 +21,7 @@ public class ConfigurationOptionValueGivenHandler : ModalHandler
     {
         var option = ConfigOptions.Instance.Get(_optionId);
         var value = EventArgs.Values.First(x => x.Key.Equals("value")).Value;
-        
+
         switch (option.Type)
         {
             case ConfigType.String:

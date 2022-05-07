@@ -12,7 +12,7 @@ public static class ClientOnModalSubmittedEvent
         {
             throw new ArgumentNullException(nameof(e.Interaction.Data.CustomId));
         }
-        
+
         var info = e.Interaction.Data.CustomId.Split("-");
         ulong? secondaryInfo = info.Length > 1 && ulong.TryParse(info[1], out var result) ? result : null;
 
