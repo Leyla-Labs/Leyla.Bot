@@ -1,4 +1,5 @@
 using DSharpPlus.Entities;
+using DSharpPlus.Exceptions;
 
 namespace Common.Extensions;
 
@@ -8,8 +9,23 @@ public static class DiscordInteractionExtension
     {
         var member = interaction.Guild.Members.FirstOrDefault(x => x.Key == userId).Value;
 
-        return member == null
-            ? await interaction.Guild.GetMemberAsync(userId)
-            : member;
+        if (member != null)
+        {
+            return member;
+        }
+
+        try
+        {
+            return await interaction.Guild.GetMemberAsync(userId);
+        }
+        catch (Exception e)
+        {
+            if (e is NotFoundException)
+            {
+                return null;
+            }
+
+            throw;
+        }
     }
 }

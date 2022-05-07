@@ -39,13 +39,13 @@ public class ListUserLogs : ContextMenuCommand
     private async Task<List<UserLog>> GetUserLogs()
     {
         await using var context = new DatabaseContext();
-        return await context.UserLogs.Where(x => x.MemberId == Ctx.TargetMember.Id).ToListAsync();
+        return await context.UserLogs.Where(x => x.MemberId == Ctx.TargetUser.Id).ToListAsync();
     }
 
     private DiscordEmbedBuilder GetEmbedBuilder()
     {
         var embed = new DiscordEmbedBuilder();
-        embed.WithTitle($"Logs for {Ctx.TargetMember.DisplayName}");
+        embed.WithTitle($"Logs for {Ctx.TargetMember?.DisplayName ?? Ctx.TargetUser.Username}");
         embed.WithColor(DiscordColor.Blurple);
         return embed;
     }
@@ -56,7 +56,7 @@ public class ListUserLogs : ContextMenuCommand
         {
             return;
         }
-        
+
         var logs = new List<string>();
         foreach (var userLog in userLogs.Where(x => x.Type == type))
         {
@@ -72,6 +72,7 @@ public class ListUserLogs : ContextMenuCommand
         var dateStr = Formatter.Timestamp(log.Date, TimestampFormat.ShortDateTime);
         var author = await Ctx.GetMember(log.AuthorId);
         var authorName = author?.DisplayName ?? log.AuthorId.ToString();
-        return $"{dateStr} • {authorName}{Environment.NewLine}{log.Text}";
+        return
+            $"{dateStr} • {authorName}{Environment.NewLine}**{log.Reason}**{Environment.NewLine}{log.AdditionalDetails}";
     }
 }

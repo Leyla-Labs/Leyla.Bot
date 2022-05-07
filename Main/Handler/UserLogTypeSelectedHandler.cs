@@ -10,8 +10,9 @@ namespace Main.Handler;
 public class UserLogTypeSelectedHandler : InteractionHandler
 {
     private readonly ulong _userId;
-    
-    public UserLogTypeSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e, ulong userId) : base(sender, e)
+
+    public UserLogTypeSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e, ulong userId) :
+        base(sender, e)
     {
         _userId = userId;
     }
@@ -30,9 +31,15 @@ public class UserLogTypeSelectedHandler : InteractionHandler
     {
         var response = new DiscordInteractionResponseBuilder();
         response.WithTitle($"Add {type} log for {displayName}");
-        response.WithCustomId($"addUserLog-{_userId}-{(int)type}");
+        response.WithCustomId($"addUserLog-{_userId}-{(int) type}");
+        var dateStr = $"{DateTime.Now:dd.MM.yyyy HH:mm}";
+        var l = dateStr.Length;
+        response.AddComponents(new TextInputComponent("Date (dd.MM.yyyy HH:mm)", "date", value: dateStr, min_length: l,
+            max_length: l));
         response.AddComponents(new TextInputComponent("Reason", "reason", style: TextInputStyle.Paragraph,
-            min_length: 1, max_length: 2000));
+            min_length: 1, max_length: 210)); // 1.5 tweets
+        response.AddComponents(new TextInputComponent("Additional Details", "additionalDetails", required: false,
+            style: TextInputStyle.Paragraph, max_length: 420)); // 3 tweets
         return response;
     }
 }
