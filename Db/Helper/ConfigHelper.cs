@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using Db.Enums;
 using Db.Models;
 using Db.Statics;
@@ -131,9 +132,7 @@ public sealed class ConfigHelper
             ConfigType.Channel when value is ulong => value.ToString()!,
             ConfigType.Role when value is DiscordRole role => role.Id.ToString(),
             ConfigType.Channel when value is DiscordChannel channel => channel.Id.ToString(),
-            _ => value is string
-                ? value.ToString()
-                : throw new ArgumentException("Value not handled by other cases must be of type string", nameof(value))
+            _ => GetStringFromObject(value)
         };
 
         if (_guildConfigs.TryGetValue(guildId, out var guildConfigs))
@@ -164,6 +163,16 @@ public sealed class ConfigHelper
             _guildConfigs.Add(guildId, cConfigs);
             return await AddConfig(cCfg);
         }
+    }
+
+    private static string GetStringFromObject(object obj)
+    {
+        if (obj is not string s)
+        {
+            throw new ArgumentException("Value not handled by other cases must be of type string", nameof(obj));
+        }
+
+        return s;
     }
 
     private static async Task<bool> AddConfig(Config config)
