@@ -115,34 +115,26 @@ public sealed class ConfigHelper
         return await SetInternal(opt, guildId, value);
     }
 
+    public async Task<bool> Set(ConfigOption option, ulong guildId, object value)
+    {
+        return await SetInternal(option, guildId, value);
+    }
+
     private async Task<bool> SetInternal(ConfigOption opt, ulong guildId, object value)
     {
-        string valueStr;
-        switch (opt.Type)
+        var valueStr = opt.Type switch
         {
-            case ConfigType.Boolean when value is bool b:
-                valueStr = b ? "1" : "0";
-                break;
-            case ConfigType.Int when value is int:
-            case ConfigType.Char when value is char:
-                valueStr = value.ToString()!;
-                break;
-            case ConfigType.String when value is string s:
-                valueStr = s;
-                break;
-            case ConfigType.Role when value is ulong:
-            case ConfigType.Channel when value is ulong:
-                valueStr = value.ToString()!;
-                break;
-            case ConfigType.Role when value is DiscordRole role:
-                valueStr = role.Id.ToString();
-                break;
-            case ConfigType.Channel when value is DiscordChannel channel:
-                valueStr = channel.Id.ToString();
-                break;
-            default:
-                return false;
-        }
+            ConfigType.Boolean when value is bool b => b ? "1" : "0",
+            ConfigType.Int when value is int => value.ToString()!,
+            ConfigType.Char when value is char => value.ToString()!,
+            ConfigType.Role when value is ulong => value.ToString()!,
+            ConfigType.Channel when value is ulong => value.ToString()!,
+            ConfigType.Role when value is DiscordRole role => role.Id.ToString(),
+            ConfigType.Channel when value is DiscordChannel channel => channel.Id.ToString(),
+            _ => value is string
+                ? value.ToString()
+                : throw new ArgumentException("Value not handled by other cases must be of type string", nameof(value))
+        };
 
         if (_guildConfigs.TryGetValue(guildId, out var guildConfigs))
         {

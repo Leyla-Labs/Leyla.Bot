@@ -19,6 +19,7 @@ public class Bot : Leyla
         client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
         client.ComponentInteractionCreated +=
             ClientOnComponentInteractionCreatedEvent.ClientOnComponentInteractionCreated;
+        client.ModalSubmitted += ClientOnModalSubmittedEvent.ClientOnModalSubmitted;
         return client;
     }
 
