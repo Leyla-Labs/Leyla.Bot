@@ -109,9 +109,9 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
 
         var maxLength = option.Type switch
         {
-            ConfigType.String => 100,
             ConfigType.Char => 1,
-            ConfigType.Int => 9 // 9 to avoid any value > maxInt troubles
+            ConfigType.Int => 9, // 9 to avoid any value > maxInt troubles
+            _ => 100
         };
 
         var currentConfig = await ConfigHelper.Instance.GetString(option.Name, EventArgs.Guild.Id) ?? string.Empty;
