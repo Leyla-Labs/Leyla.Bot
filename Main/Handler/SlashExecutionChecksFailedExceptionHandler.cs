@@ -7,7 +7,7 @@ using Main.Handler.BaseClasses;
 
 namespace Main.Handler;
 
-public class SlashExecutionChecksFailedExceptionHandler : SlashCommandErrorHandler
+public sealed class SlashExecutionChecksFailedExceptionHandler : SlashCommandErrorHandler
 {
     private readonly SlashExecutionChecksFailedException _ex;
 
@@ -19,21 +19,14 @@ public class SlashExecutionChecksFailedExceptionHandler : SlashCommandErrorHandl
 
     public override async Task HandleException()
     {
-        if (_ex.FailedChecks.Count <= 0)
+        var embed = _ex.FailedChecks[0] switch
         {
-            throw new NotImplementedException();
-        }
+            SlashRequireBotPermissionsAttribute check => GetRequireBotPermissionEmbed(check),
+            _ => throw new ArgumentOutOfRangeException()
+        };
 
-        if (_ex.FailedChecks[0] is SlashRequireBotPermissionsAttribute attr)
-        {
-            var embed = GetRequireBotPermissionEmbed(attr);
-            await Args.Context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AddEmbed(embed));
-        }
-        else
-        {
-            throw new NotImplementedException();
-        }
+        await Args.Context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+            new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
     private static DiscordEmbed GetRequireBotPermissionEmbed(SlashRequireBotPermissionsAttribute attr)
@@ -44,7 +37,7 @@ public class SlashExecutionChecksFailedExceptionHandler : SlashCommandErrorHandl
             Description = attr.Permissions.ToPermissionString() // TODO to title case
         };
 
-        embed.WithColor(DiscordColor.IndianRed);
+        embed.WithColor(DiscordColor.Red);
 
         return embed.Build();
     }

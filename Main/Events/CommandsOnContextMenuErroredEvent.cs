@@ -1,13 +1,17 @@
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
+using Main.Handler;
 
 namespace Main.Events;
 
 public static class CommandsOnContextMenuErroredEvent
 {
-    public static Task CommandsOnContextMenuErrored(SlashCommandsExtension sender,
+    public static async Task CommandsOnContextMenuErrored(SlashCommandsExtension sender,
         ContextMenuErrorEventArgs e)
     {
-        return Task.CompletedTask;
+        if (e.Exception is ContextMenuExecutionChecksFailedException ex)
+        {
+            await new ContextMenuExecutionChecksFailedExceptionHandler(e, ex).HandleException();
+        }
     }
 }

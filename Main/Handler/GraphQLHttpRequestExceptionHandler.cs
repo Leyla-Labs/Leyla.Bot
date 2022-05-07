@@ -6,7 +6,7 @@ using Main.Handler.BaseClasses;
 
 namespace Main.Handler;
 
-public class GraphQlHttpRequestExceptionHandler : SlashCommandErrorHandler
+public sealed class GraphQlHttpRequestExceptionHandler : SlashCommandErrorHandler
 {
     private readonly GraphQLHttpRequestException _ex;
 
