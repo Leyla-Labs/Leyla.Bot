@@ -14,4 +14,12 @@ public class UserLogs : ApplicationCommandModule
     {
         await new AddUserLog(ctx).RunAsync();
     }
+
+    [ContextMenu(ApplicationCommandType.UserContextMenu, "Show logs")]
+    [SlashRequireGuild]
+    public async Task SlashListQuotes(ContextMenuContext ctx)
+    {
+        // TODO check if SlashRequireGuild on command group level is enough
+        await new ListUserLogs(ctx).RunAsync();
+    }
 }
