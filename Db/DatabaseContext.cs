@@ -33,11 +33,15 @@ public class DatabaseContext : DbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.HasPostgresEnum<DiscordEntityType>();
+        builder.HasPostgresEnum<UserLogType>();
+
+        builder.ApplyConfigurationsFromAssembly(typeof(DatabaseContext).Assembly);
     }
 
     private static void MapEnums()
     {
         NpgsqlConnection.GlobalTypeMapper.MapEnum<DiscordEntityType>();
+        NpgsqlConnection.GlobalTypeMapper.MapEnum<UserLogType>();
     }
 
     #region DbSets
@@ -48,6 +52,7 @@ public class DatabaseContext : DbContext
     public DbSet<Member> Members => Set<Member>();
     public DbSet<Quote> Quotes => Set<Quote>();
     public DbSet<SelfAssignMenu> SelfAssignMenus => Set<SelfAssignMenu>();
+    public DbSet<UserLog> UserLogs => Set<UserLog>();
 
     public DbSet<SelfAssignMenuDiscordEntityAssignment> SelfAssignMenuDiscordEntityAssignments =>
         Set<SelfAssignMenuDiscordEntityAssignment>();

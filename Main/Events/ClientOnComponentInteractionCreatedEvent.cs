@@ -20,13 +20,15 @@ public static class ClientOnComponentInteractionCreatedEvent
             case "configOptions":
                 await new ConfigurationOptionSelectedHandler(sender, e).RunAsync();
                 break;
+            case "configOptionValueSelected" when secondaryInfo == null:
+                throw new NullReferenceException(nameof(secondaryInfo));
             case "configOptionValueSelected":
-                if (secondaryInfo == null)
-                {
-                    throw new NullReferenceException(nameof(secondaryInfo));
-                }
-
                 await new ConfigurationOptionValueSelectedHandler(sender, e, secondaryInfo.Value).RunAsync();
+                break;
+            case "userLogType" when secondaryInfo == null:
+                throw new NullReferenceException(nameof(secondaryInfo));
+            case "userLogType":
+                await new UserLogTypeSelectedHandler(sender, e, secondaryInfo.Value).RunAsync();
                 break;
         }
     }

@@ -34,6 +34,7 @@ public class Bot : Leyla
 #else
         commands.RegisterCommands<Configuration>();
         commands.RegisterCommands<Moderation>();
+        commands.RegisterCommands<UserLogs>();
         commands.RegisterCommands<Quotes>();
         commands.RegisterCommands<AniList>();
 #endif

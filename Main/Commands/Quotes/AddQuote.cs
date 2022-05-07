@@ -29,7 +29,7 @@ public sealed class AddQuote : ContextMenuCommand
             return;
         }
 
-        var displayName = await GetDisplayName();
+        var displayName = await Ctx.GetDisplayName(Ctx.TargetMessage.Author.Id);
 
         // show modal
         var responseBuilder = GetModal(displayName);
@@ -69,12 +69,6 @@ public sealed class AddQuote : ContextMenuCommand
     #endregion
 
     #region Instance methods
-
-    private async Task<string> GetDisplayName()
-    {
-        var member = await Ctx.GetMember(Ctx.TargetMessage.Author.Id);
-        return member?.DisplayName ?? Ctx.TargetMessage.Author.Username;
-    }
 
     private DiscordInteractionResponseBuilder GetModal(string displayName)
     {
