@@ -34,7 +34,7 @@ public class UserLogTypeSelectedHandler : InteractionHandler
         response.WithCustomId($"addUserLog-{_userId}-{(int) type}");
         var dateStr = $"{DateTime.Now:dd.MM.yyyy HH:mm}";
         var l = dateStr.Length;
-        response.AddComponents(new TextInputComponent("Date (dd.MM.yyyy HH:mm)", "date", value: dateStr, min_length: l,
+        response.AddComponents(new TextInputComponent("Date and Time in UTC (dd.MM.yyyy HH:mm)", "date", value: dateStr, min_length: l,
             max_length: l));
         response.AddComponents(new TextInputComponent("Reason", "reason", style: TextInputStyle.Paragraph,
             min_length: 1, max_length: 210)); // 1.5 tweets
