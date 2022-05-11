@@ -10,8 +10,9 @@ namespace Main.Handler;
 public sealed class ContextMenuExecutionChecksFailedExceptionHandler : ContextMenuErrorHandler
 {
     private readonly ContextMenuExecutionChecksFailedException _ex;
-    
-    public ContextMenuExecutionChecksFailedExceptionHandler(ContextMenuErrorEventArgs e, ContextMenuExecutionChecksFailedException ex) : base(e)
+
+    public ContextMenuExecutionChecksFailedExceptionHandler(ContextMenuErrorEventArgs e,
+        ContextMenuExecutionChecksFailedException ex) : base(e)
     {
         _ex = ex;
     }

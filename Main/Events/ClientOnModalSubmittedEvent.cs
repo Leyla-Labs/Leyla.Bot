@@ -16,14 +16,20 @@ public static class ClientOnModalSubmittedEvent
         var info = e.Interaction.Data.CustomId.Split("-");
         ulong? secondaryInfo = info.Length > 1 && ulong.TryParse(info[1], out var result) ? result : null;
 
-        if (info[0].Equals("configOptionValueGiven"))
+        switch (info[0])
         {
-            if (secondaryInfo == null)
-            {
+            case "configOptionValueGiven" when secondaryInfo == null:
                 throw new NullReferenceException(nameof(secondaryInfo));
-            }
-
-            await new ConfigurationOptionValueGivenHandler(sender, e, secondaryInfo.Value).RunAsync();
+            case "configOptionValueGiven":
+                await new ConfigurationOptionValueGivenHandler(sender, e, secondaryInfo.Value).RunAsync();
+                break;
+            case "addToStash" when secondaryInfo == null:
+                throw new NullReferenceException(nameof(secondaryInfo));
+            case "addToStash" when info.Length < 3:
+                throw new NullReferenceException(nameof(info));
+            case "addToStash":
+                await new StashEntryValueGivenHandler(sender, e, info[2]).RunAsync();
+                break;
         }
     }
 }

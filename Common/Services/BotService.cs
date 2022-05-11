@@ -12,7 +12,18 @@ public class BotService : IHostedService, IDisposable
         _bot = bot;
     }
 
-    public void Dispose() => _bot.Dispose();
-    public async Task StartAsync(CancellationToken cancellationToken) => await _bot.StartAsync();
-    public async Task StopAsync(CancellationToken cancellationToken) => await _bot.StopAsync();
+    public void Dispose()
+    {
+        _bot.Dispose();
+    }
+
+    public async Task StartAsync(CancellationToken cancellationToken)
+    {
+        await _bot.StartAsync();
+    }
+
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        await _bot.StopAsync();
+    }
 }
