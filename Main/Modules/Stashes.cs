@@ -28,6 +28,15 @@ public class Stashes : ApplicationCommandModule
         [Option("Name", "Name of the stash list entries of")]
         string title)
     {
+        // TODO make name optional, show menu with list of stashes if not provided
         await new ListStash(ctx, title).RunAsync();
+    }
+
+    [SlashCommand("pick", "Pick a random entry.")]
+    public async Task SlashPick(InteractionContext ctx,
+        [Option("Name", "Name of the stash pick from. Picks from all stashes if not provided.")]
+        string? title = null)
+    {
+        await new Pick(ctx, title).RunAsync();
     }
 }
