@@ -39,4 +39,14 @@ public class Stashes : ApplicationCommandModule
     {
         await new Pick(ctx, title).RunAsync();
     }
+
+    [SlashCommand("show", "Shows a specific stash entry.")]
+    public async Task SlashShowStashEntry(InteractionContext ctx,
+        [Option("Name", "Name of the stash to show entry from.")]
+        string title,
+        [Option("n", "Number of the entry to show. You can find this using /stash list.")]
+        long n)
+    {
+        await new ShowStashEntry(ctx, title, n).RunAsync();
+    }
 }
