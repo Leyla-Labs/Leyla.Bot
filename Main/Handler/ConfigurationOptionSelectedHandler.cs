@@ -1,4 +1,6 @@
 using Common.Classes;
+using Common.Extensions;
+using Common.Helper;
 using Db.Enums;
 using Db.Helper;
 using Db.Statics;
@@ -68,7 +70,9 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
         var currentConfig = await ConfigHelper.Instance.GetRole(option.Name, EventArgs.Guild);
         var options = EventArgs.Guild.Roles.Take(25).Select(x =>
             new DiscordSelectComponentOption(x.Value.Name, x.Key.ToString(), isDefault: x.Key == currentConfig?.Id));
-        return new DiscordSelectComponent($"configOptionValueSelected-{option.Id}", "Select role", options,
+        var customId =
+            ModalHelper.GetModalName(EventArgs.User.Id, "configOptionValueSelected", new[] {option.Id.ToString()});
+        return new DiscordSelectComponent(customId, "Select role", options,
             minOptions: 1, maxOptions: 1);
     }
 
@@ -80,7 +84,9 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
         var channelsFiltered = channels.Where(x => !x.IsCategory).Take(25);
         var options = channelsFiltered.Select(x =>
             new DiscordSelectComponentOption(x.Name, x.Id.ToString(), isDefault: x.Id == currentConfig?.Id));
-        return new DiscordSelectComponent($"configOptionValueSelected-{option.Id}", "Select channel", options,
+        var customId =
+            ModalHelper.GetModalName(EventArgs.User.Id, "configOptionValueSelected", new[] {option.Id.ToString()});
+        return new DiscordSelectComponent(customId, "Select channel", options,
             minOptions: 1, maxOptions: 1);
     }
 
@@ -89,7 +95,9 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
         var currentConfig = await ConfigHelper.Instance.GetBool(option.Name, EventArgs.Guild.Id);
         var options = new List<DiscordSelectComponentOption>
             {new("On", "1", isDefault: currentConfig == true), new("Off", "0", isDefault: currentConfig != true)};
-        return new DiscordSelectComponent($"configOptionValueSelected-{option.Id}", "Select value", options,
+        var customId =
+            ModalHelper.GetModalName(EventArgs.User.Id, "configOptionValueSelected", new[] {option.Id.ToString()});
+        return new DiscordSelectComponent(customId, "Select value", options,
             minOptions: 1, maxOptions: 1);
     }
 
@@ -97,7 +105,7 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
     {
         var response = new DiscordInteractionResponseBuilder();
         response.WithTitle(option.Name);
-        response.WithCustomId($"configOptionValueGiven-{option.Id}");
+        response.AddModalName(EventArgs.User.Id, "configOptionValueGiven", new[] {option.Id.ToString()});
 
         var placeholder = option.Type switch
         {

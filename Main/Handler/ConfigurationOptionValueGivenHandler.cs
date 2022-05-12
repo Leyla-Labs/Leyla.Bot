@@ -9,9 +9,9 @@ namespace Main.Handler;
 
 public class ConfigurationOptionValueGivenHandler : ModalHandler
 {
-    private readonly ulong _optionId;
+    private readonly string _optionId;
 
-    public ConfigurationOptionValueGivenHandler(DiscordClient sender, ModalSubmitEventArgs e, ulong optionId) :
+    public ConfigurationOptionValueGivenHandler(DiscordClient sender, ModalSubmitEventArgs e, string optionId) :
         base(sender, e)
     {
         _optionId = optionId;
@@ -19,7 +19,7 @@ public class ConfigurationOptionValueGivenHandler : ModalHandler
 
     public override async Task RunAsync()
     {
-        var option = ConfigOptions.Instance.Get(_optionId);
+        var option = ConfigOptions.Instance.Get(Convert.ToInt32(_optionId));
         var value = EventArgs.Values.First(x => x.Key.Equals("value")).Value;
 
         switch (option.Type)

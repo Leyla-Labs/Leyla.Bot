@@ -11,4 +11,11 @@ public static class DiscordInteractionResponseBuilderExtension
         b.AddEmbed(EmbedHelper.GetErrorBuilder(title, description));
         return b;
     }
+
+    public static void AddModalName(this DiscordInteractionResponseBuilder builder, ulong userId, string modalName,
+        string[] additionalInfo)
+    {
+        var modalNameFull = ModalHelper.GetModalName(userId, modalName, additionalInfo);
+        builder.WithTitle(modalNameFull);
+    }
 }

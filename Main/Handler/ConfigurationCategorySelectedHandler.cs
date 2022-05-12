@@ -1,4 +1,5 @@
 using Common.Classes;
+using Common.Helper;
 using Db.Statics;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -38,7 +39,8 @@ public class ConfigurationCategorySelectedHandler : InteractionHandler
         var configOptions = ConfigOptions.Instance.Get().Where(x => x.ConfigOptionCategoryId == categoryId).ToList();
         var options = configOptions.Select(x =>
             new DiscordSelectComponentOption(x.Name, x.Id.ToString(), x.Description));
-        return new DiscordSelectComponent("configOptions", "Select option to configure", options,
+        var customId = ModalHelper.GetModalName(EventArgs.User.Id, "configOptions");
+        return new DiscordSelectComponent(customId, "Select option to configure", options,
             minOptions: 1, maxOptions: 1);
     }
 }

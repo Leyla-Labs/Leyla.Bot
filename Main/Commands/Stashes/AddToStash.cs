@@ -1,4 +1,5 @@
 using Common.Classes;
+using Common.Helper;
 using Db;
 using Db.Models;
 using DSharpPlus;
@@ -16,7 +17,7 @@ public class AddToStash : ContextMenuCommand
 
     public override async Task RunAsync()
     {
-        var selectId = $"addToStash-{Ctx.TargetMessage.Content}";
+        var selectId = ModalHelper.GetModalName(Ctx.User.Id, "addToStash", new[] {Ctx.TargetMessage.Content});
         var selectComponent = GetStashSelectComponent(await GetStashes(Ctx.Guild.Id), selectId);
 
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
