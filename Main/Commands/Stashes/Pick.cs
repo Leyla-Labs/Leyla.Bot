@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Stashes;
 
-public class Pick: SlashCommand
+public class Pick : SlashCommand
 {
     private readonly string? _stashName;
-    
+
     public Pick(InteractionContext ctx, string? stashName) : base(ctx)
     {
         _stashName = stashName;
@@ -32,19 +32,19 @@ public class Pick: SlashCommand
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().WithContent(entry.Value));
     }
-    
+
     #region Instance members
 
     private async Task<StashEntry?> PickEntry()
     {
         await using var context = new DatabaseContext();
 
-        var query = context.StashEntries.OrderBy(x => Guid.NewGuid());
+        var query = context.StashEntries.Where(x => x.Stash.GuildId == Ctx.Guild.Id).OrderBy(x => Guid.NewGuid());
 
         return _stashName != null
             ? await query.Where(x => x.Stash.Name.Equals(_stashName)).FirstOrDefaultAsync()
             : await query.FirstOrDefaultAsync();
     }
-    
+
     #endregion
 }

@@ -59,6 +59,7 @@ public class ListStash : SlashCommand
     {
         await using var context = new DatabaseContext();
         return await context.Stashes.Where(x =>
+                x.GuildId == Ctx.Guild.Id &&
                 x.Name.Equals(_stashName))
             .Include(x => x.StashEntries)
             .FirstOrDefaultAsync();

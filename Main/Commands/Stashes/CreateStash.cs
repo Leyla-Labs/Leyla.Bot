@@ -18,6 +18,8 @@ public class CreateStash : SlashCommand
 
     public override async Task RunAsync()
     {
+        // TODO check if stash with name already exists and show error
+        
         await CreateStashInDatabase(null);
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(GetConfirmationEmbed()).AsEphemeral());
