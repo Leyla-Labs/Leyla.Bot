@@ -50,6 +50,17 @@ public class Stashes : ApplicationCommandModule
         await new ShowStashEntry(ctx, title, n).RunAsync();
     }
 
+    [SlashCommand("remove", "Removes entry from a stash.")]
+    public async Task SlashRemoveFromStash(InteractionContext ctx,
+        [Option("Name", "Name of the stash to delete entry from.")]
+        string title,
+        [Option("value",
+            "This can either be the content itself or its index. You can find the index using /stash list.")]
+        string value)
+    {
+        await new RemoveFromStash(ctx, title, value).RunAsync();
+    }
+
     [SlashCommand("delete", "Deletes a stash. This is irreversible!")]
     public async Task SlashDeleteStash(InteractionContext ctx,
         [Option("Name", "Name of the stash to delete. This is irreversible!")]
