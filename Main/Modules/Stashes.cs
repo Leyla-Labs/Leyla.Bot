@@ -49,4 +49,12 @@ public class Stashes : ApplicationCommandModule
     {
         await new ShowStashEntry(ctx, title, n).RunAsync();
     }
+
+    [SlashCommand("delete", "Deletes a stash. This is irreversible!")]
+    public async Task SlashDeleteStash(InteractionContext ctx,
+        [Option("Name", "Name of the stash to delete. This is irreversible!")]
+        string title)
+    {
+        await new DeleteStash(ctx, title).RunAsync();
+    }
 }
