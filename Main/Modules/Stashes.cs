@@ -22,4 +22,12 @@ public class Stashes : ApplicationCommandModule
     {
         await new CreateStash(ctx, title).RunAsync();
     }
+
+    [SlashCommand("list", "List all entries in stash.")]
+    public async Task SlashListStash(InteractionContext ctx,
+        [Option("Name", "Name of the stash list entries of")]
+        string title)
+    {
+        await new ListStash(ctx, title).RunAsync();
+    }
 }

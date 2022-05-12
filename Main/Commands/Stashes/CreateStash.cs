@@ -10,7 +10,7 @@ namespace Main.Commands.Stashes;
 public class CreateStash : SlashCommand
 {
     private readonly string _stashName;
-    
+
     public CreateStash(InteractionContext ctx, string stashName) : base(ctx)
     {
         _stashName = stashName;
@@ -24,7 +24,7 @@ public class CreateStash : SlashCommand
     }
 
     #region Instance methods
-    
+
     private async Task CreateStashInDatabase(ulong? requiredRoleId)
     {
         await using var context = new DatabaseContext();
@@ -46,6 +46,6 @@ public class CreateStash : SlashCommand
         embed.WithColor(DiscordColor.Blurple);
         return embed.Build();
     }
-    
+
     #endregion
 }
