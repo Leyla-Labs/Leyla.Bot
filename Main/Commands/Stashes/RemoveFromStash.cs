@@ -13,7 +13,7 @@ public class RemoveFromStash : SlashCommand
 {
     private readonly string _stashName;
     private readonly string _val;
-    
+
     public RemoveFromStash(InteractionContext ctx, string stashName, string val) : base(ctx)
     {
         _stashName = stashName;
@@ -23,7 +23,7 @@ public class RemoveFromStash : SlashCommand
     public override async Task RunAsync()
     {
         await using var context = new DatabaseContext();
-        
+
         var entry = await FindEntry(context);
 
         if (entry == null)
@@ -41,11 +41,11 @@ public class RemoveFromStash : SlashCommand
     }
 
     #region Instance methods
-    
+
     private async Task<StashEntry?> FindEntry(DatabaseContext context)
     {
         StashEntry? entry = null;
-        
+
         if (int.TryParse(_val, out var skip))
         {
             // try to get by PK
@@ -68,7 +68,7 @@ public class RemoveFromStash : SlashCommand
                 x.Value.Equals(_val))
             .FirstOrDefaultAsync();
     }
-    
+
     private DiscordEmbed GetConfirmationEmbed(StashEntry entry)
     {
         var embed = new DiscordEmbedBuilder();
@@ -77,6 +77,6 @@ public class RemoveFromStash : SlashCommand
         embed.WithColor(DiscordColor.DarkRed);
         return embed.Build();
     }
-    
+
     #endregion
 }

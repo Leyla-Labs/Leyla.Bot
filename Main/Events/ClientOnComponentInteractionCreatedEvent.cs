@@ -36,7 +36,10 @@ public static class ClientOnComponentInteractionCreatedEvent
             case "addToStash" when additionalInfo.Length < 1:
                 throw new NullReferenceException(nameof(additionalInfo));
             case "addToStash":
-                await new StashSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
+                await new AddToStashSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
+                break;
+            case "stashSelected":
+                await new PickStashSelectedHandler(sender, e).RunAsync();
                 break;
         }
     }

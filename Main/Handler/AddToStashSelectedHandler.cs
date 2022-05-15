@@ -6,11 +6,11 @@ using DSharpPlus.EventArgs;
 
 namespace Main.Handler;
 
-public class StashSelectedHandler : InteractionHandler
+public class AddToStashSelectedHandler : InteractionHandler
 {
     private readonly string _content;
 
-    public StashSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e, string content) :
+    public AddToStashSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e, string content) :
         base(sender, e)
     {
         _content = content;

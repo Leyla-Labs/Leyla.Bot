@@ -12,7 +12,7 @@ namespace Main.Commands.Stashes;
 public class DeleteStash : SlashCommand
 {
     private readonly string _stashName;
-    
+
     public DeleteStash(InteractionContext ctx, string stashName) : base(ctx)
     {
         _stashName = stashName;
@@ -28,16 +28,16 @@ public class DeleteStash : SlashCommand
                 new DiscordInteractionResponseBuilder().AddErrorEmbed("Stash not found").AsEphemeral());
             return;
         }
-        
+
         context.Entry(stash).State = EntityState.Deleted;
         await context.SaveChangesAsync();
-        
+
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(GetConfirmationEmbed()).AsEphemeral());
     }
 
     #region Instance methods
-    
+
     private async Task<Stash?> GetStash(DatabaseContext context)
     {
         return await context.Stashes.Where(x =>
@@ -45,7 +45,7 @@ public class DeleteStash : SlashCommand
                 x.Name.Equals(_stashName))
             .FirstOrDefaultAsync();
     }
-    
+
     private DiscordEmbed GetConfirmationEmbed()
     {
         var embed = new DiscordEmbedBuilder();

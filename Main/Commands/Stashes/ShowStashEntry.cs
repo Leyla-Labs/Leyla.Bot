@@ -11,9 +11,9 @@ namespace Main.Commands.Stashes;
 
 public class ShowStashEntry : SlashCommand
 {
-    private readonly string _stashName;
     private readonly long _n;
-    
+    private readonly string _stashName;
+
     public ShowStashEntry(InteractionContext ctx, string stashName, long n) : base(ctx)
     {
         _stashName = stashName;

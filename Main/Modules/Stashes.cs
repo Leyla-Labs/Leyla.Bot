@@ -24,15 +24,17 @@ public class Stashes : ApplicationCommandModule
     }
 
     [SlashCommand("list", "List all entries in stash.")]
+    [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
     public async Task SlashListStash(InteractionContext ctx,
         [Option("Name", "Name of the stash list entries of")]
-        string title)
+        string? title = null)
     {
         // TODO make name optional, show menu with list of stashes if not provided
         await new ListStash(ctx, title).RunAsync();
     }
 
     [SlashCommand("pick", "Pick a random entry.")]
+    [SlashRequireBotPermissions(Permissions.SendMessages)]
     public async Task SlashPick(InteractionContext ctx,
         [Option("Name", "Name of the stash pick from. Picks from all stashes if not provided.")]
         string? title = null)
@@ -41,6 +43,7 @@ public class Stashes : ApplicationCommandModule
     }
 
     [SlashCommand("show", "Shows a specific stash entry.")]
+    [SlashRequireBotPermissions(Permissions.SendMessages)]
     public async Task SlashShowStashEntry(InteractionContext ctx,
         [Option("Name", "Name of the stash to show entry from.")]
         string title,

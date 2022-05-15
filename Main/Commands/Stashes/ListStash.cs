@@ -1,6 +1,7 @@
 using System.Text;
 using Common.Classes;
 using Common.Extensions;
+using Common.Helper;
 using Db;
 using Db.Models;
 using DSharpPlus;
@@ -12,15 +13,23 @@ namespace Main.Commands.Stashes;
 
 public class ListStash : SlashCommand
 {
-    private readonly string _stashName;
+    private readonly string? _stashName;
 
-    public ListStash(InteractionContext ctx, string stashName) : base(ctx)
+    public ListStash(InteractionContext ctx, string? stashName) : base(ctx)
     {
         _stashName = stashName;
     }
 
     public override async Task RunAsync()
     {
+        if (_stashName == null)
+        {
+            var stashSelect = await GetStashSelect();
+            await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AddComponents(stashSelect).AsEphemeral());
+            return;
+        }
+
         var stash = await GetStash();
 
         if (stash == null)
@@ -74,6 +83,22 @@ public class ListStash : SlashCommand
         embed.WithDescription(description);
         embed.WithColor(DiscordColor.Blurple);
         return embed.Build();
+    }
+
+    private async Task<DiscordSelectComponent> GetStashSelect()
+    {
+        await using var context = new DatabaseContext();
+
+        var stashes = await context.Stashes.Where(x =>
+                x.GuildId == Ctx.Guild.Id)
+            .Include(x => x.StashEntries)
+            .ToListAsync();
+
+        var options = stashes.Select(x =>
+            new DiscordSelectComponentOption(x.Name, x.Id.ToString(), $"{x.StashEntries.Count} entries"));
+
+        var customId = ModalHelper.GetModalName(Ctx.User.Id, "stashSelected");
+        return new DiscordSelectComponent(customId, "Select stash to pick from", options, minOptions: 1, maxOptions: 1);
     }
 
     #endregion
