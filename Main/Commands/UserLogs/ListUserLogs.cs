@@ -68,7 +68,7 @@ public class ListUserLogs : ContextMenuCommand
             logs.Add(await GetUserLogString(userLog));
         }
 
-        sb.Append($"**__{type.ToString()}__**{Environment.NewLine}{Environment.NewLine}");
+        sb.Append($"**__{type.ToString()}__** ({logs.Count}){Environment.NewLine}{Environment.NewLine}");
         var logStr = string.Join($"{Environment.NewLine}{Environment.NewLine}", logs);
         logStr = $"{logStr}{Environment.NewLine}{Environment.NewLine}";
         sb.Append(logStr);
