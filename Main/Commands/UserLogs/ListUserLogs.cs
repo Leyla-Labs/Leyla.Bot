@@ -1,3 +1,4 @@
+using System.Text;
 using Common.Classes;
 using Common.Extensions;
 using Db;
@@ -27,9 +28,11 @@ public class ListUserLogs : ContextMenuCommand
         }
         else
         {
-            await AddLogFields(embedBuilder, userLogs, UserLogType.Warning);
-            await AddLogFields(embedBuilder, userLogs, UserLogType.Silence);
-            await AddLogFields(embedBuilder, userLogs, UserLogType.Ban);
+            var sb = new StringBuilder();
+            await AddLogFields(sb, userLogs, UserLogType.Warning);
+            await AddLogFields(sb, userLogs, UserLogType.Silence);
+            await AddLogFields(sb, userLogs, UserLogType.Ban);
+            embedBuilder.WithDescription(sb.ToString());
         }
 
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
@@ -50,7 +53,7 @@ public class ListUserLogs : ContextMenuCommand
         return embed;
     }
 
-    private async Task AddLogFields(DiscordEmbedBuilder embed, ICollection<UserLog> userLogs, UserLogType type)
+    private async Task AddLogFields(StringBuilder sb, ICollection<UserLog> userLogs, UserLogType type)
     {
         if (userLogs.All(x => x.Type != type))
         {
@@ -63,8 +66,10 @@ public class ListUserLogs : ContextMenuCommand
             logs.Add(await GetUserLogString(userLog));
         }
 
-        var logStr = string.Join($"{Environment.NewLine}", logs);
-        embed.AddField(type.ToString(), logStr);
+        sb.Append($"**__{type.ToString()}__**{Environment.NewLine}{Environment.NewLine}");
+        var logStr = string.Join($"{Environment.NewLine}{Environment.NewLine}", logs);
+        logStr = $"{logStr}{Environment.NewLine}{Environment.NewLine}";
+        sb.Append(logStr);
     }
 
     private async Task<string> GetUserLogString(UserLog log)
@@ -72,7 +77,12 @@ public class ListUserLogs : ContextMenuCommand
         var dateStr = Formatter.Timestamp(log.Date, TimestampFormat.ShortDateTime);
         var author = await Ctx.GetMember(log.AuthorId);
         var authorName = author?.DisplayName ?? log.AuthorId.ToString();
-        return
-            $"{dateStr} • {authorName}{Environment.NewLine}**{log.Reason}**{Environment.NewLine}{log.AdditionalDetails}";
+        var n = Environment.NewLine;
+
+        var additionalDetails = !string.IsNullOrWhiteSpace(log.AdditionalDetails)
+            ? $"{log.AdditionalDetails}{n}"
+            : string.Empty;
+
+        return $"**{log.Reason}**{n}{additionalDetails}{dateStr} • {authorName}";
     }
 }

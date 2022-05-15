@@ -22,7 +22,7 @@ public class UserLogTypeSelectedHandler : InteractionHandler
     {
         var userLogType = (UserLogType) Convert.ToInt32(EventArgs.Values[0]);
         var member = await EventArgs.Interaction.GetMember(Convert.ToUInt64(_userId));
-        var displayName = member?.DisplayName ?? _userId.ToString();
+        var displayName = member?.DisplayName ?? _userId;
 
         var modal = GetModal(userLogType, displayName);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.Modal, modal);
@@ -32,10 +32,12 @@ public class UserLogTypeSelectedHandler : InteractionHandler
     {
         var response = new DiscordInteractionResponseBuilder();
         response.WithTitle($"Add {type} log for {displayName}");
-        response.WithCustomId(ModalHelper.GetModalName(EventArgs.User.Id, "addUserLog", new []{ _userId, ((int)type).ToString()}));
+        response.WithCustomId(ModalHelper.GetModalName(EventArgs.User.Id, "addUserLog",
+            new[] {_userId, ((int) type).ToString()}));
         var dateStr = $"{DateTime.Now:dd.MM.yyyy HH:mm}";
         var l = dateStr.Length;
-        response.AddComponents(new TextInputComponent("Date and Time in UTC (dd.MM.yyyy HH:mm)", "date", value: dateStr, min_length: l,
+        response.AddComponents(new TextInputComponent("Date and Time in UTC (dd.MM.yyyy HH:mm)", "date", value: dateStr,
+            min_length: l,
             max_length: l));
         response.AddComponents(new TextInputComponent("Reason", "reason", style: TextInputStyle.Paragraph,
             min_length: 1, max_length: 210)); // 1.5 tweets
