@@ -27,7 +27,7 @@ public class UserLogReasonGivenHandler : ModalHandler
         var reason = EventArgs.Values["reason"];
         var additionalDetails = EventArgs.Values["additionalDetails"];
         var dateStr = EventArgs.Values["date"];
-        var date = ParseDateStr(dateStr);
+        var date = dateStr.GetDateTimeFromDisplayString();
 
         if (date == null)
         {
@@ -62,23 +62,5 @@ public class UserLogReasonGivenHandler : ModalHandler
             AuthorId = authorId
         });
         await context.SaveChangesAsync();
-    }
-
-    private static DateTime? ParseDateStr(string dateStr)
-    {
-        try
-        {
-            // i hate this so much
-            var day = Convert.ToInt32(dateStr[..2]);
-            var month = Convert.ToInt32(dateStr.Substring(3, 2));
-            var year = Convert.ToInt32(dateStr.Substring(6, 4));
-            var hour = Convert.ToInt32(dateStr.Substring(11, 2));
-            var minute = Convert.ToInt32(dateStr.Substring(14, 2));
-            return new DateTime(year, month, day, hour, minute, 0, DateTimeKind.Utc);
-        }
-        catch
-        {
-            return null;
-        }
     }
 }

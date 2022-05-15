@@ -1,4 +1,5 @@
 using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
 using Main.Commands.UserLogs;
@@ -19,7 +20,16 @@ public class UserLogs : ApplicationCommandModule
     [SlashRequireGuild]
     public async Task SlashListQuotes(ContextMenuContext ctx)
     {
-        // TODO check if SlashRequireGuild on command group level is enough
         await new ListUserLogs(ctx).RunAsync();
+    }
+
+    [SlashCommand("edit", "Edits a log.")]
+    [SlashRequireGuild]
+    public async Task SlashListQuotes(InteractionContext ctx,
+        [Option("user", "User to edit log of")]
+        DiscordUser user,
+        [Option("n", "Number of log to edit")] long n)
+    {
+        await new EditUserLog(ctx, (DiscordMember) user, n).RunAsync();
     }
 }

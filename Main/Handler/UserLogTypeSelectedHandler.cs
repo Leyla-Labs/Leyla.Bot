@@ -34,7 +34,7 @@ public class UserLogTypeSelectedHandler : InteractionHandler
         response.WithTitle($"Add {type} log for {displayName}");
         response.WithCustomId(ModalHelper.GetModalName(EventArgs.User.Id, "addUserLog",
             new[] {_userId, ((int) type).ToString()}));
-        var dateStr = $"{DateTime.Now:dd.MM.yyyy HH:mm}";
+        var dateStr = DateTime.Now.GetDisplayString();
         var l = dateStr.Length;
         response.AddComponents(new TextInputComponent("Date and Time in UTC (dd.MM.yyyy HH:mm)", "date", value: dateStr,
             min_length: l,

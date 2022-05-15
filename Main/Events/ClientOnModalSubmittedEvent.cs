@@ -36,6 +36,11 @@ public static class ClientOnModalSubmittedEvent
             case "addUserLog":
                 await new UserLogReasonGivenHandler(sender, e, additionalInfo[0], additionalInfo[1]).RunAsync();
                 break;
+            case "editUserLog" when additionalInfo.Length < 1:
+                throw new NullReferenceException(nameof(additionalInfo));
+            case "editUserLog":
+                await new UserLogEditedHandler(sender, e, additionalInfo[0]).RunAsync();
+                break;
         }
     }
 }
