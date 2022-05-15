@@ -41,10 +41,10 @@ public static class ClientOnComponentInteractionCreatedEvent
             case "stashSelected":
                 await new PickStashSelectedHandler(sender, e).RunAsync();
                 break;
-            case "userLogType" when secondaryInfo == null:
-                throw new NullReferenceException(nameof(secondaryInfo));
+            case "userLogType" when additionalInfo.Length < 1:
+                throw new NullReferenceException(nameof(additionalInfo));
             case "userLogType":
-                await new UserLogTypeSelectedHandler(sender, e, secondaryInfo.Value).RunAsync();
+                await new UserLogTypeSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
         }
     }

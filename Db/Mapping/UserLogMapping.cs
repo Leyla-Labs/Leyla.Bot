@@ -14,7 +14,7 @@ public class UserLogMapping : IEntityTypeConfiguration<UserLog>
             .WithMany(x => x.TargetUserLogs)
             .HasForeignKey(x => x.MemberId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         builder.HasOne(x => x.Author)
             .WithMany(x => x.AuthorUserLogs)
             .HasForeignKey(x => x.AuthorId)

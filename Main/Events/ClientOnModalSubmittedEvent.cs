@@ -1,6 +1,7 @@
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 using Main.Handler;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace Main.Events;
 
@@ -31,15 +32,11 @@ public static class ClientOnModalSubmittedEvent
             case "addToStash":
                 await new StashEntryValueGivenHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
-			case "addUserLog" when secondaryInfo == null:
-                throw new NullReferenceException(nameof(secondaryInfo));
-            case "addUserLog" when tertiaryInfo == null:
-                throw new NullReferenceException(nameof(tertiaryInfo));
+			case "addUserLog" when additionalInfo.Length < 2:
+                throw new NullReferenceException(nameof(additionalInfo));
             case "addUserLog":
-            {
-                await new UserLogReasonGivenHandler(sender, e, secondaryInfo.Value, tertiaryInfo.Value).RunAsync();
+                await new UserLogReasonGivenHandler(sender, e, additionalInfo[0], additionalInfo[1]).RunAsync();
                 break;
-            }
         }
     }
 }

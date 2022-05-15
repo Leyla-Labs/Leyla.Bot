@@ -1,4 +1,5 @@
 using Common.Classes;
+using Common.Helper;
 using Db.Enums;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -24,7 +25,9 @@ public class AddUserLog : ContextMenuCommand
     {
         var options = ((UserLogType[]) Enum.GetValues(typeof(UserLogType))).Select(type =>
             new DiscordSelectComponentOption(type.GetName(), ((int) type).ToString())).ToList();
-        return new DiscordSelectComponent($"userLogType-{Ctx.TargetUser.Id}", "Select log type", options, minOptions: 1, maxOptions: 1);
+        var customId = ModalHelper.GetModalName(Ctx.User.Id, "userLogType", new[] {Ctx.TargetUser.Id.ToString()});
+        return new DiscordSelectComponent(customId, "Select log type", options, minOptions: 1,
+            maxOptions: 1);
     }
 
     #endregion

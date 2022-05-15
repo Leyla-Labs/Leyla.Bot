@@ -12,14 +12,14 @@ namespace Main.Handler;
 
 public class UserLogReasonGivenHandler : ModalHandler
 {
-    private readonly ulong _userId;
+    private readonly string _userId;
     private readonly UserLogType _userLogType;
 
-    public UserLogReasonGivenHandler(DiscordClient sender, ModalSubmitEventArgs eventArgs, ulong userId,
-        ulong userLogType) : base(sender, eventArgs)
+    public UserLogReasonGivenHandler(DiscordClient sender, ModalSubmitEventArgs eventArgs, string userId,
+        string userLogType) : base(sender, eventArgs)
     {
         _userId = userId;
-        _userLogType = (UserLogType) userLogType;
+        _userLogType = (UserLogType) Convert.ToInt32(userLogType);
     }
 
     public override async Task RunAsync()
@@ -47,13 +47,14 @@ public class UserLogReasonGivenHandler : ModalHandler
     {
         var guildId = EventArgs.Interaction.Guild.Id;
         var authorId = EventArgs.Interaction.User.Id;
-        await MemberHelper.CreateIfNotExist(_userId, guildId); // create target user
+        var userId = Convert.ToUInt64(_userId);
+        await MemberHelper.CreateIfNotExist(userId, guildId); // create target user
         await MemberHelper.CreateIfNotExist(authorId, guildId); // create author
 
         await using var context = new DatabaseContext();
         await context.UserLogs.AddAsync(new UserLog
         {
-            MemberId = _userId,
+            MemberId = userId,
             Reason = reason,
             AdditionalDetails = additionalDetails,
             Date = date,

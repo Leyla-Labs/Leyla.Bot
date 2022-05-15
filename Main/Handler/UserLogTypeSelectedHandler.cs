@@ -1,5 +1,6 @@
 using Common.Classes;
 using Common.Extensions;
+using Common.Helper;
 using Db.Enums;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -9,9 +10,9 @@ namespace Main.Handler;
 
 public class UserLogTypeSelectedHandler : InteractionHandler
 {
-    private readonly ulong _userId;
+    private readonly string _userId;
 
-    public UserLogTypeSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e, ulong userId) :
+    public UserLogTypeSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e, string userId) :
         base(sender, e)
     {
         _userId = userId;
@@ -20,7 +21,7 @@ public class UserLogTypeSelectedHandler : InteractionHandler
     public override async Task RunAsync()
     {
         var userLogType = (UserLogType) Convert.ToInt32(EventArgs.Values[0]);
-        var member = await EventArgs.Interaction.GetMember(_userId);
+        var member = await EventArgs.Interaction.GetMember(Convert.ToUInt64(_userId));
         var displayName = member?.DisplayName ?? _userId.ToString();
 
         var modal = GetModal(userLogType, displayName);
@@ -31,7 +32,7 @@ public class UserLogTypeSelectedHandler : InteractionHandler
     {
         var response = new DiscordInteractionResponseBuilder();
         response.WithTitle($"Add {type} log for {displayName}");
-        response.WithCustomId($"addUserLog-{_userId}-{(int) type}");
+        response.WithCustomId(ModalHelper.GetModalName(EventArgs.User.Id, "addUserLog", new []{ _userId, ((int)type).ToString()}));
         var dateStr = $"{DateTime.Now:dd.MM.yyyy HH:mm}";
         var l = dateStr.Length;
         response.AddComponents(new TextInputComponent("Date and Time in UTC (dd.MM.yyyy HH:mm)", "date", value: dateStr, min_length: l,
