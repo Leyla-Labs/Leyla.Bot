@@ -39,10 +39,12 @@ public class ListUserLogs : ContextMenuCommand
             new DiscordInteractionResponseBuilder().AddEmbed(embedBuilder.Build()).AsEphemeral());
     }
 
-    private async Task<List<UserLog>> GetUserLogs()
+    private async Task<List<(int, UserLog)>> GetUserLogs()
     {
         await using var context = new DatabaseContext();
-        return await context.UserLogs.Where(x => x.MemberId == Ctx.TargetUser.Id).ToListAsync();
+        var userLogs = await context.UserLogs.Where(x => x.MemberId == Ctx.TargetUser.Id).ToListAsync();
+        var test = userLogs.Select((x, i) => new {userLog = x, index = i}).Select(x => (x.index, x.userLog)).ToList();
+        return test;
     }
 
     private DiscordEmbedBuilder GetEmbedBuilder()
@@ -53,15 +55,15 @@ public class ListUserLogs : ContextMenuCommand
         return embed;
     }
 
-    private async Task AddLogFields(StringBuilder sb, ICollection<UserLog> userLogs, UserLogType type)
+    private async Task AddLogFields(StringBuilder sb, ICollection<(int, UserLog)> userLogs, UserLogType type)
     {
-        if (userLogs.All(x => x.Type != type))
+        if (userLogs.All(x => x.Item2.Type != type))
         {
             return;
         }
 
         var logs = new List<string>();
-        foreach (var userLog in userLogs.Where(x => x.Type == type))
+        foreach (var userLog in userLogs.Where(x => x.Item2.Type == type))
         {
             logs.Add(await GetUserLogString(userLog));
         }
@@ -72,17 +74,17 @@ public class ListUserLogs : ContextMenuCommand
         sb.Append(logStr);
     }
 
-    private async Task<string> GetUserLogString(UserLog log)
+    private async Task<string> GetUserLogString((int, UserLog) log)
     {
-        var dateStr = Formatter.Timestamp(log.Date, TimestampFormat.ShortDateTime);
-        var author = await Ctx.GetMember(log.AuthorId);
-        var authorName = author?.DisplayName ?? log.AuthorId.ToString();
+        var dateStr = Formatter.Timestamp(log.Item2.Date, TimestampFormat.ShortDateTime);
+        var author = await Ctx.GetMember(log.Item2.AuthorId);
+        var authorName = author?.DisplayName ?? log.Item2.AuthorId.ToString();
         var n = Environment.NewLine;
 
-        var additionalDetails = !string.IsNullOrWhiteSpace(log.AdditionalDetails)
-            ? $"{log.AdditionalDetails}{n}"
+        var additionalDetails = !string.IsNullOrWhiteSpace(log.Item2.AdditionalDetails)
+            ? $"{log.Item2.AdditionalDetails}{n}"
             : string.Empty;
 
-        return $"**{log.Reason}**{n}{additionalDetails}{dateStr} • {authorName}";
+        return $"**{log.Item2.Reason}**{n}{additionalDetails}{log.Item1 + 1} • {dateStr} • {authorName}";
     }
 }
