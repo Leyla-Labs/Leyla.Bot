@@ -27,17 +27,11 @@ public class Bot : Leyla
     {
         var commands = Client.UseSlashCommands();
 
-#if DEBUG
-        commands.RegisterCommands<Moderation>(640467169733246976);
-        commands.RegisterCommands<Quotes>(640467169733246976);
-        commands.RegisterCommands<AniList>(640467169733246976);
-#else
         commands.RegisterCommands<Configuration>();
         commands.RegisterCommands<Moderation>();
         commands.RegisterCommands<Quotes>();
         commands.RegisterCommands<Stashes>();
         commands.RegisterCommands<AniList>();
-#endif
 
         commands.SlashCommandErrored += CommandsOnSlashCommandErroredEvent.CommandsOnSlashCommandErrored;
         commands.ContextMenuErrored += CommandsOnContextMenuErroredEvent.CommandsOnContextMenuErrored;
