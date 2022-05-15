@@ -4,6 +4,7 @@ using Db;
 using Db.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Db.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20220511135853_Stashes")]
+    partial class Stashes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +24,6 @@ namespace Db.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "discord_entity_type", new[] { "channel", "role" });
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "user_log_type", new[] { "warning", "silence", "ban" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Db.Models.Config", b =>
@@ -59,6 +60,7 @@ namespace Db.Migrations
             modelBuilder.Entity("Db.Models.DiscordEntity", b =>
                 {
                     b.Property<decimal>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("id");
 
@@ -82,6 +84,7 @@ namespace Db.Migrations
             modelBuilder.Entity("Db.Models.Guild", b =>
                 {
                     b.Property<decimal>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("id");
 
@@ -94,6 +97,7 @@ namespace Db.Migrations
             modelBuilder.Entity("Db.Models.Member", b =>
                 {
                     b.Property<decimal>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("id");
 
@@ -273,67 +277,6 @@ namespace Db.Migrations
                     b.ToTable("stash_entries", (string)null);
                 });
 
-			modelBuilder.Entity("Db.Models.UserLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AdditionalDetails")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("additional_details");
-
-                    b.Property<decimal>("AuthorId")
-                        .HasColumnType("numeric(20,0)")
-                        .HasColumnName("author_id");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date");
-
-                    b.Property<decimal>("MemberId")
-                        .HasColumnType("numeric(20,0)")
-                        .HasColumnName("member_id");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("reason");
-
-                    b.Property<UserLogType>("Type")
-                        .HasColumnType("user_log_type")
-                        .HasColumnName("type");
-
-                    b.HasKey("Id")
-                        .HasName("pk_user_logs");
-
-                    b.HasIndex("AuthorId")
-                        .HasDatabaseName("ix_user_logs_author_id");
-
-                    b.HasIndex("MemberId")
-                        .HasDatabaseName("ix_user_logs_member_id");
-
-                    b.ToTable("user_logs", (string)null);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                });
-
             modelBuilder.Entity("Db.Models.Config", b =>
                 {
                     b.HasOne("Db.Models.Guild", "Guild")
@@ -394,7 +337,6 @@ namespace Db.Migrations
                     b.HasOne("Db.Models.DiscordEntity", "RequiredRole")
                         .WithMany("SelfAssignMenus")
                         .HasForeignKey("RequiredRoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_self_assign_menus_discord_entities_required_role_id");
 
                     b.Navigation("Guild");
@@ -454,37 +396,6 @@ namespace Db.Migrations
                     b.Navigation("Stash");
                 });
 
-			modelBuilder.Entity("Db.Models.UserLog", b =>
-                {
-                    b.HasOne("Db.Models.Member", "Author")
-                        .WithMany("AuthorUserLogs")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_user_logs_members_author_id");
-
-                    b.HasOne("Db.Models.Member", "Member")
-                        .WithMany("TargetUserLogs")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_user_logs_members_member_id");
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Member");
-
-
-
-
-
-
-
-
-
-
-                });
-
             modelBuilder.Entity("Db.Models.DiscordEntity", b =>
                 {
                     b.Navigation("SelfAssignMenuDiscordEntityAssignments");
@@ -509,11 +420,7 @@ namespace Db.Migrations
 
             modelBuilder.Entity("Db.Models.Member", b =>
                 {
-                    b.Navigation("AuthorUserLogs");
-
                     b.Navigation("Quotes");
-
-                    b.Navigation("TargetUserLogs");
                 });
 
             modelBuilder.Entity("Db.Models.SelfAssignMenu", b =>

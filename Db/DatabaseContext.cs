@@ -57,6 +57,9 @@ public class DatabaseContext : DbContext
     public DbSet<SelfAssignMenuDiscordEntityAssignment> SelfAssignMenuDiscordEntityAssignments =>
         Set<SelfAssignMenuDiscordEntityAssignment>();
 
+    public DbSet<Stash> Stashes => Set<Stash>();
+    public DbSet<StashEntry> StashEntries => Set<StashEntry>();
+
     #endregion
 }
 

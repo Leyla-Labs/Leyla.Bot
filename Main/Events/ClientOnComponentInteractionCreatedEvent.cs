@@ -9,10 +9,18 @@ public static class ClientOnComponentInteractionCreatedEvent
     public static async Task ClientOnComponentInteractionCreated(DiscordClient sender,
         ComponentInteractionCreateEventArgs e)
     {
+        // info consists of userId, name, and any further information after that
         var info = e.Id.Split("-");
-        ulong? secondaryInfo = info.Length > 1 && ulong.TryParse(info[1], out var result) ? result : null;
+        var userId = Convert.ToUInt64(info[0]);
 
-        switch (info[0])
+        if (userId != e.User.Id)
+        {
+            return; // TODO handle this
+        }
+
+        var additionalInfo = info.Skip(2).ToArray();
+
+        switch (info[1])
         {
             case "configCategories":
                 await new ConfigurationCategorySelectedHandler(sender, e).RunAsync();
@@ -20,10 +28,18 @@ public static class ClientOnComponentInteractionCreatedEvent
             case "configOptions":
                 await new ConfigurationOptionSelectedHandler(sender, e).RunAsync();
                 break;
-            case "configOptionValueSelected" when secondaryInfo == null:
-                throw new NullReferenceException(nameof(secondaryInfo));
+            case "configOptionValueSelected" when additionalInfo.Length < 1:
+                throw new NullReferenceException(nameof(additionalInfo));
             case "configOptionValueSelected":
-                await new ConfigurationOptionValueSelectedHandler(sender, e, secondaryInfo.Value).RunAsync();
+                await new ConfigurationOptionValueSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
+                break;
+            case "addToStash" when additionalInfo.Length < 1:
+                throw new NullReferenceException(nameof(additionalInfo));
+            case "addToStash":
+                await new AddToStashSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
+                break;
+            case "stashSelected":
+                await new PickStashSelectedHandler(sender, e).RunAsync();
                 break;
             case "userLogType" when secondaryInfo == null:
                 throw new NullReferenceException(nameof(secondaryInfo));

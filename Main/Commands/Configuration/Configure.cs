@@ -1,4 +1,5 @@
 using Common.Classes;
+using Common.Helper;
 using Db.Statics;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -18,13 +19,14 @@ public sealed class Configure : SlashCommand
             .AsEphemeral());
     }
 
-    #region Static methods
+    #region Instance methods
 
-    private static DiscordSelectComponent GetCategorySelect()
+    private DiscordSelectComponent GetCategorySelect()
     {
         var categories = ConfigOptionCategories.Instance.Get();
         var options = categories.Select(x => new DiscordSelectComponentOption(x.Name, x.Id.ToString(), x.Description));
-        return new DiscordSelectComponent("configCategories", "Select category to configure", options,
+        var name = ModalHelper.GetModalName(Ctx.User.Id, "configCategories");
+        return new DiscordSelectComponent(name, "Select category to configure", options,
             minOptions: 1, maxOptions: 1);
     }
 

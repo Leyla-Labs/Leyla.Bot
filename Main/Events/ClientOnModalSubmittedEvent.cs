@@ -8,23 +8,30 @@ public static class ClientOnModalSubmittedEvent
 {
     public static async Task ClientOnModalSubmitted(DiscordClient sender, ModalSubmitEventArgs e)
     {
-        if (e.Interaction.Data.CustomId == null)
+        // info consists of userId, name, and any further information after that
+        var info = e.Interaction.Data.CustomId.Split("-");
+        var userId = Convert.ToUInt64(info[0]);
+
+        if (userId != e.Interaction.User.Id)
         {
-            throw new ArgumentNullException(nameof(e.Interaction.Data.CustomId));
+            return; // TODO handle this
         }
 
-        var info = e.Interaction.Data.CustomId.Split("-");
-        ulong? secondaryInfo = info.Length > 1 && ulong.TryParse(info[1], out var result) ? result : null;
-        ulong? tertiaryInfo = info.Length > 2 && ulong.TryParse(info[2], out var result2) ? result2 : null;
+        var additionalInfo = info.Skip(2).ToArray();
 
-        switch (info[0])
+        switch (info[1])
         {
-            case "configOptionValueGiven" when secondaryInfo == null:
-                throw new NullReferenceException(nameof(secondaryInfo));
+            case "configOptionValueGiven" when additionalInfo.Length < 1:
+                throw new NullReferenceException(nameof(additionalInfo));
             case "configOptionValueGiven":
-                await new ConfigurationOptionValueGivenHandler(sender, e, secondaryInfo.Value).RunAsync();
+                await new ConfigurationOptionValueGivenHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
-            case "addUserLog" when secondaryInfo == null:
+            case "addToStash" when additionalInfo.Length < 1:
+                throw new NullReferenceException(nameof(additionalInfo));
+            case "addToStash":
+                await new StashEntryValueGivenHandler(sender, e, additionalInfo[0]).RunAsync();
+                break;
+			case "addUserLog" when secondaryInfo == null:
                 throw new NullReferenceException(nameof(secondaryInfo));
             case "addUserLog" when tertiaryInfo == null:
                 throw new NullReferenceException(nameof(tertiaryInfo));

@@ -15,4 +15,6 @@ public class DiscordEntity
 
     public ICollection<SelfAssignMenuDiscordEntityAssignment> SelfAssignMenuDiscordEntityAssignments { get; set; } =
         null!;
+
+    public ICollection<Stash> Stashes { get; set; } = null!;
 }

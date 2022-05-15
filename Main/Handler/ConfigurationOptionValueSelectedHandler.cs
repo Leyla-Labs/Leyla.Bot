@@ -9,17 +9,17 @@ namespace Main.Handler;
 
 public class ConfigurationOptionValueSelectedHandler : InteractionHandler
 {
-    private readonly ulong _optionId;
+    private readonly string _optionId;
 
     public ConfigurationOptionValueSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e,
-        ulong optionId) : base(sender, e)
+        string optionId) : base(sender, e)
     {
         _optionId = optionId;
     }
 
     public override async Task RunAsync()
     {
-        var option = ConfigOptions.Instance.Get(_optionId);
+        var option = ConfigOptions.Instance.Get(Convert.ToInt32(_optionId));
         var value = EventArgs.Values[0];
 
         switch (option.Type)

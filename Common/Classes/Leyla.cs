@@ -10,19 +10,25 @@ namespace Common.Classes;
 
 public abstract class Leyla : IBot
 {
-    protected DiscordClient Client { get; set; } = null!;
+    protected DiscordClient Client { get; private set; } = null!;
 
-    public async Task MainAsync()
+    public async Task StartAsync()
     {
         Configuration.ConnectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")!;
         Client = InitBot();
         RegisterCommands();
         RegisterInteractivity();
-
         await Client.ConnectAsync();
+    }
 
-        // Block this task until the program is closed.
-        await Task.Delay(-1);
+    public async Task StopAsync()
+    {
+        await Client.DisconnectAsync();
+    }
+
+    public void Dispose()
+    {
+        Client.Dispose();
     }
 
     private void RegisterInteractivity()
