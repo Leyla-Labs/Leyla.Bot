@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Spam;
+namespace Spam.Enums;
 
 public enum PressureType
 {

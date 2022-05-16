@@ -3,16 +3,17 @@ using System.Text.RegularExpressions;
 using Common.Extensions;
 using Db.Helper;
 using DSharpPlus.Entities;
+using Spam.Classes;
+using Spam.Enums;
 
 namespace Spam.Helper;
 
 public class SpamHelper
 {
-    private readonly Dictionary<ulong, Dictionary<ulong, decimal>> _pressures;
+    private readonly Dictionary<ulong, Dictionary<ulong, UserPressure>> _pressures = new();
 
     private SpamHelper()
     {
-        _pressures = new Dictionary<ulong, Dictionary<ulong, decimal>>();
     }
 
     public async Task ProcessMessage(DiscordMessage message)
@@ -21,12 +22,6 @@ public class SpamHelper
 
         foreach (var type in (PressureType[]) Enum.GetValues(typeof(PressureType)))
         {
-            if (type == PressureType.Repeat)
-            {
-                // TODO handle this as well
-                continue;
-            }
-
             await IncreasePressure(type, message, guildId);
         }
     }
@@ -44,7 +39,7 @@ public class SpamHelper
             PressureType.Line => decimal.Multiply(n,
                 Regex.Matches(message.Content, "$", RegexOptions.Multiline).Count - 1),
             PressureType.Ping => decimal.Multiply(n, message.MentionedUsers.Count),
-            PressureType.Repeat => throw new NotImplementedException(nameof(PressureType.Repeat)),
+            PressureType.Repeat => decimal.Multiply(n, GetRepeatCount(guildId, message)),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
 
@@ -60,18 +55,48 @@ public class SpamHelper
         {
             if (guildDict.Any(x => x.Key == userId))
             {
-                guildDict[userId] += value;
+                guildDict[userId].PressureValue += value;
             }
             else
             {
-                guildDict.Add(userId, value);
+                guildDict.Add(userId, new UserPressure(value));
             }
         }
         else
         {
-            _pressures.Add(guildId, new Dictionary<ulong, decimal>());
+            _pressures.Add(guildId, new Dictionary<ulong, UserPressure>());
             var dict = _pressures[guildId];
-            dict.Add(userId, value);
+            dict.Add(userId, new UserPressure(value));
+        }
+    }
+
+    private int GetRepeatCount(ulong guildId, DiscordMessage message)
+    {
+        if (_pressures.TryGetValue(guildId, out var guildDict))
+        {
+            // guild dict exists, search for member
+            if (guildDict.Any(x => x.Key == message.Author.Id))
+            {
+                // member exists, check value
+                var repeatCount = guildDict.First(x =>
+                    x.Key == message.Author.Id).Value.RecentMessages.Count(x =>
+                    x.Equals(message.Content.ToLower()));
+
+                guildDict[message.Author.Id].AddMessage(message.Content);
+                return repeatCount;
+            }
+
+            // member does not exist, create user entry
+            guildDict.Add(message.Author.Id, new UserPressure(message.Content));
+            return 0;
+        }
+
+        {
+            // guild dict does not exist, create guild dict and user entry
+            _pressures.Add(guildId, new Dictionary<ulong, UserPressure>());
+            var dict = _pressures[guildId];
+            dict.Add(message.Author.Id, new UserPressure(message.Content));
+            return 0;
         }
     }
 
