@@ -91,6 +91,16 @@ public sealed class ConfigHelper
         return await GetString(option) is { } s ? Convert.ToUInt64(s) : null;
     }
 
+    public async Task<decimal?> GetDecimal(string option, ulong guildId)
+    {
+        return await GetString(option, guildId) is { } s ? Convert.ToDecimal(s) : null;
+    }
+
+    public static async Task<decimal?> GetDecimal(string option)
+    {
+        return await GetString(option) is { } s ? Convert.ToDecimal(s) : null;
+    }
+
     public async Task<DiscordRole?> GetRole(string option, DiscordGuild guild)
     {
         var roleId = await GetString(option, guild.Id) is { } s ? Convert.ToUInt64(s) : default;
@@ -131,6 +141,7 @@ public sealed class ConfigHelper
             ConfigType.Channel when value is ulong => value.ToString()!,
             ConfigType.Role when value is DiscordRole role => role.Id.ToString(),
             ConfigType.Channel when value is DiscordChannel channel => channel.Id.ToString(),
+            ConfigType.Decimal when value is decimal => value.ToString(),
             _ => GetStringFromObject(value)
         };
 
