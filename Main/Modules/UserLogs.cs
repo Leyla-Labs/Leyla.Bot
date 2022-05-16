@@ -18,18 +18,28 @@ public class UserLogs : ApplicationCommandModule
 
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Show logs")]
     [SlashRequireGuild]
-    public async Task SlashListQuotes(ContextMenuContext ctx)
+    public async Task SlashListUserLogs(ContextMenuContext ctx)
     {
         await new ListUserLogs(ctx).RunAsync();
     }
 
     [SlashCommand("edit", "Edits a log.")]
     [SlashRequireGuild]
-    public async Task SlashListQuotes(InteractionContext ctx,
+    public async Task SlashEditUserLog(InteractionContext ctx,
         [Option("user", "User to edit log of")]
         DiscordUser user,
         [Option("n", "Number of log to edit")] long n)
     {
         await new EditUserLog(ctx, (DiscordMember) user, n).RunAsync();
+    }
+    
+    [SlashCommand("delete", "Deletes a log. This is irreversible!")]
+    [SlashRequireGuild]
+    public async Task SlashDeleteUserLog(InteractionContext ctx,
+        [Option("user", "User to delete log of")]
+        DiscordUser user,
+        [Option("n", "Number of log to delete. This is irreversible!")] long n)
+    {
+        await new DeleteUserLog(ctx, (DiscordMember) user, n).RunAsync();
     }
 }

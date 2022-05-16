@@ -42,9 +42,13 @@ public class ListUserLogs : ContextMenuCommand
     private async Task<List<(int, UserLog)>> GetUserLogs()
     {
         await using var context = new DatabaseContext();
-        var userLogs = await context.UserLogs.Where(x => x.MemberId == Ctx.TargetUser.Id).ToListAsync();
-        var test = userLogs.Select((x, i) => new {userLog = x, index = i}).Select(x => (x.index, x.userLog)).ToList();
-        return test;
+
+        var userLogs = await context.UserLogs.Where(x =>
+                x.Member.GuildId == Ctx.Guild.Id &&
+                x.MemberId == Ctx.TargetUser.Id)
+            .ToListAsync();
+
+        return userLogs.Select((x, i) => new {userLog = x, index = i}).Select(x => (x.index, x.userLog)).ToList();
     }
 
     private DiscordEmbedBuilder GetEmbedBuilder()

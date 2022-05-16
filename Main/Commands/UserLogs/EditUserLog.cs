@@ -40,6 +40,7 @@ public class EditUserLog : SlashCommand
     {
         await using var context = new DatabaseContext();
         return await context.UserLogs.Where(x =>
+                x.Member.GuildId == Ctx.Guild.Id &&
                 x.MemberId == _member.Id)
             .Skip(Convert.ToInt32(_n - 1))
             .FirstOrDefaultAsync();
