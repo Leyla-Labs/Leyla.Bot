@@ -21,6 +21,7 @@ public sealed class ConfigOptions : StaticClass<ConfigOption>
         new(11, 1, Spam.RepeatPressure, "todo", ConfigType.Decimal, "10", 4),
         new(12, 1, Spam.MaxPressure, "todo", ConfigType.Decimal, "60", 4),
         new(13, 1, Spam.PressureDecay, "todo", ConfigType.Decimal, "2.5", 4),
+        new(14, 3, "Silence Role", "todo", ConfigType.Role, null, 2),
 
         new(1000, 1, "String", "default", ConfigType.String, "hi", 1000),
         new(1001, 2, "StringNull", "null", ConfigType.String, null, 1000),
