@@ -1,14 +1,19 @@
+using DSharpPlus.Entities;
+
 namespace Spam.Classes;
 
 public class UserPressure
 {
     private string _lastMessage;
 
-    public UserPressure(decimal pressureValue)
+    public UserPressure(decimal currentPressure)
     {
-        PressureValue = pressureValue;
+        CurrentPressure = currentPressure;
         _lastMessage = string.Empty;
+        LastUpdate = DateTime.Now;
     }
+
+    public List<DiscordMessage> PressureSessionMessages { get; set; } = new();
 
     public string LastMessage
     {
@@ -16,23 +21,35 @@ public class UserPressure
         set => _lastMessage = value.ToLower();
     }
 
-    public decimal PressureValue { get; private set; }
+    public decimal CurrentPressure { get; private set; }
     private DateTime LastUpdate { get; set; }
 
     public void IncreasePressure(decimal addValue, decimal pressureDecay)
     {
         var n = DateTime.Now;
-        var seconds = Convert.ToDecimal((n - LastUpdate).TotalSeconds);
+        var seconds = Convert.ToInt32((n - LastUpdate).TotalSeconds);
         var decayValue = decimal.Multiply(seconds, pressureDecay);
-        decayValue = decayValue < PressureValue ? decayValue : PressureValue; // do not decrease pressure below 0
-        PressureValue = PressureValue - decayValue + addValue;
+
+        if (decayValue > CurrentPressure)
+        {
+            // if decay exceeds pressure, start new pressure session
+            PressureSessionMessages = new List<DiscordMessage>();
+            CurrentPressure = addValue;
+        }
+        else
+        {
+            // if it does not exceed pressure, first decrease pressure by current decay, then add new value
+            CurrentPressure = CurrentPressure - decayValue + addValue;
+        }
+
         LastUpdate = n;
     }
 
     public void ResetPressure()
     {
-        PressureValue = 0;
+        CurrentPressure = 0;
         LastUpdate = DateTime.Now;
         LastMessage = string.Empty;
+        PressureSessionMessages = new List<DiscordMessage>();
     }
 }

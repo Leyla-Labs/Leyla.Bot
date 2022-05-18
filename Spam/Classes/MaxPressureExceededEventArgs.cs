@@ -5,14 +5,13 @@ namespace Spam.Classes;
 public class MaxPressureExceededEventArgs
 {
     public readonly decimal MaxPressure;
-    public readonly DiscordMessage Message;
+    public readonly List<DiscordMessage> SessionMessages;
     public readonly decimal UserPressure;
 
-    public MaxPressureExceededEventArgs(DiscordMessage message, decimal maxPressure,
-        decimal userPressure)
+    public MaxPressureExceededEventArgs(UserPressure userPressure, decimal maxPressure)
     {
-        Message = message;
+        SessionMessages = userPressure.PressureSessionMessages;
         MaxPressure = maxPressure;
-        UserPressure = userPressure;
+        UserPressure = userPressure.CurrentPressure;
     }
 }

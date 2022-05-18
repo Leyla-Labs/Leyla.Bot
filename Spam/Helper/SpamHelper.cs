@@ -31,13 +31,14 @@ public class SpamHelper
         }
 
         var pressure = _pressures[guildId][message.Author.Id];
+        pressure.PressureSessionMessages.Add(message);
+
         var maxPressure = await ConfigHelper.Instance.GetDecimal(Db.Strings.Spam.MaxPressure, guildId) ??
                           throw new NullReferenceException(Db.Strings.Spam.MaxPressure);
 
-        if (pressure.PressureValue > maxPressure)
+        if (pressure.CurrentPressure > maxPressure)
         {
-            MaxPressureExceeded?.Invoke(sender,
-                new MaxPressureExceededEventArgs(message, maxPressure, pressure.PressureValue));
+            MaxPressureExceeded?.Invoke(sender, new MaxPressureExceededEventArgs(pressure, maxPressure));
             pressure.ResetPressure();
         }
     }

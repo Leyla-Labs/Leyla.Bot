@@ -10,4 +10,5 @@ public static class Spam
     public const string RepeatPressure = "Repeat Pressure";
     public const string MaxPressure = "Max Pressure";
     public const string PressureDecay = "Pressure Decay";
+    public const string DeleteMessages = "Delete Messages";
 }
