@@ -12,8 +12,19 @@ public class UserPressure
         RecentMessages.Add(content.ToLower());
     }
 
-    public decimal PressureValue { get; set; }
     public List<string> RecentMessages { get; set; } = new();
+    public decimal PressureValue { get; private set; }
+    private DateTime LastUpdate { get; set; }
+
+    public void IncreasePressure(decimal addValue, decimal pressureDecay)
+    {
+        var n = DateTime.Now;
+        var seconds = Convert.ToDecimal((n - LastUpdate).TotalSeconds);
+        var decayValue = decimal.Multiply(seconds, pressureDecay);
+        decayValue = decayValue < PressureValue ? decayValue : PressureValue; // do not decrease pressure below 0
+        PressureValue = PressureValue - decayValue + addValue;
+        LastUpdate = n;
+    }
 
     public void AddMessage(string content)
     {

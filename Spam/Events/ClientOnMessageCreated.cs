@@ -19,6 +19,6 @@ public class ClientOnMessageCreated
             return;
         }
 
-        await SpamHelper.Instance.ProcessMessage(e.Message);
+        await SpamHelper.Instance.ProcessMessage(sender, e.Message);
     }
 }

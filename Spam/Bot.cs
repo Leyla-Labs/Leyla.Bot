@@ -1,6 +1,7 @@
 using Common.Classes;
 using DSharpPlus;
 using Spam.Events;
+using Spam.Helper;
 
 namespace Spam;
 
@@ -17,6 +18,7 @@ public class Bot : Leyla
         });
         client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
         client.MessageCreated += ClientOnMessageCreated.HandleEvent;
+        SpamHelper.MaxPressureExceeded += SpamHelperOnMaxPressureExceeded.HandleEvent;
         return client;
     }
 

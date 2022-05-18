@@ -2,11 +2,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using Common.Extensions;
 using Db.Helper;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using Spam.Classes;
 using Spam.Enums;
 
 namespace Spam.Helper;
+
+public delegate void MaxPressureExceededHandler(DiscordClient sender, MaxPressureExceededEventArgs args);
 
 public class SpamHelper
 {
@@ -16,13 +19,24 @@ public class SpamHelper
     {
     }
 
-    public async Task ProcessMessage(DiscordMessage message)
+    public static event MaxPressureExceededHandler? MaxPressureExceeded;
+
+    public async Task ProcessMessage(DiscordClient sender, DiscordMessage message)
     {
         var guildId = message.Channel.GuildId ?? throw new ArgumentNullException(nameof(message.Channel.GuildId));
 
         foreach (var type in (PressureType[]) Enum.GetValues(typeof(PressureType)))
         {
             await IncreasePressure(type, message, guildId);
+        }
+
+        var maxPressure = await ConfigHelper.Instance.GetDecimal(Db.Strings.Spam.MaxPressure, guildId) ??
+                          throw new NullReferenceException(Db.Strings.Spam.MaxPressure);
+        var userPressure = _pressures[guildId][message.Author.Id].PressureValue;
+
+        if (userPressure > maxPressure)
+        {
+            MaxPressureExceeded?.Invoke(sender, new MaxPressureExceededEventArgs(message, maxPressure, userPressure));
         }
     }
 
@@ -45,17 +59,23 @@ public class SpamHelper
 
         if (addValue > 0m)
         {
-            AddPressure(guildId, message.Author.Id, addValue);
+            await AddPressure(guildId, message.Author.Id, addValue);
         }
     }
 
-    private void AddPressure(ulong guildId, ulong userId, decimal value)
+    private async Task AddPressure(ulong guildId, ulong userId, decimal value)
     {
         if (_pressures.TryGetValue(guildId, out var guildDict))
         {
             if (guildDict.Any(x => x.Key == userId))
             {
-                guildDict[userId].PressureValue += value;
+                var pressureDecay = await ConfigHelper.Instance.GetDecimal(Db.Strings.Spam.PressureDecay, guildId);
+                if (pressureDecay == null)
+                {
+                    throw new NullReferenceException(nameof(pressureDecay));
+                }
+
+                guildDict[userId].IncreasePressure(value, pressureDecay.Value);
             }
             else
             {
