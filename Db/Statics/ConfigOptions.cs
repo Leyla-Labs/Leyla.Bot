@@ -23,6 +23,8 @@ public sealed class ConfigOptions : StaticClass<ConfigOption>
         new(13, 8, Spam.PressureDecay, "todo", ConfigType.Decimal, "2.5", 4),
         new(14, 3, "Silence Role", "todo", ConfigType.Role, null, 2),
         new(15, 9, Spam.DeleteMessages, "todo", ConfigType.Boolean, "0", 4),
+        new(16, 4, "Silence Channel", "todo", ConfigType.Channel, null, 3),
+        new(17, 10, Spam.SilenceMessage, "todo", ConfigType.String, string.Empty, 4),
 
         new(1000, 1, "String", "default", ConfigType.String, "hi", 1000),
         new(1001, 2, "StringNull", "null", ConfigType.String, null, 1000),

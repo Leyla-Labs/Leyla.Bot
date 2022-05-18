@@ -105,7 +105,7 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
     {
         var response = new DiscordInteractionResponseBuilder();
         response.WithTitle(option.Name);
-        response.AddModalName(EventArgs.User.Id, "configOptionValueGiven", new[] {option.Id.ToString()});
+        response.AddModalCustomId(EventArgs.User.Id, "configOptionValueGiven", new[] {option.Id.ToString()});
 
         var placeholder = option.Type switch
         {

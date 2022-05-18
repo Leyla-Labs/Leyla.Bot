@@ -11,24 +11,35 @@ public static class SpamHelperOnMaxPressureExceeded
     {
         var lastMessage = args.SessionMessages.Last();
 
-        if (lastMessage.Channel.GuildId == null || lastMessage.Channel.Guild == null)
+        if (lastMessage.Channel.Guild == null)
         {
             throw new NullReferenceException(nameof(lastMessage.Channel.Guild));
         }
 
-        var silenceRole = await ConfigHelper.Instance.GetRole("Silence Role", lastMessage.Channel.Guild);
-        var modChannel = await ConfigHelper.Instance.GetChannel("Moderator Channel", lastMessage.Channel.Guild);
+        var guild = lastMessage.Channel.Guild;
+        var silenceRole = await ConfigHelper.Instance.GetRole("Silence Role", guild);
+        var modChannel = await ConfigHelper.Instance.GetChannel("Moderator Channel", guild);
+        var silenceChannel = await ConfigHelper.Instance.GetChannel("Silence Channel", guild);
+        var silenceMessage = await ConfigHelper.Instance.GetString(Db.Strings.Spam.SilenceMessage, guild.Id);
+
+        var member = (DiscordMember) lastMessage.Author;
 
         var silenced = false;
         if (silenceRole != null)
         {
-            var member = (DiscordMember) lastMessage.Author;
             await member.GrantRoleAsync(silenceRole, $"Pressure {args.UserPressure:N2} > {args.MaxPressure}");
             silenced = true;
         }
 
+        var silenceMessageSent = false;
+        if (silenced && silenceChannel != null && !string.IsNullOrWhiteSpace(silenceMessage))
+        {
+            await silenceChannel.SendMessageAsync($"{member.Mention} {silenceMessage}");
+            silenceMessageSent = true;
+        }
+
         var messagesDeleted = false;
-        if (await ConfigHelper.Instance.GetBool(Db.Strings.Spam.DeleteMessages, lastMessage.Channel.GuildId.Value) ==
+        if (await ConfigHelper.Instance.GetBool(Db.Strings.Spam.DeleteMessages, guild.Id) ==
             true)
         {
             await lastMessage.Channel.DeleteMessagesAsync(args.SessionMessages);
@@ -40,12 +51,12 @@ public static class SpamHelperOnMaxPressureExceeded
             return;
         }
 
-        var embed = GetEmbed(args, lastMessage, silenced, messagesDeleted);
+        var embed = GetEmbed(args, lastMessage, silenced, silenceMessageSent, messagesDeleted);
         await modChannel.SendMessageAsync(embed);
     }
 
     private static DiscordEmbed GetEmbed(MaxPressureExceededEventArgs args, DiscordMessage lastMessage, bool silenced,
-        bool messagesDeleted)
+        bool silenceMessageSent, bool messagesDeleted)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Spam Detected");
@@ -53,13 +64,18 @@ public static class SpamHelperOnMaxPressureExceeded
         var a = lastMessage.Author;
         embed.WithDescription($"{a.Mention}{Environment.NewLine}{a.Username}#{a.Discriminator}");
 
-        if (silenced || messagesDeleted)
+        if (silenced || silenceMessageSent || messagesDeleted)
         {
             var actionStrings = new List<string>();
 
             if (silenced)
             {
                 actionStrings.Add("User was silenced.");
+            }
+
+            if (silenceMessageSent)
+            {
+                actionStrings.Add("User was pinged in silence channel.");
             }
 
             if (messagesDeleted)

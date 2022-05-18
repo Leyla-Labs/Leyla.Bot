@@ -12,10 +12,10 @@ public static class DiscordInteractionResponseBuilderExtension
         return b;
     }
 
-    public static void AddModalName(this DiscordInteractionResponseBuilder builder, ulong userId, string modalName,
+    public static void AddModalCustomId(this DiscordInteractionResponseBuilder builder, ulong userId, string modalName,
         string[] additionalInfo)
     {
         var modalNameFull = ModalHelper.GetModalName(userId, modalName, additionalInfo);
-        builder.WithTitle(modalNameFull);
+        builder.WithCustomId(modalNameFull);
     }
 }
