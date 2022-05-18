@@ -30,13 +30,15 @@ public class SpamHelper
             await IncreasePressure(type, message, guildId);
         }
 
+        var pressure = _pressures[guildId][message.Author.Id];
         var maxPressure = await ConfigHelper.Instance.GetDecimal(Db.Strings.Spam.MaxPressure, guildId) ??
                           throw new NullReferenceException(Db.Strings.Spam.MaxPressure);
-        var userPressure = _pressures[guildId][message.Author.Id].PressureValue;
 
-        if (userPressure > maxPressure)
+        if (pressure.PressureValue > maxPressure)
         {
-            MaxPressureExceeded?.Invoke(sender, new MaxPressureExceededEventArgs(message, maxPressure, userPressure));
+            MaxPressureExceeded?.Invoke(sender,
+                new MaxPressureExceededEventArgs(message, maxPressure, pressure.PressureValue));
+            pressure.ResetPressure();
         }
     }
 
@@ -53,7 +55,7 @@ public class SpamHelper
             PressureType.Line => decimal.Multiply(n,
                 Regex.Matches(message.Content, "$", RegexOptions.Multiline).Count - 1),
             PressureType.Ping => decimal.Multiply(n, message.MentionedUsers.Count),
-            PressureType.Repeat => decimal.Multiply(n, GetRepeatCount(guildId, message)),
+            PressureType.Repeat => IsRepeatedMessage(guildId, message) ? n : 0,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
 
@@ -90,34 +92,23 @@ public class SpamHelper
         }
     }
 
-    private int GetRepeatCount(ulong guildId, DiscordMessage message)
+    private bool IsRepeatedMessage(ulong guildId, DiscordMessage message)
     {
-        if (_pressures.TryGetValue(guildId, out var guildDict))
+        if (!_pressures.TryGetValue(guildId, out var guildDict))
         {
-            // guild dict exists, search for member
-            if (guildDict.Any(x => x.Key == message.Author.Id))
-            {
-                // member exists, check value
-                var repeatCount = guildDict.First(x =>
-                    x.Key == message.Author.Id).Value.RecentMessages.Count(x =>
-                    x.Equals(message.Content.ToLower()));
-
-                guildDict[message.Author.Id].AddMessage(message.Content);
-                return repeatCount;
-            }
-
-            // member does not exist, create user entry
-            guildDict.Add(message.Author.Id, new UserPressure(message.Content));
-            return 0;
+            return false;
         }
 
+        if (guildDict.All(x => x.Key != message.Author.Id))
         {
-            // guild dict does not exist, create guild dict and user entry
-            _pressures.Add(guildId, new Dictionary<ulong, UserPressure>());
-            var dict = _pressures[guildId];
-            dict.Add(message.Author.Id, new UserPressure(message.Content));
-            return 0;
+            return false;
         }
+
+        // member exists, check value
+        var isRepeated = guildDict.First(x =>
+            x.Key == message.Author.Id).Value.LastMessage.Equals(message.Content.ToLower());
+        guildDict[message.Author.Id].LastMessage = message.Content;
+        return isRepeated;
     }
 
     private static async Task<decimal> GetPressureConfig(PressureType type, ulong guildId)
