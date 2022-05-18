@@ -9,9 +9,9 @@ using Spam.Enums;
 
 namespace Spam.Helper;
 
-public delegate void MaxPressureExceededHandler(DiscordClient sender, MaxPressureExceededEventArgs args);
+internal delegate void MaxPressureExceededHandler(DiscordClient sender, MaxPressureExceededEventArgs args);
 
-public class SpamHelper
+internal class SpamHelper
 {
     private readonly Dictionary<ulong, Dictionary<ulong, UserPressure>> _pressures = new();
 
@@ -107,7 +107,7 @@ public class SpamHelper
 
         // member exists, check value
         var isRepeated = guildDict.First(x =>
-            x.Key == message.Author.Id).Value.LastMessage.Equals(message.Content.ToLower());
+            x.Key == message.Author.Id).Value.LastMessage.Equals(message.Content.ToLowerInvariant());
         guildDict[message.Author.Id].LastMessage = message.Content;
         return isRepeated;
     }

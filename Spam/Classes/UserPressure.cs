@@ -18,7 +18,7 @@ public class UserPressure
     public string LastMessage
     {
         get => _lastMessage;
-        set => _lastMessage = value.ToLower();
+        set => _lastMessage = value.ToLowerInvariant();
     }
 
     public decimal CurrentPressure { get; private set; }

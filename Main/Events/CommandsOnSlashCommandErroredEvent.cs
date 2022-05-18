@@ -17,6 +17,8 @@ public static class CommandsOnSlashCommandErroredEvent
             case GraphQLHttpRequestException ex2:
                 await new GraphQlHttpRequestExceptionHandler(e, ex2).HandleException();
                 break;
+            default:
+                return;
         }
     }
 }

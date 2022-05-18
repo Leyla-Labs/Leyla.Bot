@@ -46,6 +46,8 @@ public static class ClientOnComponentInteractionCreatedEvent
             case "userLogType":
                 await new UserLogTypeSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
+            default:
+                return;
         }
     }
 }

@@ -2,7 +2,7 @@ using DSharpPlus.Entities;
 
 namespace Spam.Classes;
 
-public class MaxPressureExceededEventArgs
+internal class MaxPressureExceededEventArgs
 {
     public readonly decimal MaxPressure;
     public readonly List<DiscordMessage> SessionMessages;

@@ -41,6 +41,8 @@ public static class ClientOnModalSubmittedEvent
             case "editUserLog":
                 await new UserLogEditedHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
+            default:
+                return;
         }
     }
 }

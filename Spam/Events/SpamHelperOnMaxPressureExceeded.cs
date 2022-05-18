@@ -11,7 +11,7 @@ namespace Spam.Events;
 
 public static class SpamHelperOnMaxPressureExceeded
 {
-    public static async void HandleEvent(DiscordClient sender, MaxPressureExceededEventArgs args)
+    internal static async void HandleEvent(DiscordClient sender, MaxPressureExceededEventArgs args)
     {
         var lastMessage = args.SessionMessages.Last();
 
