@@ -32,13 +32,14 @@ public class UserLogs : ApplicationCommandModule
     {
         await new EditUserLog(ctx, (DiscordMember) user, n).RunAsync();
     }
-    
+
     [SlashCommand("delete", "Deletes a log. This is irreversible!")]
     [SlashRequireGuild]
     public async Task SlashDeleteUserLog(InteractionContext ctx,
         [Option("user", "User to delete log of")]
         DiscordUser user,
-        [Option("n", "Number of log to delete. This is irreversible!")] long n)
+        [Option("n", "Number of log to delete. This is irreversible!")]
+        long n)
     {
         await new DeleteUserLog(ctx, (DiscordMember) user, n).RunAsync();
     }

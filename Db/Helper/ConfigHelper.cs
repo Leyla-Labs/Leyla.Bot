@@ -61,11 +61,6 @@ public sealed class ConfigHelper
         return await GetString(option, guildId) is { } s ? s[0] : null;
     }
 
-    public static async Task<char?> GetChar(string option)
-    {
-        return await GetString(option) is { } s ? s[0] : null;
-    }
-
     public async Task<int?> GetInt(string option, ulong guildId)
     {
         return await GetString(option, guildId) is { } s ? Convert.ToInt32(s) : null;
@@ -76,29 +71,14 @@ public sealed class ConfigHelper
         return await GetString(option, guildId) is { } s ? s.Equals("1") : null;
     }
 
-    public static async Task<bool?> GetBool(string option)
-    {
-        return await GetString(option) is { } s ? s.Equals("1") : null;
-    }
-
     public async Task<ulong?> GetUlong(string option, ulong guildId)
     {
         return await GetString(option, guildId) is { } s ? Convert.ToUInt64(s) : null;
     }
 
-    public static async Task<ulong?> GetUlong(string option)
-    {
-        return await GetString(option) is { } s ? Convert.ToUInt64(s) : null;
-    }
-
     public async Task<decimal?> GetDecimal(string option, ulong guildId)
     {
         return await GetString(option, guildId) is { } s ? Convert.ToDecimal(s) : null;
-    }
-
-    public static async Task<decimal?> GetDecimal(string option)
-    {
-        return await GetString(option) is { } s ? Convert.ToDecimal(s) : null;
     }
 
     public async Task<DiscordRole?> GetRole(string option, DiscordGuild guild)
@@ -111,6 +91,11 @@ public sealed class ConfigHelper
     {
         var channelId = await GetString(option, guild.Id) is { } s ? Convert.ToUInt64(s) : default;
         return guild.Channels.TryGetValue(channelId, out var result) ? result : null;
+    }
+
+    public async Task<T?> GetEnum<T>(string option, ulong guildId) where T : Enum
+    {
+        return await GetString(option, guildId) is { } s ? (T) (object) Convert.ToInt32(s) : default;
     }
 
     public async Task<bool> Set(int optionId, ulong guildId, object value)
@@ -132,7 +117,7 @@ public sealed class ConfigHelper
 
     private async Task<bool> SetInternal(ConfigOption opt, ulong guildId, object value)
     {
-        var valueStr = opt.Type switch
+        var valueStr = opt.ConfigType switch
         {
             ConfigType.Boolean when value is bool b => b ? "1" : "0",
             ConfigType.Int when value is int => value.ToString()!,
@@ -142,6 +127,7 @@ public sealed class ConfigHelper
             ConfigType.Role when value is DiscordRole role => role.Id.ToString(),
             ConfigType.Channel when value is DiscordChannel channel => channel.Id.ToString(),
             ConfigType.Decimal when value is decimal => value.ToString()!,
+            ConfigType.Enum when value is Enum => ((int) value).ToString(),
             _ => GetStringFromObject(value)
         };
 

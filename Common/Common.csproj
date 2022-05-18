@@ -10,10 +10,7 @@
         <PackageReference Include="DSharpPlus" Version="4.2.0"/>
         <PackageReference Include="DSharpPlus.Interactivity" Version="4.2.0"/>
         <PackageReference Include="DSharpPlus.SlashCommands" Version="4.2.0"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Db\Db.csproj"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.4"/>
     </ItemGroup>
 
     <ItemGroup>

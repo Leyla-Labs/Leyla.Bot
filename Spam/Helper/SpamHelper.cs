@@ -33,8 +33,8 @@ public class SpamHelper
         var pressure = _pressures[guildId][message.Author.Id];
         pressure.PressureSessionMessages.Add(message);
 
-        var maxPressure = await ConfigHelper.Instance.GetDecimal(Db.Strings.Spam.MaxPressure, guildId) ??
-                          throw new NullReferenceException(Db.Strings.Spam.MaxPressure);
+        var maxPressure = await ConfigHelper.Instance.GetDecimal(Common.Strings.Spam.MaxPressure, guildId) ??
+                          throw new NullReferenceException(Common.Strings.Spam.MaxPressure);
 
         if (pressure.CurrentPressure > maxPressure)
         {
@@ -72,7 +72,7 @@ public class SpamHelper
         {
             if (guildDict.Any(x => x.Key == userId))
             {
-                var pressureDecay = await ConfigHelper.Instance.GetDecimal(Db.Strings.Spam.PressureDecay, guildId);
+                var pressureDecay = await ConfigHelper.Instance.GetDecimal(Common.Strings.Spam.PressureDecay, guildId);
                 if (pressureDecay == null)
                 {
                     throw new NullReferenceException(nameof(pressureDecay));

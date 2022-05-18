@@ -1,5 +1,5 @@
 using System.Text;
-using Common.Classes;
+using Db.Classes;
 using Db.Models;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;

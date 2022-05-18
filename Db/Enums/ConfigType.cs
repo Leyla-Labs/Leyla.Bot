@@ -8,5 +8,6 @@ public enum ConfigType
     Char = 4,
     Role = 5,
     Channel = 6,
-    Decimal = 7
+    Decimal = 7,
+    Enum = 8
 }

@@ -12,8 +12,20 @@ public static class EnumExtension
     public static TAttribute? GetAttribute<TAttribute>(this Enum enumValue)
         where TAttribute : Attribute
     {
+        return ((object) enumValue).GetAttribute<TAttribute>();
+    }
+
+    public static TAttribute? GetAttribute<TAttribute>(this object enumValue)
+        where TAttribute : Attribute
+    {
+        var member = enumValue.ToString();
+        if (member == null)
+        {
+            throw new NullReferenceException(nameof(member));
+        }
+
         return enumValue.GetType()
-            .GetMember(enumValue.ToString())
+            .GetMember(member)
             .First()
             .GetCustomAttribute<TAttribute>();
     }

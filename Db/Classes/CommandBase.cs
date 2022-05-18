@@ -1,12 +1,10 @@
-using Db;
-
-namespace Common.Classes;
+namespace Db.Classes;
 
 public abstract class CommandBase
 {
     protected readonly DatabaseContext DbCtx;
 
-    internal CommandBase()
+    protected CommandBase()
     {
         DbCtx = new DatabaseContext();
     }

@@ -22,7 +22,7 @@ public class ConfigurationOptionValueGivenHandler : ModalHandler
         var option = ConfigOptions.Instance.Get(Convert.ToInt32(_optionId));
         var value = EventArgs.Values.First(x => x.Key.Equals("value")).Value;
 
-        switch (option.Type)
+        switch (option.ConfigType)
         {
             case ConfigType.String:
                 await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, value);
@@ -35,9 +35,14 @@ public class ConfigurationOptionValueGivenHandler : ModalHandler
                 var valueChar = Convert.ToChar(value);
                 await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueChar);
                 break;
+            case ConfigType.Decimal:
+                var valueDecimal = Convert.ToDecimal(value);
+                await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueDecimal);
+                break;
             case ConfigType.Boolean:
             case ConfigType.Role:
             case ConfigType.Channel:
+            case ConfigType.Enum:
             default:
                 throw new ArgumentOutOfRangeException();
         }

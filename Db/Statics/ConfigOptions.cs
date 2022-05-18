@@ -1,6 +1,7 @@
+using Common.Enums;
+using Common.Strings;
 using Db.Enums;
 using Db.Statics.BaseClasses;
-using Db.Strings;
 
 namespace Db.Statics;
 
@@ -25,6 +26,7 @@ public sealed class ConfigOptions : StaticClass<ConfigOption>
         new(15, 9, Spam.DeleteMessages, "todo", ConfigType.Boolean, "0", 4),
         new(16, 4, "Silence Channel", "todo", ConfigType.Channel, null, 3),
         new(17, 10, Spam.SilenceMessage, "todo", ConfigType.String, string.Empty, 4),
+        new(18, 11, Spam.Timeout, "todo", typeof(TimeoutDuration), "0", 4),
 
         new(1000, 1, "String", "default", ConfigType.String, "hi", 1000),
         new(1001, 2, "StringNull", "null", ConfigType.String, null, 1000),
@@ -51,16 +53,26 @@ public sealed class ConfigOptions : StaticClass<ConfigOption>
 public class ConfigOption : StaticField
 {
     public readonly int ConfigOptionCategoryId;
+    public readonly ConfigType ConfigType;
     public readonly string? DefaultValue;
     public readonly string Description;
-    public readonly ConfigType Type;
+    public readonly Type? EnumType;
 
     public ConfigOption(int i, int s, string n, string d, ConfigType t, string? df, int ci) : base(i, s, n)
     {
         Description = d;
-        Type = t;
+        ConfigType = t;
         DefaultValue = df;
         ConfigOptionCategoryId = ci;
+    }
+
+    public ConfigOption(int i, int s, string n, string d, Type e, string? df, int ci) : base(i, s, n)
+    {
+        Description = d;
+        ConfigType = ConfigType.Enum;
+        DefaultValue = df;
+        ConfigOptionCategoryId = ci;
+        EnumType = e;
     }
 
     public ConfigOptionCategory ConfigOptionCategory => ConfigOptionCategories.Instance.Get(ConfigOptionCategoryId);

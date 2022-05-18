@@ -22,7 +22,7 @@ public class ConfigurationOptionValueSelectedHandler : InteractionHandler
         var option = ConfigOptions.Instance.Get(Convert.ToInt32(_optionId));
         var value = EventArgs.Values[0];
 
-        switch (option.Type)
+        switch (option.ConfigType)
         {
             case ConfigType.Boolean:
                 var valueBool = value.Equals("1");
@@ -33,9 +33,13 @@ public class ConfigurationOptionValueSelectedHandler : InteractionHandler
                 var valueUlong = Convert.ToUInt64(value);
                 await ConfigHelper.Instance.Set(option, EventArgs.Guild.Id, valueUlong);
                 break;
+            case ConfigType.Enum:
+                await ConfigHelper.Instance.Set(option, EventArgs.Guild.Id, value);
+                break;
             case ConfigType.String:
             case ConfigType.Int:
             case ConfigType.Char:
+            case ConfigType.Decimal:
             default:
                 throw new ArgumentOutOfRangeException();
         }

@@ -1,5 +1,5 @@
 using Anilist4Net;
-using Common.Classes;
+using Db.Classes;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;

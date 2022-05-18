@@ -1,6 +1,5 @@
 using Common.Helper;
 using Common.Interfaces;
-using Db;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;

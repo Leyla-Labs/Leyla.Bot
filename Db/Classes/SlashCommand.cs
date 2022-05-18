@@ -1,6 +1,6 @@
 using DSharpPlus.SlashCommands;
 
-namespace Common.Classes;
+namespace Db.Classes;
 
 public abstract class SlashCommand : CommandBase
 {

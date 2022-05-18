@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Common.Classes;
 using Common.Extensions;
 using Common.Helper;
@@ -23,11 +24,12 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
         var option = ConfigOptions.Instance.Get(optionId);
         var optionDetailsEmbed = GetOptionDetailsEmbed(option);
 
-        switch (option.Type)
+        switch (option.ConfigType)
         {
             case ConfigType.String:
             case ConfigType.Int:
             case ConfigType.Char:
+            case ConfigType.Decimal:
                 var modalBuilder = await GetModal(option);
                 await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.Modal, modalBuilder);
                 break;
@@ -49,8 +51,15 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
                     new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(channelSelect)
                         .AsEphemeral());
                 break;
+            case ConfigType.Enum:
+                var enumSelect = await GetEnumSelect(option);
+                await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+                    new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(enumSelect)
+                        .AsEphemeral());
+                break;
+            // TODO
             default:
-                throw new ArgumentOutOfRangeException(nameof(option.Type));
+                throw new ArgumentOutOfRangeException(nameof(option.ConfigType));
         }
     }
 
@@ -97,8 +106,34 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
             {new("On", "1", isDefault: currentConfig == true), new("Off", "0", isDefault: currentConfig != true)};
         var customId =
             ModalHelper.GetModalName(EventArgs.User.Id, "configOptionValueSelected", new[] {option.Id.ToString()});
-        return new DiscordSelectComponent(customId, "Select value", options,
-            minOptions: 1, maxOptions: 1);
+        return new DiscordSelectComponent(customId, "Select value", options, minOptions: 1, maxOptions: 1);
+    }
+
+    private async Task<DiscordSelectComponent> GetEnumSelect(ConfigOption option)
+    {
+        if (option.EnumType == null)
+        {
+            throw new NullReferenceException(nameof(option.EnumType));
+        }
+
+        var currentConfig = await ConfigHelper.Instance.GetString(option.Name, EventArgs.Guild.Id);
+
+        var options = new List<DiscordSelectComponentOption>();
+
+        // there's gotta be a better way to do this
+        foreach (var entry in Enum.GetNames(option.EnumType))
+        {
+            // get name and index of each enum member
+            var obj = Enum.Parse(option.EnumType, entry);
+            var index = (int) obj;
+            var displayName = obj.GetAttribute<DisplayAttribute>();
+            options.Add(new DiscordSelectComponentOption(displayName?.Name, index.ToString(),
+                isDefault: index.ToString().Equals(currentConfig)));
+        }
+
+        var customId =
+            ModalHelper.GetModalName(EventArgs.User.Id, "configOptionValueSelected", new[] {option.Id.ToString()});
+        return new DiscordSelectComponent(customId, "Select value", options, minOptions: 1, maxOptions: 1);
     }
 
     private async Task<DiscordInteractionResponseBuilder> GetModal(ConfigOption option)
@@ -107,18 +142,20 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
         response.WithTitle(option.Name);
         response.AddModalCustomId(EventArgs.User.Id, "configOptionValueGiven", new[] {option.Id.ToString()});
 
-        var placeholder = option.Type switch
+        var placeholder = option.ConfigType switch
         {
             ConfigType.String => "Enter text",
             ConfigType.Char => "Enter singular character",
             ConfigType.Int => "Enter digits",
+            ConfigType.Decimal => "Enter decimal value (XY.ZA)",
             _ => "Enter value"
         };
 
-        var maxLength = option.Type switch
+        var maxLength = option.ConfigType switch
         {
             ConfigType.Char => 1,
             ConfigType.Int => 9, // 9 to avoid any value > maxInt troubles
+            ConfigType.Decimal => 16,
             _ => 100
         };
 

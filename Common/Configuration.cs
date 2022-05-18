@@ -1,4 +1,4 @@
-namespace Db;
+namespace Common;
 
 public static class Configuration
 {

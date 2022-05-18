@@ -1,7 +1,11 @@
+using System.ComponentModel.DataAnnotations;
+using Common.Enums;
+using Common.Extensions;
 using Db.Helper;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Spam.Classes;
+using Spam.Extensions;
 
 namespace Spam.Events;
 
@@ -20,14 +24,23 @@ public static class SpamHelperOnMaxPressureExceeded
         var silenceRole = await ConfigHelper.Instance.GetRole("Silence Role", guild);
         var modChannel = await ConfigHelper.Instance.GetChannel("Moderator Channel", guild);
         var silenceChannel = await ConfigHelper.Instance.GetChannel("Silence Channel", guild);
-        var silenceMessage = await ConfigHelper.Instance.GetString(Db.Strings.Spam.SilenceMessage, guild.Id);
+        var silenceMessage = await ConfigHelper.Instance.GetString(Common.Strings.Spam.SilenceMessage, guild.Id);
+        var timeoutDuration =
+            await ConfigHelper.Instance.GetEnum<TimeoutDuration>(Common.Strings.Spam.Timeout, guild.Id);
 
         var member = (DiscordMember) lastMessage.Author;
+        var reason = $"Pressure {args.UserPressure:N2} > {args.MaxPressure}";
+
+        if (timeoutDuration != TimeoutDuration.None)
+        {
+            var until = DateTime.Now.AddMinutes(timeoutDuration.GetMinutes());
+            await member.TimeoutAsync(until, reason);
+        }
 
         var silenced = false;
         if (silenceRole != null)
         {
-            await member.GrantRoleAsync(silenceRole, $"Pressure {args.UserPressure:N2} > {args.MaxPressure}");
+            await member.GrantRoleAsync(silenceRole, reason);
             silenced = true;
         }
 
@@ -38,8 +51,8 @@ public static class SpamHelperOnMaxPressureExceeded
             silenceMessageSent = true;
         }
 
-        var messagesDeleted = false;
-        if (await ConfigHelper.Instance.GetBool(Db.Strings.Spam.DeleteMessages, guild.Id) ==
+        var messagesDeleted = 0;
+        if (await ConfigHelper.Instance.GetBool(Common.Strings.Spam.DeleteMessages, guild.Id) ==
             true)
         {
             var messagesAfter = (await lastMessage.Channel.GetMessagesAfterAsync(lastMessage.Id))
@@ -49,7 +62,7 @@ public static class SpamHelperOnMaxPressureExceeded
             messagesToDelete.AddRange(messagesAfter);
             await lastMessage.Channel.DeleteMessagesAsync(messagesToDelete);
 
-            messagesDeleted = true;
+            messagesDeleted = messagesToDelete.Count;
         }
 
         if (modChannel == null)
@@ -57,12 +70,13 @@ public static class SpamHelperOnMaxPressureExceeded
             return;
         }
 
-        var embed = GetEmbed(args, lastMessage, silenced, silenceMessageSent, messagesDeleted);
+        var embed = GetEmbed(args, lastMessage, timeoutDuration, silenced ? silenceRole : null,
+            silenceMessageSent ? silenceChannel : null, messagesDeleted);
         await modChannel.SendMessageAsync(embed);
     }
 
-    private static DiscordEmbed GetEmbed(MaxPressureExceededEventArgs args, DiscordMessage lastMessage, bool silenced,
-        bool silenceMessageSent, bool messagesDeleted)
+    private static DiscordEmbed GetEmbed(MaxPressureExceededEventArgs args, DiscordMessage lastMessage,
+        TimeoutDuration timeout, DiscordRole? silenceRole, DiscordChannel? silenceChannel, int messagesDeleted)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Spam Detected");
@@ -70,23 +84,28 @@ public static class SpamHelperOnMaxPressureExceeded
         var a = lastMessage.Author;
         embed.WithDescription($"{a.Mention}{Environment.NewLine}{a.Username}#{a.Discriminator}");
 
-        if (silenced || silenceMessageSent || messagesDeleted)
+        if (timeout != TimeoutDuration.None || silenceRole != null || silenceChannel != null || messagesDeleted > 0)
         {
             var actionStrings = new List<string>();
 
-            if (silenced)
+            if (timeout != TimeoutDuration.None)
             {
-                actionStrings.Add("User was silenced.");
+                actionStrings.Add($"User was timed out for {timeout.GetAttribute<DisplayAttribute>()?.Name}.");
             }
 
-            if (silenceMessageSent)
+            if (silenceRole != null)
             {
-                actionStrings.Add("User was pinged in silence channel.");
+                actionStrings.Add($"User was silenced ({silenceRole.Name}).");
             }
 
-            if (messagesDeleted)
+            if (silenceChannel != null)
             {
-                actionStrings.Add("Messages were deleted.");
+                actionStrings.Add($"User was pinged in {silenceChannel.Mention}.");
+            }
+
+            if (messagesDeleted > 0)
+            {
+                actionStrings.Add($" {messagesDeleted} messages were deleted.");
             }
 
             var n = Environment.NewLine;

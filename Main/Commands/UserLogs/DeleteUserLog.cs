@@ -1,6 +1,6 @@
-using Common.Classes;
 using Common.Extensions;
 using Db;
+using Db.Classes;
 using Db.Models;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -23,7 +23,7 @@ public class DeleteUserLog : SlashCommand
     public override async Task RunAsync()
     {
         await using var context = new DatabaseContext();
-        
+
         var userLog = await GetUserLog(context);
 
         if (userLog == null)
@@ -41,7 +41,7 @@ public class DeleteUserLog : SlashCommand
     }
 
     #region Instance methods
-    
+
     private async Task<UserLog?> GetUserLog(DatabaseContext context)
     {
         return await context.UserLogs.Where(x =>
@@ -50,7 +50,7 @@ public class DeleteUserLog : SlashCommand
             .Skip(Convert.ToInt32(_n - 1))
             .FirstOrDefaultAsync();
     }
-    
+
     private DiscordEmbed GetConfirmationEmbed(UserLog log)
     {
         var embed = new DiscordEmbedBuilder();
@@ -59,6 +59,6 @@ public class DeleteUserLog : SlashCommand
         embed.WithColor(DiscordColor.DarkRed);
         return embed.Build();
     }
-    
+
     #endregion
 }
