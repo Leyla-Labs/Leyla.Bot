@@ -42,7 +42,13 @@ public static class SpamHelperOnMaxPressureExceeded
         if (await ConfigHelper.Instance.GetBool(Db.Strings.Spam.DeleteMessages, guild.Id) ==
             true)
         {
-            await lastMessage.Channel.DeleteMessagesAsync(args.SessionMessages);
+            var messagesAfter = (await lastMessage.Channel.GetMessagesAfterAsync(lastMessage.Id))
+                .Where(x => x.Author.Id == member.Id);
+
+            var messagesToDelete = args.SessionMessages;
+            messagesToDelete.AddRange(messagesAfter);
+            await lastMessage.Channel.DeleteMessagesAsync(messagesToDelete);
+
             messagesDeleted = true;
         }
 
