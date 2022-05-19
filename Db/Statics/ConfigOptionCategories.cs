@@ -1,4 +1,7 @@
+using Common.Classes;
+using Common.Enums;
 using Db.Statics.BaseClasses;
+using static Common.Strings.Config;
 
 namespace Db.Statics;
 
@@ -6,12 +9,10 @@ public sealed class ConfigOptionCategories : StaticClass<ConfigOptionCategory>
 {
     private ConfigOptionCategories() : base(new List<ConfigOptionCategory>
     {
-        new(1, 1, "General", "todo"),
-        new(2, 2, "Roles", "todo"),
-        new(3, 3, "Channels", "todo"),
-        new(4, 4, "Spam", "todo"),
-
-        new(1000, 1000, "Test", "test category")
+        // id i reserved for general category later
+        new(2, 2, Roles.Category, LeylaModule.Main),
+        new(3, 3, Channels.Category, LeylaModule.Main),
+        new(4, 4, Spam.Category, LeylaModule.Spam)
     })
     {
     }
@@ -27,9 +28,12 @@ public sealed class ConfigOptionCategories : StaticClass<ConfigOptionCategory>
 public class ConfigOptionCategory : StaticField
 {
     public readonly string Description;
+    private LeylaModule Module;
 
-    public ConfigOptionCategory(int i, int s, string n, string d) : base(i, s, n)
+    public ConfigOptionCategory(int id, int sortId, DisplayString displayString, LeylaModule module)
+        : base(id, sortId, displayString.Name)
     {
-        Description = d;
+        Description = displayString.Description;
+        Module = module;
     }
 }

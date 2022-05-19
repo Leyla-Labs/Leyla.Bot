@@ -11,7 +11,7 @@ public static class DiscordWebhookBuilderExtension
         b.AddEmbed(EmbedHelper.GetErrorBuilder(title, description));
         return b;
     }
-    
+
     public static DiscordWebhookBuilder AddErrorEmbed(this DiscordWebhookBuilder b, string title)
     {
         b.AddEmbed(EmbedHelper.GetErrorBuilder(title, null));

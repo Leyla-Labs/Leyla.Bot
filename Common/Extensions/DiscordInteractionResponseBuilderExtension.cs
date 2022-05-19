@@ -11,7 +11,7 @@ public static class DiscordInteractionResponseBuilderExtension
         b.AddEmbed(EmbedHelper.GetErrorBuilder(title, description));
         return b;
     }
-    
+
     public static DiscordInteractionResponseBuilder AddErrorEmbed(this DiscordInteractionResponseBuilder b,
         string title)
     {

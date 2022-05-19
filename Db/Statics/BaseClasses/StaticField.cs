@@ -6,10 +6,10 @@ public class StaticField
     public readonly string Name;
     public readonly int SortId;
 
-    protected StaticField(int i, int s, string n)
+    protected StaticField(int id, int sortId, string name)
     {
-        Id = i;
-        SortId = s;
-        Name = n;
+        Id = id;
+        SortId = sortId;
+        Name = name;
     }
 }

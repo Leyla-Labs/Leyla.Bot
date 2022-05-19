@@ -1,7 +1,8 @@
+using Common.Classes;
 using Common.Enums;
-using Common.Strings;
 using Db.Enums;
 using Db.Statics.BaseClasses;
+using static Common.Strings.Config;
 
 namespace Db.Statics;
 
@@ -9,35 +10,24 @@ public sealed class ConfigOptions : StaticClass<ConfigOption>
 {
     private ConfigOptions() : base(new List<ConfigOption>
     {
-        new(1, 1, "Moderator Role", "todo", ConfigType.Role, null, 2),
-        new(2, 1, "Moderator Channel", "todo", ConfigType.Channel, null, 3),
-        new(3, 2, "Log Channel", "todo", ConfigType.Channel, null, 3),
-        new(4, 3, "Archive Channel", "todo", ConfigType.Channel, null, 3),
-        new(5, 2, "Verification Role", "todo", ConfigType.Role, null, 2),
-        new(6, 1, Spam.BasePressure, "todo", ConfigType.Decimal, "10", 4),
-        new(7, 2, Spam.ImagePressure, "todo", ConfigType.Decimal, "8.3", 4),
-        new(8, 3, Spam.LengthPressure, "todo", ConfigType.Decimal, "0.00625", 4),
-        new(9, 4, Spam.LinePressure, "todo", ConfigType.Decimal, "0.714", 4),
-        new(10, 5, Spam.PingPressure, "todo", ConfigType.Decimal, "2.5", 4),
-        new(11, 6, Spam.RepeatPressure, "todo", ConfigType.Decimal, "10", 4),
-        new(12, 7, Spam.MaxPressure, "todo", ConfigType.Decimal, "60", 4),
-        new(13, 8, Spam.PressureDecay, "todo", ConfigType.Decimal, "2.5", 4),
-        new(14, 3, "Silence Role", "todo", ConfigType.Role, null, 2),
-        new(15, 9, Spam.DeleteMessages, "todo", ConfigType.Boolean, "0", 4),
-        new(16, 4, "Silence Channel", "todo", ConfigType.Channel, null, 3),
-        new(17, 10, Spam.SilenceMessage, "todo", ConfigType.String, string.Empty, 4),
-        new(18, 11, Spam.Timeout, "todo", typeof(TimeoutDuration), "0", 4),
-
-        new(1000, 1, "String", "default", ConfigType.String, "hi", 1000),
-        new(1001, 2, "StringNull", "null", ConfigType.String, null, 1000),
-        new(1002, 3, "Boolean", "default", ConfigType.Boolean, "1", 1000),
-        new(1003, 4, "BooleanNull", "null", ConfigType.Boolean, null, 1000),
-        new(1004, 5, "Int", "default", ConfigType.Int, "7", 1000),
-        new(1005, 6, "IntNull", "null", ConfigType.Int, null, 1000),
-        new(1006, 7, "Char", "default", ConfigType.Char, "h", 1000),
-        new(1007, 8, "CharNull", "null", ConfigType.Char, null, 1000),
-        new(1008, 9, "Role", "null", ConfigType.Role, null, 1000),
-        new(1009, 10, "Channel", "null", ConfigType.Channel, null, 1000)
+        new(1, 1, 2, Roles.Mod, ConfigType.Role, null),
+        new(2, 1, 3, Channels.Mod, ConfigType.Channel, null),
+        new(3, 2, 3, Channels.Log, ConfigType.Channel, null, LeylaModule.Logs),
+        new(4, 3, 3, Channels.Archive, ConfigType.Channel, null, LeylaModule.Logs),
+        new(5, 2, 2, Roles.Verification, ConfigType.Role, null),
+        new(6, 1, 4, Spam.BasePressure, ConfigType.Decimal, "10"),
+        new(7, 2, 4, Spam.ImagePressure, ConfigType.Decimal, "8.3"),
+        new(8, 3, 4, Spam.LengthPressure, ConfigType.Decimal, "0.00625"),
+        new(9, 4, 4, Spam.LinePressure, ConfigType.Decimal, "0.714"),
+        new(10, 5, 4, Spam.PingPressure, ConfigType.Decimal, "2.5"),
+        new(11, 6, 4, Spam.RepeatPressure, ConfigType.Decimal, "10"),
+        new(12, 7, 4, Spam.MaxPressure, ConfigType.Decimal, "60"),
+        new(13, 8, 4, Spam.PressureDecay, ConfigType.Decimal, "2.5"),
+        new(14, 3, 2, Roles.Silence, ConfigType.Role, null, LeylaModule.Spam),
+        new(15, 9, 4, Spam.DeleteMessages, ConfigType.Boolean, "0"),
+        new(16, 4, 3, Channels.Silence, ConfigType.Channel, null, LeylaModule.Spam),
+        new(17, 10, 4, Spam.SilenceMessage, ConfigType.String, string.Empty),
+        new(18, 11, 4, Spam.Timeout, typeof(TimeoutDuration), "0")
     })
     {
     }
@@ -57,22 +47,39 @@ public class ConfigOption : StaticField
     public readonly string? DefaultValue;
     public readonly string Description;
     public readonly Type? EnumType;
+    private readonly LeylaModule? Module;
 
-    public ConfigOption(int i, int s, string n, string d, ConfigType t, string? df, int ci) : base(i, s, n)
+    public ConfigOption(int id,
+        int sortId,
+        int categoryId,
+        DisplayString displayString,
+        ConfigType configType,
+        string? defaultValue,
+        LeylaModule? module = null)
+        : base(id, sortId, displayString.Name)
     {
-        Description = d;
-        ConfigType = t;
-        DefaultValue = df;
-        ConfigOptionCategoryId = ci;
+        Description = displayString.Description;
+        ConfigType = configType;
+        DefaultValue = defaultValue;
+        ConfigOptionCategoryId = categoryId;
+        Module = module;
     }
 
-    public ConfigOption(int i, int s, string n, string d, Type e, string? df, int ci) : base(i, s, n)
+    public ConfigOption(int id,
+        int sortId,
+        int categoryId,
+        DisplayString displayString,
+        Type enumType,
+        string? defaultValue,
+        LeylaModule? module = null)
+        : base(id, sortId, displayString.Name)
     {
-        Description = d;
+        Description = displayString.Description;
         ConfigType = ConfigType.Enum;
-        DefaultValue = df;
-        ConfigOptionCategoryId = ci;
-        EnumType = e;
+        EnumType = enumType;
+        DefaultValue = defaultValue;
+        ConfigOptionCategoryId = categoryId;
+        Module = module;
     }
 
     public ConfigOptionCategory ConfigOptionCategory => ConfigOptionCategories.Instance.Get(ConfigOptionCategoryId);
