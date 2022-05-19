@@ -4,6 +4,7 @@ using Db.Statics;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Main.Extensions;
 
 namespace Main.Handler;
 
@@ -18,7 +19,7 @@ public class ConfigurationCategorySelectedHandler : InteractionHandler
     {
         var categoryId = Convert.ToInt32(EventArgs.Values[0]);
         var optionEmbed = GetOptionEmbed(categoryId);
-        var optionSelect = GetOptionSelect(categoryId);
+        var optionSelect = await GetOptionSelect(categoryId);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(optionEmbed).AddComponents(optionSelect).AsEphemeral());
     }
@@ -34,9 +35,11 @@ public class ConfigurationCategorySelectedHandler : InteractionHandler
         return embed.Build();
     }
 
-    private DiscordSelectComponent GetOptionSelect(int categoryId)
+    private async Task<DiscordSelectComponent> GetOptionSelect(int categoryId)
     {
-        var configOptions = ConfigOptions.Instance.Get().Where(x => x.ConfigOptionCategoryId == categoryId).ToList();
+        var modules = await EventArgs.Guild.GetGuildModules();
+        var configOptions = ConfigOptions.Instance.Get().Where(x => x.ConfigOptionCategoryId == categoryId);
+        configOptions = configOptions.Where(x => x.Module == null || modules.Contains(x.Module.Value));
         var options = configOptions.Select(x =>
             new DiscordSelectComponentOption(x.Name, x.Id.ToString(), x.Description));
         var customId = ModalHelper.GetModalName(EventArgs.User.Id, "configOptions");

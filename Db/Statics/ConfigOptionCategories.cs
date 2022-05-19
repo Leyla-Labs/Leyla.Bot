@@ -28,7 +28,7 @@ public sealed class ConfigOptionCategories : StaticClass<ConfigOptionCategory>
 public class ConfigOptionCategory : StaticField
 {
     public readonly string Description;
-    private LeylaModule Module;
+    public readonly LeylaModule Module;
 
     public ConfigOptionCategory(int id, int sortId, DisplayString displayString, LeylaModule module)
         : base(id, sortId, displayString.Name)

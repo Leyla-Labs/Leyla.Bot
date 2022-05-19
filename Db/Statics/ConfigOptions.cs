@@ -47,7 +47,7 @@ public class ConfigOption : StaticField
     public readonly string? DefaultValue;
     public readonly string Description;
     public readonly Type? EnumType;
-    private readonly LeylaModule? Module;
+    public readonly LeylaModule? Module;
 
     public ConfigOption(int id,
         int sortId,
