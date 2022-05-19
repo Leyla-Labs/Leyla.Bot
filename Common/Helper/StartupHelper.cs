@@ -1,3 +1,4 @@
+using System.Reflection;
 using DSharpPlus;
 using DSharpPlus.Entities;
 
@@ -23,7 +24,14 @@ public class StartupHelper
             Environment.Exit(0);
         }
 
-        var embed = new DiscordEmbedBuilder {Title = _bot.CurrentApplication.Name};
+        var embed = new DiscordEmbedBuilder();
+        embed.WithTitle(_bot.CurrentApplication.Name);
+        
+        if (Assembly.GetExecutingAssembly().GetName().Version is { } v)
+        {
+            embed.AddField("Version", $"{v?.Major}.{v?.Minor}.{v?.Build}");
+        }
+        
         await channel.SendMessageAsync(embed.Build());
     }
 }
