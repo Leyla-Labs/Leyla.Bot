@@ -8,11 +8,15 @@ namespace Db.Helper;
 
 public sealed class ConfigHelper
 {
-    private readonly Dictionary<ulong, List<Config>> _guildConfigs;
+    private Dictionary<ulong, List<Config>> _guildConfigs = new();
 
     private ConfigHelper()
     {
-        _guildConfigs = LoadGuildConfigs().Result;
+    }
+
+    public async Task Initialise()
+    {
+        _guildConfigs = await LoadGuildConfigs();
     }
 
     private static async Task<Dictionary<ulong, List<Config>>> LoadGuildConfigs()

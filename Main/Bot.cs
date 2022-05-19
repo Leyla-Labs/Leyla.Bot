@@ -1,4 +1,5 @@
 using Common.Classes;
+using Db.Helper;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
 using Main.Events;
@@ -36,5 +37,10 @@ public class Bot : Leyla
 
         commands.SlashCommandErrored += CommandsOnSlashCommandErroredEvent.CommandsOnSlashCommandErrored;
         commands.ContextMenuErrored += CommandsOnContextMenuErroredEvent.CommandsOnContextMenuErrored;
+    }
+
+    protected override async Task LoadConfig()
+    {
+        await ConfigHelper.Instance.Initialise();
     }
 }
