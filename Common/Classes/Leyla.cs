@@ -1,9 +1,11 @@
+using Common.Events;
 using Common.Helper;
 using Common.Interfaces;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
+using DSharpPlus.SlashCommands;
 
 namespace Common.Classes;
 
@@ -30,6 +32,14 @@ public abstract class Leyla : IBot
         Client.Dispose();
     }
 
+    protected virtual SlashCommandsExtension RegisterCommands()
+    {
+        var commands = Client.UseSlashCommands();
+        commands.SlashCommandErrored += CommandsOnSlashCommandErroredEvent.CommandsOnSlashCommandErrored;
+        commands.ContextMenuErrored += CommandsOnContextMenuErroredEvent.CommandsOnContextMenuErrored;
+        return commands;
+    }
+
     private void RegisterInteractivity()
     {
         Client.UseInteractivity(new InteractivityConfiguration
@@ -46,7 +56,6 @@ public abstract class Leyla : IBot
     #region Abstract methods
 
     protected abstract Task<DiscordClient> InitBot();
-    protected abstract void RegisterCommands();
 
     #endregion
 }

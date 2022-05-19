@@ -1,6 +1,6 @@
 using DSharpPlus.SlashCommands.EventArgs;
 
-namespace Main.Handler.BaseClasses;
+namespace Common.Handler.BaseClasses;
 
 public abstract class SlashCommandErrorHandler
 {

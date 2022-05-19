@@ -23,9 +23,4 @@ public class Bot : Leyla
         client.MessageUpdated += ClientOnMessageUpdated.HandleEvent;
         return Task.FromResult(client);
     }
-
-    protected override void RegisterCommands()
-    {
-        // do nothing
-    }
 }

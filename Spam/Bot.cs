@@ -21,9 +21,4 @@ public class Bot : Leyla
         SpamHelper.MaxPressureExceeded += SpamHelperOnMaxPressureExceeded.HandleEvent;
         return Task.FromResult(client);
     }
-
-    protected override void RegisterCommands()
-    {
-        // do nothing
-    }
 }

@@ -1,10 +1,10 @@
 using System.Net;
+using Common.Handler.BaseClasses;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands.EventArgs;
 using GraphQL.Client.Http;
-using Main.Handler.BaseClasses;
 
-namespace Main.Handler;
+namespace Common.Handler;
 
 public sealed class GraphQlHttpRequestExceptionHandler : SlashCommandErrorHandler
 {

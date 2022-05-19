@@ -1,8 +1,8 @@
+using Common.Handler;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
-using Main.Handler;
 
-namespace Main.Events;
+namespace Common.Events;
 
 public static class CommandsOnContextMenuErroredEvent
 {

@@ -1,9 +1,9 @@
+using Common.Handler;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using GraphQL.Client.Http;
-using Main.Handler;
 
-namespace Main.Events;
+namespace Common.Events;
 
 public static class CommandsOnSlashCommandErroredEvent
 {

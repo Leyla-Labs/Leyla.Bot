@@ -26,9 +26,9 @@ public class Bot : Leyla
         return client;
     }
 
-    protected override void RegisterCommands()
+    protected override SlashCommandsExtension RegisterCommands()
     {
-        var commands = Client.UseSlashCommands();
+        var commands = base.RegisterCommands();
 
         commands.RegisterCommands<Configuration>();
         commands.RegisterCommands<Moderation>();
@@ -37,7 +37,6 @@ public class Bot : Leyla
         commands.RegisterCommands<Stashes>();
         commands.RegisterCommands<AniList>();
 
-        commands.SlashCommandErrored += CommandsOnSlashCommandErroredEvent.CommandsOnSlashCommandErrored;
-        commands.ContextMenuErrored += CommandsOnContextMenuErroredEvent.CommandsOnContextMenuErrored;
+        return commands;
     }
 }

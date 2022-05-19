@@ -1,11 +1,11 @@
 using Common.Checks;
+using Common.Handler.BaseClasses;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
-using Main.Handler.BaseClasses;
 
-namespace Main.Handler;
+namespace Common.Handler;
 
 public sealed class ContextMenuExecutionChecksFailedExceptionHandler : ContextMenuErrorHandler
 {
