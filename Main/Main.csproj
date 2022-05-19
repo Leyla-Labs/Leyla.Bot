@@ -17,6 +17,8 @@
     <ItemGroup>
         <ProjectReference Include="..\Common\Common.csproj"/>
         <ProjectReference Include="..\Db\Db.csproj"/>
+        <ProjectReference Include="..\Logs\Logs.csproj"/>
+        <ProjectReference Include="..\Spam\Spam.csproj"/>
     </ItemGroup>
 
 </Project>

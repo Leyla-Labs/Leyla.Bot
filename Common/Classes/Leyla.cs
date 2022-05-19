@@ -14,8 +14,7 @@ public abstract class Leyla : IBot
     public async Task StartAsync()
     {
         Configuration.ConnectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")!;
-        await LoadConfig();
-        Client = InitBot();
+        Client = await InitBot();
         RegisterCommands();
         RegisterInteractivity();
         await Client.ConnectAsync();
@@ -46,9 +45,8 @@ public abstract class Leyla : IBot
 
     #region Abstract methods
 
-    protected abstract DiscordClient InitBot();
+    protected abstract Task<DiscordClient> InitBot();
     protected abstract void RegisterCommands();
-    protected abstract Task LoadConfig();
 
     #endregion
 }

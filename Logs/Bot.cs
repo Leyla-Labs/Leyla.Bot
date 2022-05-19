@@ -1,5 +1,4 @@
 using Common.Classes;
-using Db.Helper;
 using DSharpPlus;
 using Logs.Events;
 
@@ -7,11 +6,11 @@ namespace Logs;
 
 public class Bot : Leyla
 {
-    protected override DiscordClient InitBot()
+    protected override Task<DiscordClient> InitBot()
     {
         var client = new DiscordClient(new DiscordConfiguration
         {
-            Token = Environment.GetEnvironmentVariable("TOKEN"),
+            Token = Environment.GetEnvironmentVariable("TOKEN_LOGS"),
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.Guilds
                       | DiscordIntents.GuildMessages
@@ -22,16 +21,11 @@ public class Bot : Leyla
         client.GuildMemberRemoved += ClientOnGuildMemberRemoved.HandleEvent;
         client.MessageDeleted += ClientOnMessageDeleted.HandleEvent;
         client.MessageUpdated += ClientOnMessageUpdated.HandleEvent;
-        return client;
+        return Task.FromResult(client);
     }
 
     protected override void RegisterCommands()
     {
         // do nothing
-    }
-
-    protected override async Task LoadConfig()
-    {
-        await ConfigHelper.Instance.Initialise();
     }
 }

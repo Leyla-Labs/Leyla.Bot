@@ -9,11 +9,13 @@ namespace Main;
 
 public class Bot : Leyla
 {
-    protected override DiscordClient InitBot()
+    protected override async Task<DiscordClient> InitBot()
     {
+        await ConfigHelper.Instance.Initialise();
+
         var client = new DiscordClient(new DiscordConfiguration
         {
-            Token = Environment.GetEnvironmentVariable("TOKEN"),
+            Token = Environment.GetEnvironmentVariable("TOKEN_MAIN"),
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.Guilds
         });
@@ -37,10 +39,5 @@ public class Bot : Leyla
 
         commands.SlashCommandErrored += CommandsOnSlashCommandErroredEvent.CommandsOnSlashCommandErrored;
         commands.ContextMenuErrored += CommandsOnContextMenuErroredEvent.CommandsOnContextMenuErrored;
-    }
-
-    protected override async Task LoadConfig()
-    {
-        await ConfigHelper.Instance.Initialise();
     }
 }

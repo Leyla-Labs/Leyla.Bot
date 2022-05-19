@@ -3,11 +3,11 @@ using Microsoft.Extensions.Hosting;
 
 namespace Common.Services;
 
-public class BotService : IHostedService, IDisposable
+public class BotService<T> : IHostedService, IDisposable where T : Leyla
 {
-    private readonly Leyla _bot;
+    private readonly T _bot;
 
-    public BotService(Leyla bot)
+    public BotService(T bot)
     {
         _bot = bot;
     }
