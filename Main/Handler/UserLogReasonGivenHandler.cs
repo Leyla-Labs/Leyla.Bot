@@ -1,9 +1,9 @@
 using Common.Classes;
+using Common.Db;
+using Common.Db.Models;
+using Common.Enums;
 using Common.Extensions;
-using Db;
-using Db.Enums;
-using Db.Helper;
-using Db.Models;
+using Common.Helper;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;

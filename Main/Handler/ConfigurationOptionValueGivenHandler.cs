@@ -1,7 +1,7 @@
 using Common.Classes;
-using Db.Enums;
-using Db.Helper;
-using Db.Statics;
+using Common.Enums;
+using Common.Helper;
+using Common.Statics;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 

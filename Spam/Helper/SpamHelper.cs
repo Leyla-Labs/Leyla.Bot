@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using Common.Extensions;
-using Db.Helper;
+using Common.Helper;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Spam.Classes;

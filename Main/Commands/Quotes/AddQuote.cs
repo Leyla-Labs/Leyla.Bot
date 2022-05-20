@@ -1,7 +1,7 @@
+using Common.Classes;
+using Common.Db.Models;
 using Common.Extensions;
-using Db.Classes;
-using Db.Helper;
-using Db.Models;
+using Common.Helper;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;

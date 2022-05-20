@@ -1,6 +1,6 @@
-using Db;
-using Db.Classes;
-using Db.Models;
+using Common.Classes;
+using Common.Db;
+using Common.Db.Models;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;

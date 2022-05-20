@@ -1,5 +1,5 @@
-using Db;
-using Db.Models;
+using Common.Db;
+using Common.Db.Models;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
 

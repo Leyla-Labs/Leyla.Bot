@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Common.Classes;
+using Common.Enums;
 using Common.Extensions;
 using Common.Helper;
-using Db.Enums;
-using Db.Helper;
-using Db.Statics;
+using Common.Statics;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;

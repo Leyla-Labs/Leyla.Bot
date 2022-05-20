@@ -1,7 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db", "Db\Db.csproj", "{6BCE369F-5920-4194-937B-5B39C827E93A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Main", "Main\Main.csproj", "{49856919-86CE-49D5-A786-5572EF746FB9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logs", "Logs\Logs.csproj", "{0B66CF65-A1B0-4EC1-838E-B87DDDC5DD41}"
@@ -16,10 +14,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6BCE369F-5920-4194-937B-5B39C827E93A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6BCE369F-5920-4194-937B-5B39C827E93A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6BCE369F-5920-4194-937B-5B39C827E93A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6BCE369F-5920-4194-937B-5B39C827E93A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{49856919-86CE-49D5-A786-5572EF746FB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{49856919-86CE-49D5-A786-5572EF746FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49856919-86CE-49D5-A786-5572EF746FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU

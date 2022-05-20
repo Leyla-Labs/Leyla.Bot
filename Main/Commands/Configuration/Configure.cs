@@ -1,6 +1,6 @@
+using Common.Classes;
 using Common.Helper;
-using Db.Classes;
-using Db.Statics;
+using Common.Statics;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Main.Extensions;

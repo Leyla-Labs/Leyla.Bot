@@ -1,5 +1,4 @@
 using Common.Helper;
-using Db.Helper;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;

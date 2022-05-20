@@ -1,6 +1,6 @@
 using Common.Classes;
 using Common.Helper;
-using Db.Statics;
+using Common.Statics;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;

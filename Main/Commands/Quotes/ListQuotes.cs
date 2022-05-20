@@ -1,6 +1,6 @@
 using System.Text;
-using Db.Classes;
-using Db.Models;
+using Common.Classes;
+using Common.Db.Models;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;

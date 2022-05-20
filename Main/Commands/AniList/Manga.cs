@@ -1,7 +1,7 @@
 using Anilist4Net;
 using Anilist4Net.Enums;
+using Common.Classes;
 using Common.Extensions;
-using Db.Classes;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
