@@ -1,6 +1,5 @@
 using System.Text;
 using Common.Helper;
-using Common.Strings;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Spam.Classes;
@@ -45,7 +44,7 @@ internal class RaidHelper
                 return;
             }
 
-            if (member.JoinedAt.UtcDateTime < DateTime.UtcNow.AddMinutes(-1 * raidTime))
+            if (lastJoin.JoinedAt.UtcDateTime < DateTime.UtcNow.AddMinutes(-1 * raidTime))
             {
                 // it's been longer than the defined raid time since the last join, clear list
                 guildList.Clear();
@@ -65,6 +64,7 @@ internal class RaidHelper
         if (r.Count >= raidSize)
         {
             RaidDetected?.Invoke(sender, new RaidDetectedEventArgs(r));
+            // TODO add cooldown time during which no further notifications to moderators are sent
         }
     }
 
@@ -74,28 +74,51 @@ internal class RaidHelper
 
         var raidSize = await ConfigHelper.Instance.GetInt(RaidSize.Name, guild.Id) ?? 0;
 
+        // todo also check if people in list joined within raid time
+
         var membersToSilence = _recentJoins.TryGetValue(guild.Id, out var guildList) && guildList.Count >= raidSize
             ? guildList
             : new List<DiscordMember>();
 
-        await SilenceMembers(guild, membersToSilence);
+        await AddRaidRoleToMembers(guild, membersToSilence);
+        await MentionMembersInRaidChannel(guild, membersToSilence);
 
         var embed = GetRaidModeEnabledEmbed(membersToSilence);
         await channel.SendMessageAsync(new DiscordMessageBuilder().AddEmbed(embed));
     }
 
-    private static async Task SilenceMembers(DiscordGuild guild, List<DiscordMember> members)
+    private static async Task AddRaidRoleToMembers(DiscordGuild guild, IEnumerable<DiscordMember> members)
     {
-        var silenceRole = await ConfigHelper.Instance.GetRole(Config.Roles.Silence.Name, guild);
+        var raidRole = await ConfigHelper.Instance.GetRole(RaidRole.Name, guild);
 
-        if (silenceRole == null)
+        if (raidRole == null)
         {
             return;
         }
 
-        foreach (var m in members.Where(x => !x.Roles.Select(y => y.Id).Contains(silenceRole.Id)))
+        foreach (var m in members.Where(x => !x.Roles.Select(y => y.Id).Contains(raidRole.Id)))
         {
-            await m.GrantRoleAsync(silenceRole);
+            await m.GrantRoleAsync(raidRole);
+        }
+    }
+
+    public static async Task MentionMembersInRaidChannel(DiscordGuild guild, DiscordMember member)
+    {
+        await MentionMembersInRaidChannel(guild, new List<DiscordMember> {member});
+    }
+
+    public static async Task MentionMembersInRaidChannel(DiscordGuild guild, List<DiscordMember> members)
+    {
+        var raidMessage =
+            await ConfigHelper.Instance.GetString(RaidMessage.Name, guild.Id);
+        var raidChannel = await ConfigHelper.Instance.GetChannel(RaidChannel.Name, guild);
+
+        if (!string.IsNullOrWhiteSpace(raidMessage) && raidChannel != null)
+        {
+            foreach (var member in members)
+            {
+                await raidChannel.SendMessageAsync($"{member.Mention} {raidMessage}");
+            }
         }
     }
 

@@ -29,7 +29,10 @@ public sealed class ConfigOptions : StaticClass<ConfigOption>
         new(18, 11, 4, Spam.Timeout, typeof(TimeoutDuration), "0"),
         new(19, 1, 5, Raid.RaidMode, ConfigType.Boolean, "false"),
         new(20, 2, 5, Raid.RaidSize, ConfigType.Int, null),
-        new(21, 3, 5, Raid.RaidTime, ConfigType.Int, null)
+        new(21, 3, 5, Raid.RaidTime, ConfigType.Int, null),
+        new(22, 5, 3, Raid.RaidChannel, ConfigType.Channel, null, LeylaModule.Spam),
+        new(23, 3, 2, Raid.RaidRole, ConfigType.Role, null, LeylaModule.Spam),
+        new(24, 4, 5, Raid.RaidMessage, ConfigType.String, null)
     })
     {
     }

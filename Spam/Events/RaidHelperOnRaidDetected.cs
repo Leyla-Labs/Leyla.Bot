@@ -23,7 +23,7 @@ internal static class RaidHelperOnRaidDetected
         }
 
         var embed = GetEmbed(args.RaidMembers);
-        var button = GetRaidModeButton(sender.CurrentUser.Id);
+        var button = GetRaidModeButton();
 
         await modChannel.SendMessageAsync(new DiscordMessageBuilder().AddEmbed(embed).AddComponents(button));
     }
@@ -37,7 +37,7 @@ internal static class RaidHelperOnRaidDetected
     }
 
 
-    private static DiscordButtonComponent GetRaidModeButton(ulong userId)
+    private static DiscordButtonComponent GetRaidModeButton()
     {
         var customId = ModalHelper.GetModalName(1, "raidMode", new[] {"True"});
         return new DiscordButtonComponent(ButtonStyle.Danger, customId, "Enable Raid Mode");

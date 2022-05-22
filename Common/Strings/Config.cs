@@ -47,5 +47,8 @@ public static class Config
         public static readonly DisplayString RaidMode = new("Raid Mode");
         public static readonly DisplayString RaidSize = new("Raid Size");
         public static readonly DisplayString RaidTime = new("Raid Time");
+        public static readonly DisplayString RaidChannel = new("Raid Channel");
+        public static readonly DisplayString RaidRole = new("Raid Role");
+        public static readonly DisplayString RaidMessage = new("Raid Message");
     }
 }
