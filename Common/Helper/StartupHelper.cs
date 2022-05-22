@@ -29,7 +29,7 @@ public class StartupHelper
 
         if (Assembly.GetExecutingAssembly().GetName().Version is { } v)
         {
-            embed.AddField("Version", $"{v?.Major}.{v?.Minor}.{v?.Build}");
+            embed.AddField("Version", $"{v.Major}.{v.Minor}.{v.Build}");
         }
 
         await channel.SendMessageAsync(embed.Build());

@@ -26,7 +26,10 @@ public sealed class ConfigOptions : StaticClass<ConfigOption>
         new(15, 9, 4, Spam.DeleteMessages, ConfigType.Boolean, "0"),
         new(16, 4, 3, Channels.Silence, ConfigType.Channel, null, LeylaModule.Spam),
         new(17, 10, 4, Spam.SilenceMessage, ConfigType.String, string.Empty),
-        new(18, 11, 4, Spam.Timeout, typeof(TimeoutDuration), "0")
+        new(18, 11, 4, Spam.Timeout, typeof(TimeoutDuration), "0"),
+        new(19, 1, 5, Raid.RaidMode, ConfigType.Boolean, "false"),
+        new(20, 2, 5, Raid.RaidSize, ConfigType.Int, null),
+        new(21, 3, 5, Raid.RaidTime, ConfigType.Int, null)
     })
     {
     }

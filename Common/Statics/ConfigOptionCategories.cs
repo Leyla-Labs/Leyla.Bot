@@ -12,7 +12,8 @@ public sealed class ConfigOptionCategories : StaticClass<ConfigOptionCategory>
         // id i reserved for general category later
         new(2, 2, Roles.Category, LeylaModule.Main),
         new(3, 3, Channels.Category, LeylaModule.Main),
-        new(4, 4, Spam.Category, LeylaModule.Spam)
+        new(4, 4, Spam.Category, LeylaModule.Spam),
+        new(5, 5, Raid.Category, LeylaModule.Spam)
     })
     {
     }

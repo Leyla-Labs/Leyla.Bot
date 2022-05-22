@@ -13,8 +13,9 @@ public static class ClientOnComponentInteractionCreatedEvent
         var info = e.Id.Split("-");
         var userId = Convert.ToUInt64(info[0]);
 
-        if (userId != e.User.Id)
+        if (userId != 1 && userId == e.User.Id)
         {
+            // 1 if anyone can use component
             return; // TODO handle this
         }
 

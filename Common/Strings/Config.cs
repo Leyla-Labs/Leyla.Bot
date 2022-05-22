@@ -39,4 +39,13 @@ public static class Config
         public static readonly DisplayString SilenceMessage = new(Strings.Spam.SilenceMessage);
         public static readonly DisplayString Timeout = new(Strings.Spam.Timeout);
     }
+
+    public static class Raid
+    {
+        public static readonly DisplayString Category = new("Raid");
+
+        public static readonly DisplayString RaidMode = new("Raid Mode");
+        public static readonly DisplayString RaidSize = new("Raid Size");
+        public static readonly DisplayString RaidTime = new("Raid Time");
+    }
 }
