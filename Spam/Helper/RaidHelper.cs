@@ -63,12 +63,24 @@ internal class RaidHelper
             list.Add(member);
         }
 
-        var r = _recentJoins[guildId];
-        if (r.Count >= raidSize)
+        var r = GetRaidMembers(guildId, raidSize);
+        if (r != null)
         {
             RaidDetected?.Invoke(sender, new RaidDetectedEventArgs(r));
             // TODO add cooldown time during which no further notifications to moderators are sent
         }
+    }
+
+    public async Task<List<DiscordMember>?> GetRaidMembers(ulong guildId)
+    {
+        var raidSize = await ConfigHelper.Instance.GetInt(RaidSize.Name, guildId) ?? 0;
+        return GetRaidMembers(guildId, raidSize);
+    }
+
+    private List<DiscordMember>? GetRaidMembers(ulong guildId, int raidSize)
+    {
+        _recentJoins.TryGetValue(guildId, out var guildJoins);
+        return guildJoins?.Count >= raidSize ? guildJoins : null;
     }
 
     public async Task<DiscordEmbed> EnableRaidModeAndGetEmbed(DiscordGuild guild)

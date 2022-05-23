@@ -21,4 +21,11 @@ public class Raid : ApplicationCommandModule
     {
         await new Off(ctx).RunAsync();
     }
+
+    [SlashCommand("list", "Lists all members from the most recent raid.")]
+    [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
+    public async Task SlashRaidList(InteractionContext ctx)
+    {
+        await new List(ctx).RunAsync();
+    }
 }
