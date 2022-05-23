@@ -25,18 +25,18 @@ internal static class RaidHelperOnRaidDetected
         }
 
         var embed = GetEmbed(args.RaidMembers);
-        var button = GetRaidModeButton();
+        var components = new List<DiscordButtonComponent> {GetRaidModeButton()};
 
         var lockdownDuration = await ConfigHelper.Instance.GetInt(Config.Raid.LockdownDuration.Name, guild.Id);
 
         if (lockdownDuration > 0)
         {
-            await RaidHelper.EnableLockdown(guild, lockdownDuration.Value);
+            components.Add(GetLockdownButton(guild));
+            await RaidHelper.Instance.EnableLockdown(guild, lockdownDuration.Value);
             embed = AddLockdownToDescription(embed, guild, lockdownDuration.Value);
-            // TODO add button to disable sooner
         }
 
-        await modChannel.SendMessageAsync(new DiscordMessageBuilder().AddEmbed(embed).AddComponents(button));
+        await modChannel.SendMessageAsync(new DiscordMessageBuilder().AddEmbed(embed).AddComponents(components));
     }
 
     private static DiscordEmbed GetEmbed(IEnumerable<DiscordMember> raidMembers)
@@ -65,5 +65,12 @@ internal static class RaidHelperOnRaidDetected
         sb.Append($"the verification level will be set to {guild.VerificationLevel}.");
         embedBuilder.WithDescription(sb.ToString());
         return embedBuilder.Build();
+    }
+
+    private static DiscordButtonComponent GetLockdownButton(DiscordGuild guild)
+    {
+        var vLvl = ((int) guild.VerificationLevel).ToString();
+        var customId = ModalHelper.GetModalName(1, "disableLockdown", new[] {vLvl});
+        return new DiscordButtonComponent(ButtonStyle.Secondary, customId, "Disable Lockdown");
     }
 }

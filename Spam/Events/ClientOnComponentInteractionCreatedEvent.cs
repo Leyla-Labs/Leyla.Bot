@@ -24,9 +24,13 @@ public static class ClientOnComponentInteractionCreatedEvent
         switch (info[1])
         {
             case "raidMode" when additionalInfo.Length < 1:
+            case "disableLockdown" when additionalInfo.Length < 1:
                 throw new NullReferenceException(nameof(additionalInfo));
             case "raidMode":
                 await new RaidModeSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
+                break;
+            case "disableLockdown":
+                await new DisableLockdownHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
             default:
                 return;

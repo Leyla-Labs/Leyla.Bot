@@ -14,6 +14,7 @@ internal delegate void RaidDetecedHandler(DiscordClient sender, RaidDetectedEven
 
 internal class RaidHelper
 {
+    private readonly List<LockdownTimer> _lockdownTimers = new();
     private readonly Dictionary<ulong, List<DiscordMember>> _recentJoins = new();
 
     private RaidHelper()
@@ -143,25 +144,27 @@ internal class RaidHelper
         return embed.Build();
     }
 
-    public static async Task EnableLockdown(DiscordGuild guild, int duration)
+    public async Task EnableLockdown(DiscordGuild guild, int duration)
     {
         var timer = new LockdownTimer(guild, duration);
         timer.Elapsed += TimerOnElapsed;
 
         await guild.ModifyAsync(x => x.VerificationLevel = VerificationLevel.High);
 
+        _lockdownTimers.Add(timer);
         timer.Start();
     }
 
-    private static async void TimerOnElapsed(object? sender, ElapsedEventArgs e)
+    private async void TimerOnElapsed(object? sender, ElapsedEventArgs e)
     {
         var lockdownTimer = (LockdownTimer) (sender ?? throw new NullReferenceException(nameof(sender)));
         lockdownTimer.Stop();
+        _lockdownTimers.Remove(lockdownTimer);
         await lockdownTimer.DiscordGuild.ModifyAsync(x => x.VerificationLevel = lockdownTimer.VerificationLevel);
         await SendLockdownDisabledMessage(lockdownTimer.DiscordGuild);
     }
 
-    private static async Task SendLockdownDisabledMessage(DiscordGuild guild)
+    public static async Task SendLockdownDisabledMessage(DiscordGuild guild)
     {
         var modChannel = await ConfigHelper.Instance.GetChannel(Config.Channels.Mod.Name, guild);
         if (modChannel == null)
@@ -177,6 +180,18 @@ internal class RaidHelper
         embed.WithColor(DiscordColor.Blurple);
 
         await modChannel.SendMessageAsync(new DiscordMessageBuilder().AddEmbed(embed.Build()));
+    }
+
+    public void StopLockdownTimer(ulong guildId)
+    {
+        var timer = _lockdownTimers.FirstOrDefault(x => x.DiscordGuild.Id == guildId);
+        if (timer == null)
+        {
+            return;
+        }
+
+        timer.Stop();
+        _lockdownTimers.Remove(timer);
     }
 
     #region Singleton
