@@ -1,7 +1,9 @@
 using Common.Classes;
 using DSharpPlus;
+using DSharpPlus.SlashCommands;
 using Spam.Events;
 using Spam.Helper;
+using Spam.Modules;
 
 namespace Spam;
 
@@ -25,5 +27,14 @@ public class Bot : Leyla
         SpamHelper.MaxPressureExceeded += SpamHelperOnMaxPressureExceeded.HandleEvent;
         RaidHelper.RaidDetected += RaidHelperOnRaidDetected.HandleEvent;
         return Task.FromResult(client);
+    }
+
+    protected override SlashCommandsExtension RegisterCommands()
+    {
+        var commands = base.RegisterCommands();
+
+        commands.RegisterCommands<Raid>();
+
+        return commands;
     }
 }

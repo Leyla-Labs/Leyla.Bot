@@ -71,7 +71,7 @@ internal class RaidHelper
         }
     }
 
-    public async Task EnableRaidMode(DiscordGuild guild, DiscordChannel channel)
+    public async Task<DiscordEmbed> EnableRaidModeAndGetEmbed(DiscordGuild guild)
     {
         await ConfigHelper.Instance.Set(RaidMode.Name, guild.Id, true);
 
@@ -86,8 +86,7 @@ internal class RaidHelper
         await AddRaidRoleToMembers(guild, membersToSilence);
         await MentionMembersInRaidChannel(guild, membersToSilence);
 
-        var embed = GetRaidModeEnabledEmbed(membersToSilence);
-        await channel.SendMessageAsync(new DiscordMessageBuilder().AddEmbed(embed));
+        return GetRaidModeEnabledEmbed(membersToSilence);
     }
 
     private static async Task AddRaidRoleToMembers(DiscordGuild guild, IEnumerable<DiscordMember> members)
@@ -128,7 +127,7 @@ internal class RaidHelper
     private static DiscordEmbed GetRaidModeEnabledEmbed(IReadOnlyCollection<DiscordMember> membersToSilence)
     {
         var embed = new DiscordEmbedBuilder();
-        embed.WithTitle("Raid Mode Active");
+        embed.WithTitle("Raid Mode Enabled");
 
         var sb = new StringBuilder();
         if (membersToSilence.Count > 0)

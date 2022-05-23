@@ -1,5 +1,6 @@
 using Common.Classes;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Spam.Helper;
 
@@ -20,7 +21,9 @@ public class RaidModeSelectedHandler : InteractionHandler
         var raidMode = bool.Parse(_raidMode);
         if (raidMode)
         {
-            await RaidHelper.Instance.EnableRaidMode(EventArgs.Guild, EventArgs.Channel);
+            var embed = await RaidHelper.Instance.EnableRaidModeAndGetEmbed(EventArgs.Guild);
+            await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
     }
 }
