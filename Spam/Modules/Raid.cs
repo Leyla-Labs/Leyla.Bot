@@ -28,4 +28,11 @@ public class Raid : ApplicationCommandModule
     {
         await new List(ctx).RunAsync();
     }
+
+    [SlashCommand("ban", "Bans all members from the most recent raid. USE WITH CAUTION!")]
+    [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
+    public async Task SlashRaidBan(InteractionContext ctx)
+    {
+        await new Ban(ctx).RunAsync();
+    }
 }
