@@ -50,5 +50,6 @@ public static class Config
         public static readonly DisplayString RaidChannel = new("Raid Channel");
         public static readonly DisplayString RaidRole = new("Raid Role");
         public static readonly DisplayString RaidMessage = new("Raid Message");
+        public static readonly DisplayString LockdownDuration = new("Lockdown Duration");
     }
 }

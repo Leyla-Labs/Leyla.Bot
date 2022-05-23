@@ -32,7 +32,8 @@ public sealed class ConfigOptions : StaticClass<ConfigOption>
         new(21, 3, 5, Raid.RaidTime, ConfigType.Int, null),
         new(22, 5, 3, Raid.RaidChannel, ConfigType.Channel, null, LeylaModule.Spam),
         new(23, 3, 2, Raid.RaidRole, ConfigType.Role, null, LeylaModule.Spam),
-        new(24, 4, 5, Raid.RaidMessage, ConfigType.String, null)
+        new(24, 4, 5, Raid.RaidMessage, ConfigType.String, null),
+        new(25, 5, 5, Raid.LockdownDuration, ConfigType.Int, "15")
     })
     {
     }

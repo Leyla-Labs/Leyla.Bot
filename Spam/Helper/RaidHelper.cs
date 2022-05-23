@@ -1,5 +1,7 @@
 using System.Text;
+using System.Timers;
 using Common.Helper;
+using Common.Strings;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Spam.Classes;
@@ -139,6 +141,42 @@ internal class RaidHelper
         embed.WithDescription(sb.ToString());
         embed.WithColor(DiscordColor.Blurple);
         return embed.Build();
+    }
+
+    public static async Task EnableLockdown(DiscordGuild guild, int duration)
+    {
+        var timer = new LockdownTimer(guild, duration);
+        timer.Elapsed += TimerOnElapsed;
+
+        await guild.ModifyAsync(x => x.VerificationLevel = VerificationLevel.High);
+
+        timer.Start();
+    }
+
+    private static async void TimerOnElapsed(object? sender, ElapsedEventArgs e)
+    {
+        var lockdownTimer = (LockdownTimer) (sender ?? throw new NullReferenceException(nameof(sender)));
+        lockdownTimer.Stop();
+        await lockdownTimer.DiscordGuild.ModifyAsync(x => x.VerificationLevel = lockdownTimer.VerificationLevel);
+        await SendLockdownDisabledMessage(lockdownTimer.DiscordGuild);
+    }
+
+    private static async Task SendLockdownDisabledMessage(DiscordGuild guild)
+    {
+        var modChannel = await ConfigHelper.Instance.GetChannel(Config.Channels.Mod.Name, guild);
+        if (modChannel == null)
+        {
+            // handle this differently?
+            return;
+        }
+
+        var embed = new DiscordEmbedBuilder();
+        embed.WithTitle("Lockdown Disabled");
+        embed.WithDescription(
+            $"Lockdown has been disabled. The verification level was reverted to {guild.VerificationLevel}.");
+        embed.WithColor(DiscordColor.Blurple);
+
+        await modChannel.SendMessageAsync(new DiscordMessageBuilder().AddEmbed(embed.Build()));
     }
 
     #region Singleton
