@@ -64,7 +64,7 @@ internal class RaidHelper
         }
 
         var r = GetRaidMembers(guildId, raidSize);
-        if (r != null)
+        if (r?.Count == raidSize) // only trigger once limit hit the first time
         {
             RaidDetected?.Invoke(sender, new RaidDetectedEventArgs(r));
             // TODO add cooldown time during which no further notifications to moderators are sent
