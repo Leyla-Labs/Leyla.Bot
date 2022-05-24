@@ -10,6 +10,8 @@ public static class ClientOnGuildMemberAdded
 {
     public static async Task HandleEvent(DiscordClient sender, GuildMemberAddEventArgs e)
     {
+        await SilenceHelper.Instance.ProcessUserJoined(e.Guild, e.Member);
+
         var raidMode = await ConfigHelper.Instance.GetBool(Config.Raid.RaidMode.Name, e.Guild.Id);
 
         if (raidMode == true)

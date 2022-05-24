@@ -22,6 +22,7 @@ public class Bot : Leyla
         client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
         client.MessageCreated += ClientOnMessageCreated.HandleEvent;
         client.GuildMemberAdded += ClientOnGuildMemberAdded.HandleEvent;
+        client.GuildMemberRemoved += ClientOnGuildMemberRemoved.HandleEvent;
         client.ComponentInteractionCreated +=
             ClientOnComponentInteractionCreatedEvent.HandleEvent;
         SpamHelper.MaxPressureExceeded += SpamHelperOnMaxPressureExceeded.HandleEvent;
