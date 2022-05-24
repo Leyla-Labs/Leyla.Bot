@@ -36,7 +36,17 @@ internal static class RaidHelperOnRaidDetected
             embed = AddLockdownToDescription(embed, guild, lockdownDuration.Value);
         }
 
-        await modChannel.SendMessageAsync(new DiscordMessageBuilder().AddEmbed(embed).AddComponents(components));
+        var builder = new DiscordMessageBuilder().AddEmbed(embed).AddComponents(components);
+
+        if (await ConfigHelper.Instance.GetBool(Config.Raid.NotifyModerators.Name, guild.Id) == true)
+        {
+            if (await ConfigHelper.Instance.GetRole(Config.Roles.Mod.Name, guild) is { } role)
+            {
+                builder.WithContent(role.Mention);
+            }
+        }
+
+        await modChannel.SendMessageAsync(builder);
     }
 
     private static DiscordEmbed GetEmbed(IEnumerable<DiscordMember> raidMembers)
@@ -47,7 +57,6 @@ internal static class RaidHelperOnRaidDetected
         embed.WithColor(DiscordColor.Blurple);
         return embed.Build();
     }
-
 
     private static DiscordButtonComponent GetRaidModeButton()
     {
