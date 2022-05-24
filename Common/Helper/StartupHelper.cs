@@ -22,6 +22,7 @@ public class StartupHelper
         {
             Console.Write("Main channel not found. Exiting.");
             Environment.Exit(0);
+            return;
         }
 
         var embed = new DiscordEmbedBuilder();

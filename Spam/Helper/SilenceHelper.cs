@@ -17,8 +17,6 @@ public class SilenceHelper
     {
         var silenceRole = await ConfigHelper.Instance.GetRole(Config.Roles.Silence.Name, guild);
 
-        var roles = member.Roles.ToList();
-
         if (silenceRole != null && member.Roles.Select(x => x.Id).Contains(silenceRole.Id))
         {
             _userSilences.Add(new KeyValuePair<ulong, ulong>(guild.Id, member.Id));
