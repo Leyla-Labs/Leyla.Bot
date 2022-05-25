@@ -30,10 +30,9 @@ public class SelfAssignMenuButtonPressedHandler : InteractionHandler
         }
 
         var selectMenu = GetSelectMenu(menu);
-        var embed = GetEmbed(menu);
 
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
-            new DiscordInteractionResponseBuilder().AddEmbed(embed).AddComponents(selectMenu).AsEphemeral());
+            new DiscordInteractionResponseBuilder().AddComponents(selectMenu).AsEphemeral());
     }
 
     private async Task<SelfAssignMenu?> GetSelfAssignMenu()
@@ -66,14 +65,5 @@ public class SelfAssignMenuButtonPressedHandler : InteractionHandler
         var customId = ModalHelper.GetModalName(member.Id, "selfAssignMenuSelected");
         return new DiscordSelectComponent(customId, "Select role(s)",
             options, minOptions: 0, maxOptions: options.Count);
-    }
-
-    private static DiscordEmbed GetEmbed(SelfAssignMenu menu)
-    {
-        var embed = new DiscordEmbedBuilder();
-        embed.WithTitle(menu.Title);
-        embed.WithDescription(menu.Description);
-        embed.WithColor(DiscordColor.Blurple);
-        return embed.Build();
     }
 }
