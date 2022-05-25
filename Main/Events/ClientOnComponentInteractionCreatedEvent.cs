@@ -23,29 +23,31 @@ public static class ClientOnComponentInteractionCreatedEvent
 
         switch (info[1])
         {
+            case "configOptionValueSelected" when additionalInfo.Length < 1:
+            case "addToStash" when additionalInfo.Length < 1:
+            case "userLogType" when additionalInfo.Length < 1:
+            case "manageMenu" when additionalInfo.Length < 1:
+                throw new NullReferenceException(nameof(additionalInfo));
             case "configCategories":
                 await new ConfigurationCategorySelectedHandler(sender, e).RunAsync();
                 break;
             case "configOptions":
                 await new ConfigurationOptionSelectedHandler(sender, e).RunAsync();
                 break;
-            case "configOptionValueSelected" when additionalInfo.Length < 1:
-                throw new NullReferenceException(nameof(additionalInfo));
             case "configOptionValueSelected":
                 await new ConfigurationOptionValueSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
-            case "addToStash" when additionalInfo.Length < 1:
-                throw new NullReferenceException(nameof(additionalInfo));
             case "addToStash":
                 await new AddToStashSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
             case "stashSelected":
                 await new PickStashSelectedHandler(sender, e).RunAsync();
                 break;
-            case "userLogType" when additionalInfo.Length < 1:
-                throw new NullReferenceException(nameof(additionalInfo));
             case "userLogType":
                 await new UserLogTypeSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
+                break;
+            case "manageMenu":
+                await new SelfAssignMenuManageHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
             default:
                 return;

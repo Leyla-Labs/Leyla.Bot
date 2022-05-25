@@ -31,4 +31,12 @@ public class SelfAssignMenus : ApplicationCommandModule
     {
         await new Rename(ctx, title).RunAsync();
     }
+
+    [SlashCommand("manage", "Manages a self assign menu.")]
+    public async Task SlashManage(InteractionContext ctx,
+        [Option("Name", "Name of the self assign menu to manage")]
+        string title)
+    {
+        await new Manage(ctx, title).RunAsync();
+    }
 }
