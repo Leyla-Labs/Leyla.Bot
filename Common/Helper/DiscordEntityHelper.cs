@@ -24,4 +24,20 @@ public static class DiscordEntityHelper
             await context.SaveChangesAsync();
         }
     }
+
+    public static async Task DeleteIfExists(DiscordEntityType type, ulong id, ulong guildId)
+    {
+        await using var context = new DatabaseContext();
+
+        var entry = await context.DiscordEntities.FirstOrDefaultAsync(x =>
+            x.GuildId == guildId &&
+            x.DiscordEntityType == type &&
+            x.Id == id);
+
+        if (entry != null)
+        {
+            context.Entry(entry).State = EntityState.Deleted;
+            await context.SaveChangesAsync();
+        }
+    }
 }

@@ -2,6 +2,7 @@ namespace Common;
 
 public static class BotIds
 {
+    // todo move these into json file
 #if DEBUG
     public const ulong Main = 971328045501775882;
     public const ulong Logs = 969938165550972929;
