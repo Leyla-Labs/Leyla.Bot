@@ -1,6 +1,5 @@
 using System.Text;
 using Common.Classes;
-using Common.Db;
 using Common.Db.Models;
 using Common.Helper;
 using DSharpPlus;
@@ -28,19 +27,19 @@ public class Create : SlashCommand
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
+    #region Instance methods
+
     private async Task CreateInDatabase()
     {
-        await using var context = new DatabaseContext();
-
         await GuildHelper.CreateIfNotExist(Ctx.Guild.Id);
 
-        await context.SelfAssignMenus.AddAsync(new SelfAssignMenu
+        await DbCtx.SelfAssignMenus.AddAsync(new SelfAssignMenu
         {
             Title = _title,
             Description = _description,
             GuildId = Ctx.Guild.Id
         });
-        await context.SaveChangesAsync();
+        await DbCtx.SaveChangesAsync();
     }
 
     private DiscordEmbed GetEmbed()
@@ -56,4 +55,6 @@ public class Create : SlashCommand
         embed.WithColor(DiscordColor.Blurple);
         return embed.Build();
     }
+
+    #endregion
 }
