@@ -15,12 +15,13 @@ public class Create : SlashCommand
 
     public Create(InteractionContext ctx, string title, string? description) : base(ctx)
     {
-        _title = title;
+        _title = title.Length > 35 ? title[..35] : title;
         _description = description;
     }
 
     public override async Task RunAsync()
     {
+        // TODO check for duplicates
         await CreateInDatabase();
         var embed = GetEmbed();
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,

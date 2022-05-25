@@ -22,24 +22,25 @@ public static class ClientOnModalSubmittedEvent
         switch (info[1])
         {
             case "configOptionValueGiven" when additionalInfo.Length < 1:
+            case "addToStash" when additionalInfo.Length < 1:
+            case "addUserLog" when additionalInfo.Length < 2:
+            case "editUserLog" when additionalInfo.Length < 1:
+            case "renameMenu" when additionalInfo.Length < 1:
                 throw new NullReferenceException(nameof(additionalInfo));
             case "configOptionValueGiven":
                 await new ConfigurationOptionValueGivenHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
-            case "addToStash" when additionalInfo.Length < 1:
-                throw new NullReferenceException(nameof(additionalInfo));
             case "addToStash":
                 await new StashEntryValueGivenHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
-            case "addUserLog" when additionalInfo.Length < 2:
-                throw new NullReferenceException(nameof(additionalInfo));
             case "addUserLog":
                 await new UserLogReasonGivenHandler(sender, e, additionalInfo[0], additionalInfo[1]).RunAsync();
                 break;
-            case "editUserLog" when additionalInfo.Length < 1:
-                throw new NullReferenceException(nameof(additionalInfo));
             case "editUserLog":
                 await new UserLogEditedHandler(sender, e, additionalInfo[0]).RunAsync();
+                break;
+            case "renameMenu":
+                await new SelfAssignMenuRenameHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
             default:
                 return;
