@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Stashes;
 
-public class DeleteStash : SlashCommand
+public class Delete : SlashCommand
 {
     private readonly string _stashName;
 
-    public DeleteStash(InteractionContext ctx, string stashName) : base(ctx)
+    public Delete(InteractionContext ctx, string stashName) : base(ctx)
     {
         _stashName = stashName;
     }

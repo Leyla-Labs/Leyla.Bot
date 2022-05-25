@@ -11,9 +11,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.UserLogs;
 
-public class ListUserLogs : ContextMenuCommand
+public class List : ContextMenuCommand
 {
-    public ListUserLogs(ContextMenuContext ctx) : base(ctx)
+    public List(ContextMenuContext ctx) : base(ctx)
     {
     }
 

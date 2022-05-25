@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Quotes;
 
-public sealed class ListQuotes : SlashCommand
+public sealed class List : SlashCommand
 {
     private readonly DiscordMember _member;
 
-    public ListQuotes(InteractionContext ctx, DiscordMember member) : base(ctx)
+    public List(InteractionContext ctx, DiscordMember member) : base(ctx)
     {
         _member = member;
     }

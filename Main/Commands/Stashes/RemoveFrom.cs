@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Stashes;
 
-public class RemoveFromStash : SlashCommand
+public class RemoveFrom : SlashCommand
 {
     private readonly string _stashName;
     private readonly string _val;
 
-    public RemoveFromStash(InteractionContext ctx, string stashName, string val) : base(ctx)
+    public RemoveFrom(InteractionContext ctx, string stashName, string val) : base(ctx)
     {
         _stashName = stashName;
         _val = val;

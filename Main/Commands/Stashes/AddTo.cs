@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Stashes;
 
-public class AddToStash : ContextMenuCommand
+public class AddTo : ContextMenuCommand
 {
-    public AddToStash(ContextMenuContext ctx) : base(ctx)
+    public AddTo(ContextMenuContext ctx) : base(ctx)
     {
     }
 

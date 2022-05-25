@@ -10,12 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.UserLogs;
 
-public class EditUserLog : SlashCommand
+public class Edit : SlashCommand
 {
     private readonly DiscordMember _member;
     private readonly long _n;
 
-    public EditUserLog(InteractionContext ctx, DiscordMember member, long n) : base(ctx)
+    public Edit(InteractionContext ctx, DiscordMember member, long n) : base(ctx)
     {
         _member = member;
         _n = n;

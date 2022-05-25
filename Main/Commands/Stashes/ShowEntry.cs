@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Stashes;
 
-public class ShowStashEntry : SlashCommand
+public class ShowEntry : SlashCommand
 {
     private readonly long _n;
     private readonly string _stashName;
 
-    public ShowStashEntry(InteractionContext ctx, string stashName, long n) : base(ctx)
+    public ShowEntry(InteractionContext ctx, string stashName, long n) : base(ctx)
     {
         _stashName = stashName;
         _n = n;

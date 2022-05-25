@@ -6,12 +6,12 @@ using Main.Helper;
 
 namespace Main.Commands.Quotes;
 
-public sealed class ShowQuote : SlashCommand
+public sealed class Show : SlashCommand
 {
     private readonly DiscordMember _member;
     private readonly long _n;
 
-    public ShowQuote(InteractionContext ctx, DiscordMember member, long n) : base(ctx)
+    public Show(InteractionContext ctx, DiscordMember member, long n) : base(ctx)
     {
         _member = member;
         _n = n;

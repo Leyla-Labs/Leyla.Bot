@@ -6,9 +6,9 @@ using DSharpPlus.SlashCommands;
 
 namespace Main.Commands.UserLogs;
 
-public class AddUserLog : ContextMenuCommand
+public class Add : ContextMenuCommand
 {
-    public AddUserLog(ContextMenuContext ctx) : base(ctx)
+    public Add(ContextMenuContext ctx) : base(ctx)
     {
     }
 

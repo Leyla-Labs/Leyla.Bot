@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Quotes;
 
-public sealed class RandomQuote : SlashCommand
+public sealed class Random : SlashCommand
 {
-    public RandomQuote(InteractionContext ctx) : base(ctx)
+    public Random(InteractionContext ctx) : base(ctx)
     {
     }
 

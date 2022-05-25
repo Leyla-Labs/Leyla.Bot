@@ -7,11 +7,11 @@ using DSharpPlus.SlashCommands;
 
 namespace Main.Commands.Stashes;
 
-public class CreateStash : SlashCommand
+public class Create : SlashCommand
 {
     private readonly string _stashName;
 
-    public CreateStash(InteractionContext ctx, string stashName) : base(ctx)
+    public Create(InteractionContext ctx, string stashName) : base(ctx)
     {
         _stashName = stashName;
     }

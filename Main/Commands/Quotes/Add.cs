@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Quotes;
 
-public sealed class AddQuote : ContextMenuCommand
+public sealed class Add : ContextMenuCommand
 {
-    public AddQuote(ContextMenuContext ctx) : base(ctx)
+    public Add(ContextMenuContext ctx) : base(ctx)
     {
     }
 

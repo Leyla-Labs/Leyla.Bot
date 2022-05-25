@@ -11,11 +11,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Stashes;
 
-public class ListStash : SlashCommand
+public class List : SlashCommand
 {
     private readonly string? _stashName;
 
-    public ListStash(InteractionContext ctx, string? stashName) : base(ctx)
+    public List(InteractionContext ctx, string? stashName) : base(ctx)
     {
         _stashName = stashName;
     }

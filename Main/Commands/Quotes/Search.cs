@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Quotes;
 
-public sealed class SearchQuotes : SlashCommand
+public sealed class Search : SlashCommand
 {
     private readonly string _query;
 
-    public SearchQuotes(InteractionContext ctx, string query) : base(ctx)
+    public Search(InteractionContext ctx, string query) : base(ctx)
     {
         _query = query;
     }

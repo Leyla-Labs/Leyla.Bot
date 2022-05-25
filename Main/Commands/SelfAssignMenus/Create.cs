@@ -7,7 +7,6 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.EntityFrameworkCore;
-using Polly;
 
 namespace Main.Commands.SelfAssignMenus;
 
@@ -31,8 +30,8 @@ public class Create : SlashCommand
                     .AddErrorEmbed("A Self Assign Menu with that title already exists.").AsEphemeral());
             return;
         }
-        
-        
+
+
         await CreateInDatabase();
         var embed = GetEmbed();
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,

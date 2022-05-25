@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.UserLogs;
 
-public class DeleteUserLog : SlashCommand
+public class Delete : SlashCommand
 {
     private readonly DiscordMember _member;
     private readonly long _n;
 
-    public DeleteUserLog(InteractionContext ctx, DiscordMember member, long n) : base(ctx)
+    public Delete(InteractionContext ctx, DiscordMember member, long n) : base(ctx)
     {
         _member = member;
         _n = n;
