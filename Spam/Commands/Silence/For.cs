@@ -1,3 +1,4 @@
+using System.Text;
 using Common.Classes;
 using Common.Extensions;
 using Common.Helper;
@@ -36,17 +37,13 @@ public class For : SlashCommand
             return;
         }
 
-        if (_member.Roles.Select(x => x.Id).Contains(silenceRole.Id))
-        {
-            await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AddErrorEmbed($"{_member.DisplayName} is already silenced."));
-            return;
-        }
+        var overridden = _member.Roles.Select(x => x.Id).Contains(silenceRole.Id);
 
         await _member.GrantRoleAsync(silenceRole);
         until = SilenceHelper.Instance.AddTimedSilence(_member, until);
 
-        await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(GetEmbed(until)));
+        var embed = GetEmbed(until, overridden);
+        await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed));
     }
 
     #region Instance methods
@@ -62,13 +59,22 @@ public class For : SlashCommand
         };
     }
 
-    private DiscordEmbed GetEmbed(DateTime until)
+    private DiscordEmbed GetEmbed(DateTime until, bool overridden)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Member Silenced");
         var tsFull = Formatter.Timestamp(until, TimestampFormat.ShortDateTime);
         var tsRel = Formatter.Timestamp(until);
-        embed.WithDescription($"{_member.DisplayName} was silenced until {tsFull}, {tsRel}.");
+
+        var sb = new StringBuilder();
+        sb.Append($"{_member.DisplayName} was silenced until {tsFull}, {tsRel}.");
+        if (overridden)
+        {
+            sb.Append($"{Environment.NewLine}{Environment.NewLine}");
+            sb.Append("An existing silence was replaced with this new one.");
+        }
+        embed.WithDescription(sb.ToString());
+        
         embed.WithColor(DiscordColor.Blurple);
         return embed.Build();
     }

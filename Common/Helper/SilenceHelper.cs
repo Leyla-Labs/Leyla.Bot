@@ -54,6 +54,16 @@ public class SilenceHelper
 
     public DateTime AddTimedSilence(DiscordMember member, DateTime until)
     {
+        var current = _memberSilences.FirstOrDefault(x =>
+            x.Member.Guild.Id == member.Guild.Id &&
+            x.Member.Id == member.Id);
+
+        if (current != null)
+        {
+            // replace existing silence with new timed silence
+            _memberSilences.Remove(current);
+        }
+
         until = until.AddSeconds(Convert.ToInt32(decimal.Multiply(until.Second, -1)));
         _memberSilences.Add(new MemberSilence(member, until));
         return until;
