@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Handler;
 
-public class SelfAssignMenuButtonPressedHandler : InteractionHandler
+internal sealed class SelfAssignMenuButtonPressedHandler : InteractionHandler
 {
     private readonly string _menuId;
 

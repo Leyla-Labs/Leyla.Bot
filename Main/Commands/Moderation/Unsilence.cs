@@ -8,7 +8,7 @@ using DSharpPlus.SlashCommands;
 
 namespace Main.Commands.Moderation;
 
-public class Unsilence : SlashCommand
+internal sealed class Unsilence : SlashCommand
 {
     private readonly DiscordMember _member;
 

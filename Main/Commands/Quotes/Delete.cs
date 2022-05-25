@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Quotes;
 
-public sealed class Delete : SlashCommand
+internal sealed class Delete : SlashCommand
 {
     private readonly DiscordMember _member;
     private readonly long _n;

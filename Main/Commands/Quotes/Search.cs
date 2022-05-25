@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Quotes;
 
-public sealed class Search : SlashCommand
+internal sealed class Search : SlashCommand
 {
     private readonly string _query;
 

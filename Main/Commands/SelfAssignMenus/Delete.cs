@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.SelfAssignMenus;
 
-public class Delete : SlashCommand
+internal sealed class Delete : SlashCommand
 {
     private readonly string _title;
 

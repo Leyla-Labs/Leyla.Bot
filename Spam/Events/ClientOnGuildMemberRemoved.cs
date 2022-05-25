@@ -4,7 +4,7 @@ using DSharpPlus.EventArgs;
 
 namespace Spam.Events;
 
-public static class ClientOnGuildMemberRemoved
+internal static class ClientOnGuildMemberRemoved
 {
     public static async Task HandleEvent(DiscordClient sender, GuildMemberRemoveEventArgs e)
     {

@@ -10,7 +10,7 @@ using Spam.Enums;
 
 namespace Spam.Commands.Silence;
 
-public class For : SlashCommand
+internal sealed class For : SlashCommand
 {
     private readonly SilenceDurationKind _kind;
     private readonly DiscordMember _member;

@@ -8,7 +8,7 @@ using Spam.Enums;
 namespace Spam.Modules;
 
 [SlashCommandGroup("Silence", "todo")]
-public class Silence : ApplicationCommandModule
+internal sealed class Silence : ApplicationCommandModule
 {
     [SlashCommand("for", "Silences for the given duration.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]

@@ -9,7 +9,7 @@ namespace Main.Modules;
 
 [SlashCommandGroup("Quote", "Description TODO")]
 [SlashRequireGuild]
-public class Quotes : ApplicationCommandModule
+internal sealed class Quotes : ApplicationCommandModule
 {
     [ContextMenu(ApplicationCommandType.MessageContextMenu, "Add Quote")]
     public async Task MenuAdd(ContextMenuContext ctx)

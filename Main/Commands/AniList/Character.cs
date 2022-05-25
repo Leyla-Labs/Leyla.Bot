@@ -7,7 +7,7 @@ using Main.Extensions;
 
 namespace Main.Commands.AniList;
 
-public sealed class Character : SlashCommand
+internal sealed class Character : SlashCommand
 {
     private readonly string _name;
 

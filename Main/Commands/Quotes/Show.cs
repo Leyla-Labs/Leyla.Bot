@@ -6,7 +6,7 @@ using Main.Helper;
 
 namespace Main.Commands.Quotes;
 
-public sealed class Show : SlashCommand
+internal sealed class Show : SlashCommand
 {
     private readonly DiscordMember _member;
     private readonly long _n;

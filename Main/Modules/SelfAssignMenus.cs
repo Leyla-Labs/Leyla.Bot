@@ -7,7 +7,7 @@ namespace Main.Modules;
 
 [SlashCommandGroup("Menu", "Description TODO")]
 [SlashRequireGuild]
-public class SelfAssignMenus : ApplicationCommandModule
+internal sealed class SelfAssignMenus : ApplicationCommandModule
 {
     [SlashCommand("create", "Create a new self assign menu.")]
     public async Task SlashCreate(InteractionContext ctx,

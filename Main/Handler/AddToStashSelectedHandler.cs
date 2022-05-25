@@ -6,7 +6,7 @@ using DSharpPlus.EventArgs;
 
 namespace Main.Handler;
 
-public class AddToStashSelectedHandler : InteractionHandler
+internal sealed class AddToStashSelectedHandler : InteractionHandler
 {
     private readonly string _content;
 

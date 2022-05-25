@@ -11,7 +11,7 @@ using Spam.Helper;
 
 namespace Spam.Commands.Raid;
 
-public class Ban : SlashCommand
+internal sealed class Ban : SlashCommand
 {
     public Ban(InteractionContext ctx) : base(ctx)
     {

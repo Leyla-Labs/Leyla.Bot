@@ -5,7 +5,7 @@ using DSharpPlus.Entities;
 
 namespace Main.BackgroundTasks;
 
-public class CheckSilences : IScheduledTask
+internal class CheckSilences : IScheduledTask
 {
     public bool IsShuttingDown { get; set; }
 

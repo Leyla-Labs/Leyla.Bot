@@ -3,7 +3,7 @@ using Timer = System.Timers.Timer;
 
 namespace Spam.Classes;
 
-public class LockdownTimer : Timer
+internal class LockdownTimer : Timer
 {
     public readonly DiscordGuild DiscordGuild;
     public readonly VerificationLevel VerificationLevel;

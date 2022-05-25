@@ -7,7 +7,7 @@ using Main.Commands.UserLogs;
 namespace Main.Modules;
 
 [SlashCommandGroup("UserLogs", "Description TODO")]
-public class UserLogs : ApplicationCommandModule
+internal sealed class UserLogs : ApplicationCommandModule
 {
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Add User Log")]
     [SlashRequireGuild]

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.SelfAssignMenus;
 
-public class Post : SlashCommand
+internal sealed class Post : SlashCommand
 {
     private readonly DiscordChannel _channel;
     private readonly string _title;

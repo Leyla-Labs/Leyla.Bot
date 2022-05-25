@@ -6,7 +6,7 @@ using Spam.Helper;
 
 namespace Spam.Handler;
 
-public class RaidModeSelectedHandler : InteractionHandler
+internal sealed class RaidModeSelectedHandler : InteractionHandler
 {
     private readonly string _raidMode;
 

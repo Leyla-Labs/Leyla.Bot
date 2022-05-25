@@ -8,7 +8,7 @@ using DSharpPlus.EventArgs;
 
 namespace Main.Handler;
 
-public class UserLogTypeSelectedHandler : InteractionHandler
+internal sealed class UserLogTypeSelectedHandler : InteractionHandler
 {
     private readonly string _userId;
 

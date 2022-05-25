@@ -2,7 +2,7 @@ using Common.Enums;
 
 namespace Spam.Extensions;
 
-public static class TimeoutDurationExtensions
+internal static class TimeoutDurationExtensions
 {
     public static int GetMinutes(this TimeoutDuration timeoutDuration)
     {

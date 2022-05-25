@@ -4,7 +4,7 @@ using Main.Extensions;
 
 namespace Main.Helper;
 
-public static class AniListHelper
+internal static class AniListHelper
 {
     public static void AddCommonMediaFieldsTop(DiscordEmbedBuilder embed, Media media)
     {

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Stashes;
 
-public class RemoveFrom : SlashCommand
+internal sealed class RemoveFrom : SlashCommand
 {
     private readonly string _stashName;
     private readonly string _val;

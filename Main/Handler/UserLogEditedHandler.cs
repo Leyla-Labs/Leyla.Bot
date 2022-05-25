@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Handler;
 
-public class UserLogEditedHandler : ModalHandler
+internal sealed class UserLogEditedHandler : ModalHandler
 {
     private readonly string _userLogId;
 

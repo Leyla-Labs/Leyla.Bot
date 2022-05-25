@@ -3,7 +3,7 @@ using Main.Commands.Configuration;
 
 namespace Main.Modules;
 
-public class Configuration : ApplicationCommandModule
+internal sealed class Configuration : ApplicationCommandModule
 {
     [SlashCommand("configure", "Configure bot settings.")]
     public async Task SlashConfigure(InteractionContext ctx)

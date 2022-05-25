@@ -6,7 +6,7 @@ using Spam.Commands.Raid;
 namespace Spam.Modules;
 
 [SlashCommandGroup("Raid", "todo")]
-public class Raid : ApplicationCommandModule
+internal sealed class Raid : ApplicationCommandModule
 {
     [SlashCommand("on", "Turns raid mode on.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]

@@ -9,7 +9,7 @@ using Main.Helper;
 
 namespace Main.Commands.AniList;
 
-public sealed class Manga : SlashCommand
+internal sealed class Manga : SlashCommand
 {
     private readonly string _title;
 

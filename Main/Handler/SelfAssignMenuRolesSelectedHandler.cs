@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Handler;
 
-public class SelfAssignMenuRolesSelectedHandler : InteractionHandler
+internal sealed class SelfAssignMenuRolesSelectedHandler : InteractionHandler
 {
     private readonly string _menuId;
 

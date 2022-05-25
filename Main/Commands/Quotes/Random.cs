@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Quotes;
 
-public sealed class Random : SlashCommand
+internal sealed class Random : SlashCommand
 {
     public Random(InteractionContext ctx) : base(ctx)
     {

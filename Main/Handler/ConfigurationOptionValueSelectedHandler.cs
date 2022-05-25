@@ -7,7 +7,7 @@ using DSharpPlus.EventArgs;
 
 namespace Main.Handler;
 
-public class ConfigurationOptionValueSelectedHandler : InteractionHandler
+internal sealed class ConfigurationOptionValueSelectedHandler : InteractionHandler
 {
     private readonly string _optionId;
 

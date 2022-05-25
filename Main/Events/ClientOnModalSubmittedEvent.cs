@@ -4,7 +4,7 @@ using Main.Handler;
 
 namespace Main.Events;
 
-public static class ClientOnModalSubmittedEvent
+internal static class ClientOnModalSubmittedEvent
 {
     public static async Task ClientOnModalSubmitted(DiscordClient sender, ModalSubmitEventArgs e)
     {

@@ -6,7 +6,7 @@ using Humanizer;
 
 namespace Logs.Events;
 
-public static class ClientOnMessageDeleted
+internal static class ClientOnMessageDeleted
 {
     public static async Task HandleEvent(DiscordClient sender, MessageDeleteEventArgs e)
     {

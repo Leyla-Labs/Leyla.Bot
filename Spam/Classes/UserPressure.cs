@@ -2,7 +2,7 @@ using DSharpPlus.Entities;
 
 namespace Spam.Classes;
 
-public class UserPressure
+internal class UserPressure
 {
     private string _lastMessage;
 

@@ -6,7 +6,7 @@ using Humanizer;
 
 namespace Logs.Events;
 
-public static class ClientOnMessageUpdated
+internal static class ClientOnMessageUpdated
 {
     public static async Task HandleEvent(DiscordClient sender, MessageUpdateEventArgs e)
     {

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Spam.Enums;
 
-public enum PressureType
+internal enum PressureType
 {
     [Display(Name = Common.Strings.Spam.BasePressure)]
     Base = 1,

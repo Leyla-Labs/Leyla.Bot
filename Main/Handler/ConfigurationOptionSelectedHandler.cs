@@ -10,7 +10,7 @@ using DSharpPlus.EventArgs;
 
 namespace Main.Handler;
 
-public class ConfigurationOptionSelectedHandler : InteractionHandler
+internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
 {
     public ConfigurationOptionSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e) :
         base(sender, e)

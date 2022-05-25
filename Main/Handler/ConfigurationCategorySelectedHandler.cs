@@ -8,7 +8,7 @@ using Main.Extensions;
 
 namespace Main.Handler;
 
-public class ConfigurationCategorySelectedHandler : InteractionHandler
+internal sealed class ConfigurationCategorySelectedHandler : InteractionHandler
 {
     public ConfigurationCategorySelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e) :
         base(sender, e)

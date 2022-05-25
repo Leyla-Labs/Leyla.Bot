@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Stashes;
 
-public class AddTo : ContextMenuCommand
+internal sealed class AddTo : ContextMenuCommand
 {
     public AddTo(ContextMenuContext ctx) : base(ctx)
     {

@@ -6,7 +6,7 @@ using Spam.Helper;
 
 namespace Spam.Handler;
 
-public class DisableLockdownHandler : InteractionHandler
+internal sealed class DisableLockdownHandler : InteractionHandler
 {
     private readonly string _verificationLevel;
 

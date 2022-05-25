@@ -6,7 +6,7 @@ using Spam.Helper;
 
 namespace Spam.Commands.Raid;
 
-public class List : SlashCommand
+internal sealed class List : SlashCommand
 {
     public List(InteractionContext ctx) : base(ctx)
     {

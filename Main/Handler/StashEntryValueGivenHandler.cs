@@ -6,7 +6,7 @@ using DSharpPlus.EventArgs;
 
 namespace Main.Handler;
 
-public class StashEntryValueGivenHandler : ModalHandler
+internal sealed class StashEntryValueGivenHandler : ModalHandler
 {
     private readonly string _stashIds;
 

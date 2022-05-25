@@ -6,7 +6,7 @@ using DSharpPlus.SlashCommands;
 
 namespace Spam.Commands.Raid;
 
-public class Off : SlashCommand
+internal sealed class Off : SlashCommand
 {
     public Off(InteractionContext ctx) : base(ctx)
     {

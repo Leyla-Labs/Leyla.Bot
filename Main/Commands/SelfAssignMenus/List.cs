@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.SelfAssignMenus;
 
-public class List : SlashCommand
+internal sealed class List : SlashCommand
 {
     public List(InteractionContext ctx) : base(ctx)
     {

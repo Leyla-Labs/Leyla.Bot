@@ -6,7 +6,7 @@ using Humanizer;
 
 namespace Logs.Events;
 
-public static class ClientOnGuildMemberAdded
+internal static class ClientOnGuildMemberAdded
 {
     public static async Task HandleEvent(DiscordClient sender, GuildMemberAddEventArgs e)
     {

@@ -7,7 +7,7 @@ using DSharpPlus.SlashCommands;
 
 namespace Main.Commands.Stashes;
 
-public class Create : SlashCommand
+internal sealed class Create : SlashCommand
 {
     private readonly string _stashName;
 

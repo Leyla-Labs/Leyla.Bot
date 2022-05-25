@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.UserLogs;
 
-public class Delete : SlashCommand
+internal sealed class Delete : SlashCommand
 {
     private readonly DiscordMember _member;
     private readonly long _n;

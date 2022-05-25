@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Helper;
 
-public static class QuoteHelper
+internal static class QuoteHelper
 {
     public static DiscordEmbed GetQuoteEmbed(string displayName, Quote quote)
     {

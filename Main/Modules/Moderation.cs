@@ -7,7 +7,7 @@ using Main.Commands.Moderation;
 
 namespace Main.Modules;
 
-public class Moderation : ApplicationCommandModule
+internal sealed class Moderation : ApplicationCommandModule
 {
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Verify")]
     [SlashRequireBotPermissions(Permissions.ManageRoles)]

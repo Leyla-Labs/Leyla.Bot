@@ -7,7 +7,7 @@ namespace Main.Modules;
 
 [SlashCommandGroup("Stash", "Description TODO")]
 [SlashRequireGuild]
-public class Stashes : ApplicationCommandModule
+internal sealed class Stashes : ApplicationCommandModule
 {
     [ContextMenu(ApplicationCommandType.MessageContextMenu, "Add to Stash")]
     public async Task MenuAddTo(ContextMenuContext ctx)

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Quotes;
 
-public sealed class List : SlashCommand
+internal sealed class List : SlashCommand
 {
     private readonly DiscordMember _member;
 

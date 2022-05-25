@@ -10,7 +10,7 @@ using DSharpPlus.EventArgs;
 
 namespace Main.Handler;
 
-public class UserLogReasonGivenHandler : ModalHandler
+internal sealed class UserLogReasonGivenHandler : ModalHandler
 {
     private readonly string _userId;
     private readonly UserLogType _userLogType;

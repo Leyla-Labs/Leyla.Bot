@@ -3,7 +3,7 @@ using Anilist4Net.Enums;
 
 namespace Main.Extensions;
 
-public static class AniListExtensions
+internal static class AniListExtensions
 {
     public static string ToDiscordMarkup(this string input)
     {

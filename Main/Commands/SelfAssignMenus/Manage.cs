@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.SelfAssignMenus;
 
-public class Manage : SlashCommand
+internal sealed class Manage : SlashCommand
 {
     private readonly string _title;
 

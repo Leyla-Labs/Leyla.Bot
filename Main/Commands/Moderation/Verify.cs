@@ -7,7 +7,7 @@ using DSharpPlus.SlashCommands;
 
 namespace Main.Commands.Moderation;
 
-public sealed class Verify : ContextMenuCommand
+internal sealed class Verify : ContextMenuCommand
 {
     public Verify(ContextMenuContext ctx) : base(ctx)
     {

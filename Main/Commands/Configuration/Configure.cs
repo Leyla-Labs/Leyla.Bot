@@ -7,7 +7,7 @@ using Main.Extensions;
 
 namespace Main.Commands.Configuration;
 
-public sealed class Configure : SlashCommand
+internal sealed class Configure : SlashCommand
 {
     public Configure(InteractionContext ctx) : base(ctx)
     {

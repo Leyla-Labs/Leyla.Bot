@@ -6,7 +6,7 @@ using Humanizer;
 
 namespace Logs.Events;
 
-public static class ClientOnGuildMemberRemoved
+internal static class ClientOnGuildMemberRemoved
 {
     public static async Task HandleEvent(DiscordClient sender, GuildMemberRemoveEventArgs e)
     {

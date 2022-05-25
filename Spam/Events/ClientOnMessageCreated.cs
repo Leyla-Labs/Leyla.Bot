@@ -4,7 +4,7 @@ using Spam.Helper;
 
 namespace Spam.Events;
 
-public static class ClientOnMessageCreated
+internal static class ClientOnMessageCreated
 {
     public static async Task HandleEvent(DiscordClient sender, MessageCreateEventArgs e)
     {

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Stashes;
 
-public class List : SlashCommand
+internal sealed class List : SlashCommand
 {
     private readonly string? _stashName;
 

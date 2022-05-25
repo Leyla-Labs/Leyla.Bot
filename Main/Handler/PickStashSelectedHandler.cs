@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Handler;
 
-public class PickStashSelectedHandler : InteractionHandler
+internal sealed class PickStashSelectedHandler : InteractionHandler
 {
     public PickStashSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e) : base(sender, e)
     {

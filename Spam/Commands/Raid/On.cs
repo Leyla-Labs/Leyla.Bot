@@ -5,7 +5,7 @@ using Spam.Helper;
 
 namespace Spam.Commands.Raid;
 
-public class On : SlashCommand
+internal sealed class On : SlashCommand
 {
     public On(InteractionContext ctx) : base(ctx)
     {

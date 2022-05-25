@@ -4,7 +4,7 @@ using DSharpPlus.Entities;
 
 namespace Main.Extensions;
 
-public static class DiscordGuildExtensions
+internal static class DiscordGuildExtensions
 {
     public static async Task<List<LeylaModule>> GetGuildModules(this DiscordGuild guild)
     {

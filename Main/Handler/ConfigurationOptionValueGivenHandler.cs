@@ -7,7 +7,7 @@ using DSharpPlus.EventArgs;
 
 namespace Main.Handler;
 
-public class ConfigurationOptionValueGivenHandler : ModalHandler
+internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
 {
     private readonly string _optionId;
 

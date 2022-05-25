@@ -11,7 +11,7 @@ namespace Common.Classes;
 
 public abstract class Leyla : IBot
 {
-    protected DiscordClient Client { get; private set; } = null!;
+    private DiscordClient Client { get; set; } = null!;
 
     public async Task StartAsync()
     {

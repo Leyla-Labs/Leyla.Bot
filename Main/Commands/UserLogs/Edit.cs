@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.UserLogs;
 
-public class Edit : SlashCommand
+internal sealed class Edit : SlashCommand
 {
     private readonly DiscordMember _member;
     private readonly long _n;

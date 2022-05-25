@@ -4,7 +4,7 @@ using Main.Handler;
 
 namespace Main.Events;
 
-public static class ClientOnComponentInteractionCreatedEvent
+internal static class ClientOnComponentInteractionCreatedEvent
 {
     public static async Task ClientOnComponentInteractionCreated(DiscordClient sender,
         ComponentInteractionCreateEventArgs e)

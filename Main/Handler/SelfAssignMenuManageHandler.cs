@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Handler;
 
-public class SelfAssignMenuManageHandler : InteractionHandler
+internal sealed class SelfAssignMenuManageHandler : InteractionHandler
 {
     private readonly string _menuId;
 

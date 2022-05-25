@@ -7,7 +7,7 @@ using Main.Modules;
 
 namespace Main;
 
-public class Bot : Leyla
+public sealed class Bot : Leyla
 {
     protected override async Task<DiscordClient> InitBot()
     {

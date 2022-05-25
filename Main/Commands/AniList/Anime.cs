@@ -11,7 +11,7 @@ using Main.Helper;
 
 namespace Main.Commands.AniList;
 
-public sealed class Anime : SlashCommand
+internal sealed class Anime : SlashCommand
 {
     private readonly string _title;
 

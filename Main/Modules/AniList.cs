@@ -6,7 +6,7 @@ using Main.Commands.AniList;
 namespace Main.Modules;
 
 [SlashCommandGroup("AniList", "Get various data from AniList: Anime TODO")]
-public class AniList : ApplicationCommandModule
+internal sealed class AniList : ApplicationCommandModule
 {
     [SlashCommand("anime", "Shows information for the given anime.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]

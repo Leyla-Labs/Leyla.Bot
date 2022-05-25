@@ -1,6 +1,6 @@
 namespace Spam.Enums;
 
-public enum SilenceDurationKind
+internal enum SilenceDurationKind
 {
     Minutes,
     Hours,

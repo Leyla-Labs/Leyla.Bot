@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Handler;
 
-public class SelfAssignMenuRenameHandler : ModalHandler
+internal sealed class SelfAssignMenuRenameHandler : ModalHandler
 {
     private readonly string _menuId;
 

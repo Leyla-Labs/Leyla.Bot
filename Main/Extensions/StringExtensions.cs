@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace Main.Extensions;
 
-public static class StringExtensions
+internal static class StringExtensions
 {
     public static string StripHtml(this string input)
     {

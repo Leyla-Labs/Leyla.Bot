@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Main.Commands.Stashes;
 
-public class ShowEntry : SlashCommand
+internal sealed class ShowEntry : SlashCommand
 {
     private readonly long _n;
     private readonly string _stashName;
