@@ -1,5 +1,3 @@
-using Common.Db;
-using Common.Db.Models;
 using Common.Helper;
 using DNTCommon.Web.Core;
 
@@ -16,24 +14,6 @@ public class TransferCommandLogs : IScheduledTask
             return;
         }
 
-        var logs = CommandLogHelper.Instance.GetAndClear();
-
-        foreach (var guildLog in logs.GroupBy(x => x.GuildId))
-        {
-            await MemberHelper.CreateIfNotExist(guildLog.Key, guildLog.Select(x => x.UserId));
-        }
-
-        var dbLogs = logs.Select(x => new CommandLog
-        {
-            Command = x.Command,
-            RunAt = x.RunAt,
-            UserId = x.UserId,
-            GuildId = x.GuildId
-        });
-
-        await using var context = new DatabaseContext();
-
-        await context.CommandLogs.AddRangeAsync(dbLogs);
-        await context.SaveChangesAsync();
+        await CommandLogHelper.Instance.TransferToDb();
     }
 }

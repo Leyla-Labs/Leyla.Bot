@@ -22,7 +22,7 @@ public abstract class Leyla : IBot
         await Client.ConnectAsync();
     }
 
-    public async Task StopAsync()
+    public virtual async Task StopAsync()
     {
         await Client.DisconnectAsync();
     }

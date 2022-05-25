@@ -1,5 +1,6 @@
 using Common.Classes;
 using Common.Db;
+using Common.Db.Models;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -95,6 +96,29 @@ public class CommandLogHelper
         var memberStr = member != null ? member.Mention : log.UserId.ToString();
         var memberStrFull = nameInEntries ? $"• {memberStr} " : string.Empty;
         return $"{runAt} {memberStrFull}• {log.Command}";
+    }
+
+    public async Task TransferToDb()
+    {
+        var logs = GetAndClear();
+
+        foreach (var guildLog in logs.GroupBy(x => x.GuildId))
+        {
+            await MemberHelper.CreateIfNotExist(guildLog.Key, guildLog.Select(x => x.UserId));
+        }
+
+        var dbLogs = logs.Select(x => new CommandLog
+        {
+            Command = x.Command,
+            RunAt = x.RunAt,
+            UserId = x.UserId,
+            GuildId = x.GuildId
+        });
+
+        await using var context = new DatabaseContext();
+
+        await context.CommandLogs.AddRangeAsync(dbLogs);
+        await context.SaveChangesAsync();
     }
 
     #region Singleton

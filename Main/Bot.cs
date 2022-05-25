@@ -42,4 +42,10 @@ public sealed class Bot : Leyla
 
         return commands;
     }
+
+    public override async Task StopAsync()
+    {
+        await CommandLogHelper.Instance.TransferToDb();
+        await base.StopAsync();
+    }
 }
