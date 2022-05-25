@@ -62,7 +62,7 @@ public class SelfAssignMenuButtonPressedHandler : InteractionHandler
             new DiscordSelectComponentOption(x.Name, x.Id.ToString(),
                 isDefault: member.Roles.Any(y => y.Id == x.Id))).ToList();
 
-        var customId = ModalHelper.GetModalName(member.Id, "selfAssignMenuSelected");
+        var customId = ModalHelper.GetModalName(member.Id, "selfAssignMenuSelected", new[] {menu.Id.ToString()});
         return new DiscordSelectComponent(customId, "Select role(s)",
             options, minOptions: 0, maxOptions: options.Count);
     }
