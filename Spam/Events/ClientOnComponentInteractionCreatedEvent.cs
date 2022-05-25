@@ -10,7 +10,7 @@ public static class ClientOnComponentInteractionCreatedEvent
         ComponentInteractionCreateEventArgs e)
     {
         // info consists of userId, name, and any further information after that
-        var info = e.Id.Split("-");
+        var info = e.Id.Split("_");
         var userId = Convert.ToUInt64(info[0]);
 
         if (userId != 1 && userId != e.User.Id)

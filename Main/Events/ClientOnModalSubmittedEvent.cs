@@ -9,7 +9,7 @@ public static class ClientOnModalSubmittedEvent
     public static async Task ClientOnModalSubmitted(DiscordClient sender, ModalSubmitEventArgs e)
     {
         // info consists of userId, name, and any further information after that
-        var info = e.Interaction.Data.CustomId.Split("-");
+        var info = e.Interaction.Data.CustomId.Split("_");
         var userId = Convert.ToUInt64(info[0]);
 
         if (userId != e.Interaction.User.Id)
