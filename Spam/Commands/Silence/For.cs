@@ -73,8 +73,9 @@ public class For : SlashCommand
             sb.Append($"{Environment.NewLine}{Environment.NewLine}");
             sb.Append("An existing silence was replaced with this new one.");
         }
+
         embed.WithDescription(sb.ToString());
-        
+
         embed.WithColor(DiscordColor.Blurple);
         return embed.Build();
     }

@@ -8,8 +8,10 @@ public static class MemberHelper
 {
     public static async Task CreateIfNotExist(ulong memberId, ulong guildId)
     {
+        await GuildHelper.CreateIfNotExist(guildId);
+
         await using var context = new DatabaseContext();
-        if (!await context.Members.AnyAsync(x => x.Id == memberId))
+        if (!await context.Members.AnyAsync(x => x.Id == memberId && x.GuildId == guildId))
         {
             await context.Members.AddAsync(new Member
             {
