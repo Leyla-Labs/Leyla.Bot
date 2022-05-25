@@ -1,3 +1,4 @@
+using Common.Classes;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -9,7 +10,7 @@ namespace Main.Modules;
 
 [SlashCommandGroup("Quote", "Description TODO")]
 [SlashRequireGuild]
-internal sealed class Quotes : ApplicationCommandModule
+internal sealed class Quotes : ApplicationCommandLogModule
 {
     [ContextMenu(ApplicationCommandType.MessageContextMenu, "Add Quote")]
     public async Task MenuAdd(ContextMenuContext ctx)

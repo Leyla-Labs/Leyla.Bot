@@ -1,4 +1,5 @@
 using Common.Checks;
+using Common.Classes;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -7,7 +8,7 @@ using Main.Commands.Moderation;
 
 namespace Main.Modules;
 
-internal sealed class Moderation : ApplicationCommandModule
+internal sealed class Moderation : ApplicationCommandLogModule
 {
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Verify")]
     [SlashRequireBotPermissions(Permissions.ManageRoles)]

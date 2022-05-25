@@ -57,9 +57,9 @@ internal sealed class Search : SlashCommand
         var quoteStrings = new List<string>();
         foreach (var quote in filteredQuotes)
         {
-            var member = await Ctx.GetMember(quote.MemberId);
+            var member = await Ctx.GetMember(quote.UserId);
             var index = guildQuotes.Select((q, i) => new {quote = q, index = i}).First(x =>
-                x.quote.MemberId == quote.MemberId && x.quote.Text.Equals(quote.Text)).index;
+                x.quote.UserId == quote.UserId && x.quote.Text.Equals(quote.Text)).index;
             quoteStrings.Add($"**\"{quote.Text}\"**{Environment.NewLine}- {member?.DisplayName} • #{index}");
         }
 
@@ -75,7 +75,7 @@ internal sealed class Search : SlashCommand
     private async Task<List<Quote>> GetQuotesForGuild(ulong guildId)
     {
         return await DbCtx.Quotes.Where(x =>
-                x.Member.GuildId == guildId)
+                x.GuildId == guildId)
             .ToListAsync();
     }
 

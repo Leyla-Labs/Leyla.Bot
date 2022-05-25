@@ -1,3 +1,4 @@
+using Common.Classes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
@@ -7,7 +8,7 @@ namespace Main.Modules;
 
 [SlashCommandGroup("Menu", "Description TODO")]
 [SlashRequireGuild]
-internal sealed class SelfAssignMenus : ApplicationCommandModule
+internal sealed class SelfAssignMenus : ApplicationCommandLogModule
 {
     [SlashCommand("create", "Create a new self assign menu.")]
     public async Task SlashCreate(InteractionContext ctx,

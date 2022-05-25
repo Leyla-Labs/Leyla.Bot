@@ -38,7 +38,7 @@ internal sealed class Edit : SlashCommand
             return;
         }
 
-        var displayName = await Ctx.GetDisplayName(quote.MemberId);
+        var displayName = await Ctx.GetDisplayName(quote.UserId);
 
         // show modal
         var responseBuilder = GetModal(quote, displayName);

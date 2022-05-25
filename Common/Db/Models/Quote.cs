@@ -10,6 +10,7 @@ public class Quote
     // TODO add FK once Message is its own entity
     public ulong MessageId { get; set; }
 
-    public ulong MemberId { get; set; }
+    public ulong GuildId { get; set; }
+    public ulong UserId { get; set; }
     public Member Member { get; set; } = null!;
 }

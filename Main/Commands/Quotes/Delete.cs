@@ -39,7 +39,7 @@ internal sealed class Delete : SlashCommand
 
         await DeleteFromDatabase(quote);
 
-        var displayName = await Ctx.GetDisplayName(quote.MemberId);
+        var displayName = await Ctx.GetDisplayName(quote.UserId);
         var embed = GetConfirmationEmbed(quote, displayName);
         await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }

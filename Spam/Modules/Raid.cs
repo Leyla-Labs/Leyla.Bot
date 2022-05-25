@@ -1,3 +1,4 @@
+using Common.Classes;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
@@ -6,7 +7,7 @@ using Spam.Commands.Raid;
 namespace Spam.Modules;
 
 [SlashCommandGroup("Raid", "todo")]
-internal sealed class Raid : ApplicationCommandModule
+internal sealed class Raid : ApplicationCommandLogModule
 {
     [SlashCommand("on", "Turns raid mode on.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]

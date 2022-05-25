@@ -1,3 +1,4 @@
+using Common.Classes;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
@@ -6,7 +7,7 @@ using Main.Commands.AniList;
 namespace Main.Modules;
 
 [SlashCommandGroup("AniList", "Get various data from AniList: Anime TODO")]
-internal sealed class AniList : ApplicationCommandModule
+internal sealed class AniList : ApplicationCommandLogModule
 {
     [SlashCommand("anime", "Shows information for the given anime.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]

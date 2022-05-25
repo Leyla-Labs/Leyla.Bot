@@ -21,7 +21,7 @@ internal sealed class Random : SlashCommand
             await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("No quotes found."));
         }
 
-        var member = await Ctx.GetMember(quote!.MemberId);
+        var member = await Ctx.GetMember(quote!.UserId);
         if (member == null)
         {
             await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("Member not found."));

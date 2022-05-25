@@ -1,3 +1,4 @@
+using Common.Classes;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
@@ -7,7 +8,7 @@ namespace Main.Modules;
 
 [SlashCommandGroup("Stash", "Description TODO")]
 [SlashRequireGuild]
-internal sealed class Stashes : ApplicationCommandModule
+internal sealed class Stashes : ApplicationCommandLogModule
 {
     [ContextMenu(ApplicationCommandType.MessageContextMenu, "Add to Stash")]
     public async Task MenuAddTo(ContextMenuContext ctx)

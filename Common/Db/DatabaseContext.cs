@@ -46,6 +46,7 @@ public class DatabaseContext : DbContext
 
     #region DbSets
 
+    public DbSet<CommandLog> CommandLogs => Set<CommandLog>();
     public DbSet<Config> Configs => Set<Config>();
     public DbSet<DiscordEntity> DiscordEntities => Set<DiscordEntity>();
     public DbSet<Guild> Guilds => Set<Guild>();

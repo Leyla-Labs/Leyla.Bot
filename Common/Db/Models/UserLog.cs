@@ -15,6 +15,7 @@ public class UserLog
     public DateTime Date { get; set; }
     public UserLogType Type { get; set; }
 
+    public ulong GuildId { get; set; }
     public ulong AuthorId { get; set; }
     public Member Author { get; set; } = null!;
 }

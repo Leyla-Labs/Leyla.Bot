@@ -83,14 +83,15 @@ internal sealed class Add : ContextMenuCommand
     private async Task AddToDatabase(DiscordMessage m, ulong userId, ulong guildId,
         string text)
     {
-        await MemberHelper.CreateIfNotExist(userId, guildId);
+        await MemberHelper.CreateIfNotExist(guildId, userId);
 
         await DbCtx.Quotes.AddAsync(new Quote
         {
             Text = text,
             Date = m.CreationTimestamp.DateTime.ToUniversalTime(),
             MessageId = m.Id,
-            MemberId = m.Author.Id
+            UserId = m.Author.Id,
+            GuildId = m.Channel.GuildId ?? throw new NullReferenceException(nameof(m.Channel.Guild))
         });
         await DbCtx.SaveChangesAsync();
     }

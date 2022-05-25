@@ -43,8 +43,8 @@ internal sealed class List : SlashCommand
     private async Task<List<Quote>> GetQuotesForMember(ulong guildId, ulong userId)
     {
         return await DbCtx.Quotes.Where(x =>
-                x.Member.GuildId == guildId &&
-                x.MemberId == userId)
+                x.GuildId == guildId &&
+                x.UserId == userId)
             .ToListAsync();
     }
 

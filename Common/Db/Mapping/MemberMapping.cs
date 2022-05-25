@@ -8,8 +8,7 @@ public class MemberMapping : IEntityTypeConfiguration<Member>
 {
     public void Configure(EntityTypeBuilder<Member> builder)
     {
-        builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).ValueGeneratedNever();
+        builder.HasKey(x => new {x.UserId, x.GuildId});
 
         builder.HasOne(x => x.Guild)
             .WithMany(x => x.Members)

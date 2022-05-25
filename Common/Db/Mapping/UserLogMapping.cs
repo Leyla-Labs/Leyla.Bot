@@ -12,12 +12,12 @@ public class UserLogMapping : IEntityTypeConfiguration<UserLog>
 
         builder.HasOne(x => x.Member)
             .WithMany(x => x.TargetUserLogs)
-            .HasForeignKey(x => x.MemberId)
+            .HasForeignKey(x => new {x.AuthorId, x.GuildId})
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.Author)
             .WithMany(x => x.AuthorUserLogs)
-            .HasForeignKey(x => x.AuthorId)
+            .HasForeignKey(x => new {x.MemberId, x.GuildId})
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -1,3 +1,4 @@
+using Common.Classes;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -8,7 +9,7 @@ using Spam.Enums;
 namespace Spam.Modules;
 
 [SlashCommandGroup("Silence", "todo")]
-internal sealed class Silence : ApplicationCommandModule
+internal sealed class Silence : ApplicationCommandLogModule
 {
     [SlashCommand("for", "Silences for the given duration.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]

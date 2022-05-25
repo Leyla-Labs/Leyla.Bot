@@ -36,10 +36,15 @@ if (modules.Contains(LeylaModule.Spam))
 
 builder.Services.AddDNTCommonWeb();
 builder.Services.AddDNTScheduler(x =>
+{
     x.AddScheduledTask<CheckSilences>(
-        utcNow => utcNow.Second % 60 == 0
-    )
-);
+        utcNow => utcNow.Second == 0
+    );
+    x.AddScheduledTask<TransferCommandLogs>(
+        //utcNow => utcNow.Minute % 5 == 0 && utcNow.Second == 0
+        utcNow => utcNow.Second == 0 && utcNow.Minute % 5 == 0
+    );
+});
 
 var app = builder.Build();
 

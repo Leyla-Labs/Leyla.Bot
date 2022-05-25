@@ -1,3 +1,4 @@
+using Common.Classes;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -7,7 +8,7 @@ using Main.Commands.UserLogs;
 namespace Main.Modules;
 
 [SlashCommandGroup("UserLogs", "Description TODO")]
-internal sealed class UserLogs : ApplicationCommandModule
+internal sealed class UserLogs : ApplicationCommandLogModule
 {
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Add User Log")]
     [SlashRequireGuild]

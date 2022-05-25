@@ -21,8 +21,8 @@ internal static class QuoteHelper
         await using var context = new DatabaseContext();
 
         return await context.Quotes.Where(x =>
-                x.Member.GuildId == guildId &&
-                x.MemberId == memberId)
+                x.GuildId == guildId &&
+                x.UserId == memberId)
             .Skip(i - 1)
             .FirstOrDefaultAsync();
     }

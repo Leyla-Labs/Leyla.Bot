@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Common.Db.Mapping;
 
-public class QuoteMapping : IEntityTypeConfiguration<Quote>
+public class CommandLogMapping : IEntityTypeConfiguration<CommandLog>
 {
-    public void Configure(EntityTypeBuilder<Quote> builder)
+    public void Configure(EntityTypeBuilder<CommandLog> builder)
     {
         builder.HasKey(x => x.Id);
 
         builder.HasOne(x => x.Member)
-            .WithMany(x => x.Quotes)
+            .WithMany(x => x.CommandLogs)
             .HasForeignKey(x => new {x.UserId, x.GuildId})
             .OnDelete(DeleteBehavior.Cascade);
     }
