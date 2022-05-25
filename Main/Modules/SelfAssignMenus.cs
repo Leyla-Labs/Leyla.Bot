@@ -10,7 +10,7 @@ public class SelfAssignMenus : ApplicationCommandModule
 {
     [SlashCommand("create", "Create a new self assign menu.")]
     public async Task SlashCreate(InteractionContext ctx,
-        [Option("Name", "Name of the self assign menu to create")]
+        [Option("Title", "Title of the self assign menu to create")]
         string title,
         [Option("Description", "Optional description of the menu")]
         string? description = null)
@@ -26,7 +26,7 @@ public class SelfAssignMenus : ApplicationCommandModule
 
     [SlashCommand("rename", "Renames a self assign menu.")]
     public async Task SlashRename(InteractionContext ctx,
-        [Option("Name", "Name of the self assign menu to create")]
+        [Option("Title", "Title of the self assign menu to create")]
         string title)
     {
         await new Rename(ctx, title).RunAsync();
@@ -34,9 +34,17 @@ public class SelfAssignMenus : ApplicationCommandModule
 
     [SlashCommand("manage", "Manages a self assign menu.")]
     public async Task SlashManage(InteractionContext ctx,
-        [Option("Name", "Name of the self assign menu to manage")]
+        [Option("Title", "Title of the self assign menu to manage")]
         string title)
     {
         await new Manage(ctx, title).RunAsync();
+    }
+
+    [SlashCommand("delete", "Deletes a self assign menu. This is irreversible!")]
+    public async Task SlashDelete(InteractionContext ctx,
+        [Option("Title", "Title of the self assign menu to delete. This is irreversible!")]
+        string title)
+    {
+        await new Delete(ctx, title).RunAsync();
     }
 }
