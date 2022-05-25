@@ -1,6 +1,6 @@
+using Common.Helper;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
-using Spam.Helper;
 
 namespace Spam.Events;
 

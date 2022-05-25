@@ -1,7 +1,9 @@
 using Common.Db;
 using Common.Enums;
 using Common.Services;
+using DNTCommon.Web.Core;
 using Main;
+using Main.BackgroundTasks;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +33,13 @@ if (modules.Contains(LeylaModule.Spam))
     builder.Services.AddSingleton<Spam.Bot>();
     builder.Services.AddHostedService<BotService<Spam.Bot>>();
 }
+
+builder.Services.AddDNTCommonWeb();
+builder.Services.AddDNTScheduler(x =>
+    x.AddScheduledTask<CheckSilences>(
+        utcNow => utcNow.Second % 60 == 0
+    )
+);
 
 var app = builder.Build();
 

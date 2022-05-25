@@ -8,11 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Common\Common.csproj"/>
+        <ProjectReference Include="..\Common\Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DSharpPlus" Version="4.2.0"/>
+        <PackageReference Include="DSharpPlus" Version="4.2.0" />
     </ItemGroup>
 
 </Project>

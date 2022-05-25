@@ -35,6 +35,7 @@ public class Bot : Leyla
         var commands = base.RegisterCommands();
 
         commands.RegisterCommands<Raid>();
+        commands.RegisterCommands<Silence>();
 
         return commands;
     }
