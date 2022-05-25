@@ -27,6 +27,7 @@ public static class ClientOnComponentInteractionCreatedEvent
             case "addToStash" when additionalInfo.Length < 1:
             case "userLogType" when additionalInfo.Length < 1:
             case "manageMenu" when additionalInfo.Length < 1:
+            case "selfAssignMenu" when additionalInfo.Length < 1:
                 throw new NullReferenceException(nameof(additionalInfo));
             case "configCategories":
                 await new ConfigurationCategorySelectedHandler(sender, e).RunAsync();
@@ -48,6 +49,9 @@ public static class ClientOnComponentInteractionCreatedEvent
                 break;
             case "manageMenu":
                 await new SelfAssignMenuManageHandler(sender, e, additionalInfo[0]).RunAsync();
+                break;
+            case "selfAssignMenu":
+                await new SelfAssignMenuButtonPressedHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
             default:
                 return;
