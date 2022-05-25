@@ -1,5 +1,7 @@
 using Common.Classes;
+using Common.Db;
 using DSharpPlus.SlashCommands;
+using Microsoft.EntityFrameworkCore;
 
 namespace Common.Helper;
 
@@ -21,6 +23,24 @@ public class CommandLogHelper
         var list = _commandLogs.ToList();
         _commandLogs.Clear();
         return list;
+    }
+
+    public async Task<List<CommandLogLocal>> GetRecent(ulong guildId, int n)
+    {
+        var recentLocal = _commandLogs.Where(x => x.GuildId == guildId).OrderByDescending(x => x.RunAt).Take(n)
+            .ToList();
+
+        await using var context = new DatabaseContext();
+
+        var recentDb = await context.CommandLogs.Where(x =>
+                x.GuildId == guildId)
+            .OrderByDescending(x => x.RunAt)
+            .Take(n - recentLocal.Count)
+            .Select(x => new CommandLogLocal(x))
+            .ToListAsync();
+
+        recentLocal.AddRange(recentDb);
+        return recentLocal;
     }
 
     #region Singleton

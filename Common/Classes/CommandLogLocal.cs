@@ -1,15 +1,13 @@
-using Common.Db.Models;
-
 namespace Common.Classes;
 
 public class CommandLogLocal : CommandLogBase
 {
-    public CommandLogLocal(CommandLog log)
+    public CommandLogLocal(CommandLogBase log)
     {
         Command = log.Command;
         RunAt = log.RunAt.ToUniversalTime();
         UserId = log.UserId;
-        GuildId = log.Member.GuildId;
+        GuildId = log.GuildId;
     }
 
     public CommandLogLocal(ulong guildId, ulong userId, string command, DateTime runAt)
