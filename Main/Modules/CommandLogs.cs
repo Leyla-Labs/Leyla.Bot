@@ -1,4 +1,5 @@
 using Common.Classes;
+using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
 using Main.Commands.CommandLogs;
@@ -15,5 +16,14 @@ internal sealed class CommandLogs : ApplicationCommandLogModule
         long n = 10)
     {
         await new Recent(ctx, n).RunAsync();
+    }
+
+    [SlashCommand("user", "Shows 10 most recent logs for given user.")]
+    [SlashRequireGuild]
+    public async Task SlashUser(InteractionContext ctx,
+        [Option("user", "User to show entries of.")]
+        DiscordUser user)
+    {
+        await new User(ctx, (DiscordMember) user).RunAsync();
     }
 }

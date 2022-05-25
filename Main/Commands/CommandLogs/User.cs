@@ -6,19 +6,19 @@ using DSharpPlus.SlashCommands;
 
 namespace Main.Commands.CommandLogs;
 
-internal sealed class Recent : SlashCommand
+public class User : SlashCommand
 {
-    private readonly int _n;
+    private readonly DiscordMember _member;
 
-    public Recent(InteractionContext ctx, long n) : base(ctx)
+    public User(InteractionContext ctx, DiscordMember member) : base(ctx)
     {
-        _n = n <= 100 ? Convert.ToInt32(n) : 100;
+        _member = member;
     }
 
     public override async Task RunAsync()
     {
-        var recent = await CommandLogHelper.Instance.GetRecent(Ctx.Guild.Id, _n);
-        var embed = await CommandLogHelper.GetEmbed(Ctx.Guild, recent, true);
+        var recent = await CommandLogHelper.Instance.GetRecent(_member);
+        var embed = await CommandLogHelper.GetEmbed(Ctx.Guild, recent, false);
 
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
