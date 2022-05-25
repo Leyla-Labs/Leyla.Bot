@@ -1,3 +1,4 @@
+using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.Attributes;
 using Main.Commands.SelfAssignMenus;
@@ -46,5 +47,15 @@ public class SelfAssignMenus : ApplicationCommandModule
         string title)
     {
         await new Delete(ctx, title).RunAsync();
+    }
+
+    [SlashCommand("post", "Posts a self assign menu in given channel.")]
+    public async Task SlashPost(InteractionContext ctx,
+        [Option("Title", "Title of the self assign menu to post.")]
+        string title,
+        [Option("Channel", "Channel to post self assign menu in.")]
+        DiscordChannel channel)
+    {
+        await new Post(ctx, channel, title).RunAsync();
     }
 }
