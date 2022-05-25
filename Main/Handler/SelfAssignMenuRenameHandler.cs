@@ -32,9 +32,16 @@ public class SelfAssignMenuRenameHandler : ModalHandler
             return;
         }
 
-        // TODO check for duplicate name
-
         var title = EventArgs.Values["title"] ?? string.Empty;
+
+        if (await context.SelfAssignMenus.AnyAsync(x => x.GuildId == menu.GuildId && x.Title.Equals(title)))
+        {
+            await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder()
+                    .AddErrorEmbed("A Self Assign Menu with that title already exists.").AsEphemeral());
+            return;
+        }
+
         var description = EventArgs.Values["description"];
         await EditInDatabase(context, menu, title, description);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);

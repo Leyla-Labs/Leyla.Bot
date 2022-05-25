@@ -1,10 +1,13 @@
 using System.Text;
 using Common.Classes;
 using Common.Db.Models;
+using Common.Extensions;
 using Common.Helper;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using Microsoft.EntityFrameworkCore;
+using Polly;
 
 namespace Main.Commands.SelfAssignMenus;
 
@@ -21,7 +24,15 @@ public class Create : SlashCommand
 
     public override async Task RunAsync()
     {
-        // TODO check for duplicates
+        if (await DbCtx.SelfAssignMenus.AnyAsync(x => x.GuildId == Ctx.Guild.Id && x.Title.Equals(_title)))
+        {
+            await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder()
+                    .AddErrorEmbed("A Self Assign Menu with that title already exists.").AsEphemeral());
+            return;
+        }
+        
+        
         await CreateInDatabase();
         var embed = GetEmbed();
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
