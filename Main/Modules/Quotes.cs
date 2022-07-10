@@ -12,12 +12,6 @@ namespace Main.Modules;
 [SlashRequireGuild]
 internal sealed class Quotes : ApplicationCommandLogModule
 {
-    [ContextMenu(ApplicationCommandType.MessageContextMenu, "Add Quote")]
-    public async Task MenuAdd(ContextMenuContext ctx)
-    {
-        await new Add(ctx).RunAsync();
-    }
-
     [SlashCommand("show", "Shows a specific quote.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
     public async Task SlashShow(InteractionContext ctx,
@@ -28,26 +22,6 @@ internal sealed class Quotes : ApplicationCommandLogModule
     {
         // TODO check if SlashRequireGuild on command group level is enough
         await new Show(ctx, (DiscordMember) user, n).RunAsync();
-    }
-
-    [SlashCommand("edit", "Edits a quote.")]
-    public async Task SlashEdit(InteractionContext ctx,
-        [Option("user", "User to edit quote of")]
-        DiscordUser user,
-        [Option("n", "Number of the quote to edit")]
-        long n)
-    {
-        await new Edit(ctx, (DiscordMember) user, n).RunAsync();
-    }
-
-    [SlashCommand("delete", "Deletes a quote.")]
-    public async Task SlashDelete(InteractionContext ctx,
-        [Option("user", "User to delete quote of")]
-        DiscordUser user,
-        [Option("n", "Number of the quote to delete")]
-        long n)
-    {
-        await new Delete(ctx, (DiscordMember) user, n).RunAsync();
     }
 
     [SlashCommand("list", "Lists all quotes from given user.")]
@@ -72,5 +46,36 @@ internal sealed class Quotes : ApplicationCommandLogModule
         string query)
     {
         await new Search(ctx, query).RunAsync();
+    }
+}
+
+[SlashCommandGroup("QuoteM", "Description TODO")]
+[SlashRequireGuild]
+internal sealed class QuotesM : ApplicationCommandModule
+{
+    [ContextMenu(ApplicationCommandType.MessageContextMenu, "Add Quote")]
+    public async Task MenuAdd(ContextMenuContext ctx)
+    {
+        await new Add(ctx).RunAsync();
+    }
+
+    [SlashCommand("edit", "Edits a quote.")]
+    public async Task SlashEdit(InteractionContext ctx,
+        [Option("user", "User to edit quote of")]
+        DiscordUser user,
+        [Option("n", "Number of the quote to edit")]
+        long n)
+    {
+        await new Edit(ctx, (DiscordMember) user, n).RunAsync();
+    }
+
+    [SlashCommand("delete", "Deletes a quote.")]
+    public async Task SlashDelete(InteractionContext ctx,
+        [Option("user", "User to delete quote of")]
+        DiscordUser user,
+        [Option("n", "Number of the quote to delete")]
+        long n)
+    {
+        await new Delete(ctx, (DiscordMember) user, n).RunAsync();
     }
 }

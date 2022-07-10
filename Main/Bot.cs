@@ -36,8 +36,10 @@ public sealed class Bot : Leyla
         commands.RegisterCommands<UserLogs>();
         commands.RegisterCommands<CommandLogs>();
         commands.RegisterCommands<Quotes>();
-        commands.RegisterCommands<Stashes>();
+        commands.RegisterCommands<QuotesM>();
         commands.RegisterCommands<SelfAssignMenus>();
+        commands.RegisterCommands<Stashes>();
+        commands.RegisterCommands<StashesM>();
         commands.RegisterCommands<AniList>();
 
         return commands;

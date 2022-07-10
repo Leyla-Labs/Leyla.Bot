@@ -10,20 +10,6 @@ namespace Main.Modules;
 [SlashRequireGuild]
 internal sealed class Stashes : ApplicationCommandLogModule
 {
-    [ContextMenu(ApplicationCommandType.MessageContextMenu, "Add to Stash")]
-    public async Task MenuAddTo(ContextMenuContext ctx)
-    {
-        await new AddTo(ctx).RunAsync();
-    }
-
-    [SlashCommand("create", "Create a new stash.")]
-    public async Task SlashCreate(InteractionContext ctx,
-        [Option("Name", "Name of the stash to create")]
-        string title)
-    {
-        await new Create(ctx, title).RunAsync();
-    }
-
     [SlashCommand("list", "List all entries in stash.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
     public async Task SlashList(InteractionContext ctx,
@@ -52,6 +38,25 @@ internal sealed class Stashes : ApplicationCommandLogModule
         long n)
     {
         await new ShowEntry(ctx, title, n).RunAsync();
+    }
+}
+
+[SlashCommandGroup("StashM", "Description TODO")]
+[SlashRequireGuild]
+internal sealed class StashesM : ApplicationCommandLogModule
+{
+    [ContextMenu(ApplicationCommandType.MessageContextMenu, "Add to Stash")]
+    public async Task MenuAddTo(ContextMenuContext ctx)
+    {
+        await new AddTo(ctx).RunAsync();
+    }
+
+    [SlashCommand("create", "Create a new stash.")]
+    public async Task SlashCreate(InteractionContext ctx,
+        [Option("Name", "Name of the stash to create")]
+        string title)
+    {
+        await new Create(ctx, title).RunAsync();
     }
 
     [SlashCommand("remove", "Removes entry from a stash.")]
