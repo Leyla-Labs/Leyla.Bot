@@ -15,7 +15,6 @@ public abstract class Leyla : IBot
 
     public async Task StartAsync()
     {
-        Configuration.ConnectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")!;
         Client = await InitBot();
         RegisterCommands();
         RegisterInteractivity();

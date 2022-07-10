@@ -24,7 +24,8 @@ public class DatabaseContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseNpgsql(Configuration.ConnectionString).UseSnakeCaseNamingConvention();
+            var conn = Environment.GetEnvironmentVariable("CONNECTION_STRING")!;
+            optionsBuilder.UseNpgsql(conn).UseSnakeCaseNamingConvention();
         }
 
         base.OnConfiguring(optionsBuilder);
@@ -70,7 +71,8 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DatabaseCo
     public DatabaseContext CreateDbContext(string[] args)
     {
         var b = new DbContextOptionsBuilder<DatabaseContext>();
-        b.UseNpgsql(Configuration.ConnectionString).UseSnakeCaseNamingConvention();
+        var conn = Environment.GetEnvironmentVariable("CONNECTION_STRING")!;
+        b.UseNpgsql(conn).UseSnakeCaseNamingConvention();
         return new DatabaseContext(b.Options);
     }
 }
