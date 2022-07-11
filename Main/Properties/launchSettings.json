@@ -20,7 +20,10 @@
         "MODULES": "main;logs;spam",
         "TOKEN_MAIN": "abc123",
         "TOKEN_LOGS": "abc123",
-        "TOKEN_SPAM": "abc123"
+        "TOKEN_SPAM": "abc123",
+        "ID_MAIN": "971328045501775882",
+        "ID_LOGS": "969938165550972929",
+        "ID_SPAM": "975811281820975206"
       }
     },
     "IIS Express": {
