@@ -11,7 +11,7 @@ namespace Common.Classes;
 
 public abstract class Leyla : IBot
 {
-    private DiscordClient Client { get; set; } = null!;
+    private DiscordClient? Client { get; set; }
 
     public async Task StartAsync()
     {
@@ -23,12 +23,15 @@ public abstract class Leyla : IBot
 
     public virtual async Task StopAsync()
     {
-        await Client.DisconnectAsync();
+        if (Client != null)
+        {
+            await Client.DisconnectAsync();
+        }
     }
 
     public void Dispose()
     {
-        Client.Dispose();
+        Client?.Dispose();
     }
 
     protected virtual SlashCommandsExtension RegisterCommands()
@@ -49,7 +52,10 @@ public abstract class Leyla : IBot
 
     protected async Task ClientOnGuildDownloadCompleted(DiscordClient sender, GuildDownloadCompletedEventArgs e)
     {
-        await new StartupHelper(Client).SendStartupMessage();
+        if (Client != null)
+        {
+            await new StartupHelper(Client).SendStartupMessage();
+        }
     }
 
     #region Abstract methods
