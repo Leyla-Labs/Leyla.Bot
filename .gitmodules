@@ -1,0 +1,3 @@
+[submodule "xivapi-cs"]
+	path = xivapi-cs
+	url = https://github.com/Tawmy/xivapi-cs.git
