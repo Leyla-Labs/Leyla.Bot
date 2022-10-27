@@ -1,5 +1,7 @@
 # Leyla.Bot
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a04ab3c6ac1d447da239b26894f21ea4)](https://app.codacy.com/gh/Leyla-Labs/Leyla.Bot?utm_source=github.com&utm_medium=referral&utm_content=Leyla-Labs/Leyla.Bot&utm_campaign=Badge_Grade_Settings)
+
 Privacy-focused Administration Bot for Discord
 
 ### Docker Environment Variables
