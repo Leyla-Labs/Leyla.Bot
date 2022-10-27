@@ -2,7 +2,10 @@
 
 Privacy-focused Administration Bot for Discord
 
-### Docker Environment Variables
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/de4216d87f1240d98b5383a7d4e58df8)](https://www.codacy.com/gh/Leyla-Labs/Leyla.Bot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Leyla-Labs/Leyla.Bot&amp;utm_campaign=Badge_Grade)
+[![CodeQL](https://github.com/Leyla-Labs/Leyla.Bot/actions/workflows/codeql.yml/badge.svg)](https://github.com/Leyla-Labs/Leyla.Bot/actions/workflows/codeql.yml)
+
+## Docker Environment Variables
 
 | Environment Variable | Description                                             | Required                           | Default Value                                                                              |
 |----------------------|---------------------------------------------------------|------------------------------------|--------------------------------------------------------------------------------------------|
