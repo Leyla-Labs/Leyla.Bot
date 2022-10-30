@@ -40,12 +40,28 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
                 break;
             case ConfigType.Role:
                 var roleSelect = await GetRoleSelect(option);
+                var currentRole = await ConfigHelper.Instance.GetRole(option.Name, EventArgs.Guild);
+                if (currentRole != null)
+                {
+                    // Workaround until Discord adds support for default values to these select types
+                    optionDetailsEmbed = new DiscordEmbedBuilder(optionDetailsEmbed)
+                        .AddField("Current Value", currentRole.Mention)
+                        .Build();
+                }
                 await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                     new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(roleSelect)
                         .AsEphemeral());
                 break;
             case ConfigType.Channel:
                 var channelSelect = await GetTextChannelSelect(option);
+                var currentChannel = await ConfigHelper.Instance.GetChannel(option.Name, EventArgs.Guild);
+                if (currentChannel != null)
+                {
+                    // Workaround until Discord adds support for default values to these select types
+                    optionDetailsEmbed = new DiscordEmbedBuilder(optionDetailsEmbed)
+                        .AddField("Current Value", currentChannel.Mention)
+                        .Build();
+                }
                 await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                     new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(channelSelect)
                         .AsEphemeral());
@@ -56,7 +72,6 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
                     new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(enumSelect)
                         .AsEphemeral());
                 break;
-            // TODO
             default:
                 throw new ArgumentOutOfRangeException(nameof(option.ConfigType));
         }
