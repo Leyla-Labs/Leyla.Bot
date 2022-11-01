@@ -3,8 +3,6 @@ using Common.Extensions;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using Microsoft.Extensions.Caching.Memory;
-using SixLabors.ImageSharp.Formats.Png;
 using xivapi_cs;
 using xivapi_cs.Enums;
 
