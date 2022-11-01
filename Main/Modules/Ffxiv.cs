@@ -8,7 +8,7 @@ namespace Main.Modules;
 
 [SlashCommandGroup("FFXIV", "Description TODO")]
 [SlashRequireGuild]
-public class Ffxiv : ApplicationCommandLogModule
+internal sealed class Ffxiv : ApplicationCommandLogModule
 {
     [SlashCommandGroup("Character", "Description TODO")]
     public class Character : ApplicationCommandLogModule
