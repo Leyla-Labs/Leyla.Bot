@@ -19,7 +19,7 @@ public class Ffxiv : ApplicationCommandLogModule
             [Option("Name", "Title of character to search for")]
             string name,
             [Option("HomeWorld", "Home world of the character")]
-            string? server)
+            string? server = null)
         {
             await new Find(ctx, name, server).RunAsync();
         }

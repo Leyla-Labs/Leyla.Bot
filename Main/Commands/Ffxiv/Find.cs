@@ -1,11 +1,13 @@
 using Common.Classes;
 using Common.Extensions;
+using Common.Helper;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Main.Helper;
 using xivapi_cs;
 using xivapi_cs.Enums;
+using xivapi_cs.ViewModels.CharacterSearch;
 
 namespace Main.Commands.Ffxiv;
 
@@ -22,8 +24,6 @@ public sealed class Find : SlashCommand
 
     public override async Task RunAsync()
     {
-        await Ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-
         var characterSearch = _server != null
             ? await new XivApiClient().CharacterSearch(_name, _server)
             : await new XivApiClient().CharacterSearch(_name);
@@ -35,7 +35,15 @@ public sealed class Find : SlashCommand
             return;
         }
 
-        // TODO show select menu if more than one result
+        if (characterSearch.Results.Length > 1)
+        {
+            var characterSelect = GetCharacterSelect(characterSearch.Results);
+            await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddComponents(characterSelect)
+                .AsEphemeral());
+            return;
+        }
+
+        await Ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
         var characterData = await new XivApiClient().CharacterProfileExtended(characterSearch.Results.First().Id,
             CharacterProfileOptions.FreeCompany | CharacterProfileOptions.MinionsMounts);
@@ -50,4 +58,16 @@ public sealed class Find : SlashCommand
         // TODO proper filename
         await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddFile("test123.webp", stream, true));
     }
+
+    #region Instance methods
+
+    private DiscordSelectComponent GetCharacterSelect(IEnumerable<CharacterSearchResult> results)
+    {
+        var name = ModalHelper.GetModalName(Ctx.User.Id, "ffxivCharacterSheet");
+        var options = results.Select(x =>
+            new DiscordSelectComponentOption(x.Name, x.Id.ToString(), x.HomeWorldDetails.HomeWorld.ToString()));
+        return new DiscordSelectComponent(name, "Select character", options, minOptions: 1, maxOptions: 1);
+    }
+
+    #endregion
 }
