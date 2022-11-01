@@ -1,10 +1,10 @@
 using xivapi_cs.ViewModels.CharacterProfile;
 
-namespace Main.Classes;
+namespace Main.Classes.FfxivCharacterSheet;
 
-internal class FfxivNameProperties
+internal class NameProperties
 {
-    public FfxivNameProperties(CharacterExtended character)
+    public NameProperties(CharacterExtended character)
     {
         var x = 854;
 

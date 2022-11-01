@@ -1,5 +1,5 @@
 using System.Numerics;
-using Main.Classes;
+using Main.Classes.FfxivCharacterSheet;
 using RestSharp;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
@@ -8,6 +8,7 @@ using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using xivapi_cs.ViewModels.CharacterProfile;
+using Job = xivapi_cs.Enums.Job;
 
 namespace Main.Helper;
 
@@ -21,6 +22,7 @@ public static class FfxivHelper
         await AddPortraitFrame(imgBase);
         await AddJobFrame(imgBase);
         await AddCharacterName(imgBase, character);
+        await AddJobLevels(imgBase, character);
 
         return await ConvertToMemoryStream(imgBase);
     }
@@ -65,7 +67,7 @@ public static class FfxivHelper
     {
         var collection = new FontCollection();
         var family = collection.Add("Resources/Vollkorn-VariableFont_wght.ttf");
-        var nameProperties = new FfxivNameProperties(character);
+        var nameProperties = new NameProperties(character);
 
         var fontName = family.CreateFont(nameProperties.Name.Size, FontStyle.Regular);
 
@@ -94,6 +96,31 @@ public static class FfxivHelper
         };
 
         img.Mutate(x => x.DrawText(optionsTitle, character.Title.Name, Color.Black));
+
+        return Task.CompletedTask;
+    }
+
+    private static Task AddJobLevels(Image img, CharacterExtended character)
+    {
+        var collection = new FontCollection();
+        var family = collection.Add("Resources/OpenSans-VariableFont_wdth,wght.ttf");
+        var font = family.CreateFont(28, FontStyle.Regular);
+
+        foreach (var job in (Job[]) Enum.GetValues(typeof(Job)))
+        {
+            var jobLevel = character.ClassJobs.FirstOrDefault(x =>
+                x.Job.JobEnum == job && x.Level > 0)?.Level;
+
+            var levelString = jobLevel != null ? jobLevel.ToString() : "-";
+
+            var options = new TextOptions(font)
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Origin = JobCoordinates.Get(job)
+            };
+
+            img.Mutate(x => x.DrawText(options, levelString, Color.White));
+        }
 
         return Task.CompletedTask;
     }

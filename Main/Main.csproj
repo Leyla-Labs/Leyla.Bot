@@ -38,6 +38,9 @@
         <None Update="Resources\Vollkorn-VariableFont_wght.ttf">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Update="Resources\OpenSans-VariableFont_wdth,wght.ttf">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
