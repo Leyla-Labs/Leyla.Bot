@@ -1,5 +1,8 @@
+using System.ComponentModel.DataAnnotations;
 using System.Numerics;
+using Common.Extensions;
 using Main.Classes.FfxivCharacterSheet;
+using Main.Extensions;
 using RestSharp;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
@@ -18,11 +21,16 @@ public static class FfxivHelper
     {
         using var imgBase = await Image.LoadAsync("Resources/characterTemplateBase.png");
 
+        var fontCollection = new FontCollection();
+
         AddCharacterPortrait(imgBase, character);
         await AddPortraitFrame(imgBase);
         await AddJobFrame(imgBase);
-        await AddCharacterName(imgBase, character);
-        await AddJobLevels(imgBase, character);
+        await AddCharacterName(imgBase, character, fontCollection);
+        await AddJobLevels(imgBase, character, fontCollection);
+
+        // must be after AddJobLevels since OpenSans is loaded there
+        await AddGrandCompany(imgBase, character, fontCollection);
 
         return await ConvertToMemoryStream(imgBase);
     }
@@ -63,10 +71,9 @@ public static class FfxivHelper
         img.Mutate(x => x.DrawImage(imgJob, 1));
     }
 
-    private static Task AddCharacterName(Image img, CharacterExtended character)
+    private static Task AddCharacterName(Image img, CharacterExtended character, IFontCollection fontCollection)
     {
-        var collection = new FontCollection();
-        var family = collection.Add("Resources/Vollkorn-VariableFont_wght.ttf");
+        var family = fontCollection.Add("Resources/Vollkorn-VariableFont_wght.ttf");
         var nameProperties = new NameProperties(character);
 
         var fontName = family.CreateFont(nameProperties.Name.Size, FontStyle.Regular);
@@ -100,10 +107,9 @@ public static class FfxivHelper
         return Task.CompletedTask;
     }
 
-    private static Task AddJobLevels(Image img, CharacterExtended character)
+    private static Task AddJobLevels(Image img, CharacterExtended character, IFontCollection fontCollection)
     {
-        var collection = new FontCollection();
-        var family = collection.Add("Resources/OpenSans-VariableFont_wdth,wght.ttf");
+        var family = fontCollection.Add("Resources/OpenSans-VariableFont_wdth,wght.ttf");
         var font = family.CreateFont(28, FontStyle.Regular);
 
         foreach (var job in (Job[]) Enum.GetValues(typeof(Job)))
@@ -123,6 +129,54 @@ public static class FfxivHelper
         }
 
         return Task.CompletedTask;
+    }
+
+    private static async Task<bool> AddGrandCompany(Image img, CharacterExtended character,
+        IFontCollection fontCollection)
+    {
+        if (character.GrandCompany == null)
+        {
+            return false;
+        }
+
+        var crest = await character.GrandCompany.GrandCompanyEnum.GetCrest();
+
+        crest.Mutate(x => x.Resize(Values.DimensionsGcCrest, Values.DimensionsGcCrest, KnownResamplers.Lanczos3));
+
+        var coordinates = character.FreeCompanyId == null
+            ? CoordinatesOther.GrandCompanyTop
+            : CoordinatesOther.GrandCompanyBottom;
+
+        if (character.FreeCompanyId == null)
+        {
+            // if player not in any free company, use the fc space to show the gc logo and name
+
+            var gcName = character.GrandCompany.GrandCompanyEnum.GetAttribute<DisplayAttribute>()?.Name ??
+                         throw new NullReferenceException(nameof(character.GrandCompany.GrandCompanyEnum));
+
+            var family = fontCollection.Get("Open Sans");
+            var font = family.CreateFont(Values.FontSizeGrandCompany, FontStyle.Regular);
+
+            var options = new TextOptions(font)
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Origin = new Vector2(coordinates.X, coordinates.Y - 2) // arbitrarily move up 2px, looks better
+            };
+
+            // print gc name
+            img.Mutate(x => x.DrawText(options, gcName, Color.White));
+
+            // get gc name width and calculate position of gc crest
+            var textWidth = TextMeasurer.Measure(gcName, options);
+            coordinates.X -= (int) decimal.Divide((int) textWidth.Width, 2) +
+                             Values.DimensionsGcCrest + Values.GcCrestPadding;
+            coordinates.Y -= (int) decimal.Divide(Values.DimensionsGcCrest, 2);
+        }
+
+        img.Mutate(x => x.DrawImage(crest, coordinates, 1));
+
+        return true;
     }
 
     private static async Task<MemoryStream> ConvertToMemoryStream(Image img)

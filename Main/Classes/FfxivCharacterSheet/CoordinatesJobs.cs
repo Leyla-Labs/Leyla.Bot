@@ -8,7 +8,7 @@ public static class JobCoordinates
     private static int DistNormal => 56;
     private static int DistCategory => 84;
     private static int DistVertical => 100;
-    
+
     public static Vector2 Get(Job job)
     {
         return job switch

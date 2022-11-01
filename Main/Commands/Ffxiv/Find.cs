@@ -3,6 +3,7 @@ using Common.Extensions;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using Main.Helper;
 using xivapi_cs;
 using xivapi_cs.Enums;
 
@@ -12,7 +13,7 @@ public sealed class Find : SlashCommand
 {
     private readonly string _name;
     private readonly string? _server;
-    
+
     public Find(InteractionContext ctx, string name, string? server) : base(ctx)
     {
         _name = name;
@@ -22,7 +23,7 @@ public sealed class Find : SlashCommand
     public override async Task RunAsync()
     {
         await Ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-        
+
         var characterSearch = _server != null
             ? await new XivApiClient().CharacterSearch(_name, _server)
             : await new XivApiClient().CharacterSearch(_name);
@@ -33,7 +34,7 @@ public sealed class Find : SlashCommand
             await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddErrorEmbed(errorMsg));
             return;
         }
-        
+
         // TODO show select menu if more than one result
 
         var characterData = await new XivApiClient().CharacterProfileExtended(characterSearch.Results.First().Id,
@@ -45,7 +46,7 @@ public sealed class Find : SlashCommand
             return;
         }
 
-        var stream = await Helper.FfxivHelper.GetCharacterSheet(characterData.Character);
+        var stream = await FfxivHelper.GetCharacterSheet(characterData.Character);
         // TODO proper filename
         await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddFile("test123.webp", stream, true));
     }
