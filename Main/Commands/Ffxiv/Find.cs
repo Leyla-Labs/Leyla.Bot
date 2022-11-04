@@ -39,7 +39,7 @@ public sealed class Find : SlashCommand
 
         if (characterSearch.Results.Length > 1)
         {
-            var characterSelect = GetCharacterSelect(characterSearch.Results);
+            var characterSelect = GetCharacterSelect(characterSearch);
             await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddComponents(characterSelect));
             return;
         }
@@ -60,12 +60,17 @@ public sealed class Find : SlashCommand
 
     #region Instance methods
 
-    private DiscordSelectComponent GetCharacterSelect(IEnumerable<CharacterSearchResult> results)
+    private DiscordSelectComponent GetCharacterSelect(CharacterSearch result)
     {
         var name = ModalHelper.GetModalName(Ctx.User.Id, "ffxivCharacterSheet");
-        var options = results.Take(25).Select(x =>
-            new DiscordSelectComponentOption(x.Name, x.Id.ToString(), x.HomeWorldDetails.HomeWorld.ToString()));
-        return new DiscordSelectComponent(name, "Select character", options, minOptions: 1, maxOptions: 1);
+        var options = result.Results.Take(25).Select(x =>
+                new DiscordSelectComponentOption(x.Name, x.Id.ToString(), x.HomeWorldDetails.HomeWorld.ToString()))
+            .ToList();
+        var t = result.Pagination.ResultsTotal;
+        var suffix = t > 25
+            ? $" (Showing 25/{t} results)./"
+            : $" ({t} results).";
+        return new DiscordSelectComponent(name, $"Select character {suffix}", options, minOptions: 1, maxOptions: 1);
     }
 
     #endregion
