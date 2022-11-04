@@ -18,8 +18,6 @@ public class FfxivCharacterSheetSelectedHandler : InteractionHandler
 
     public override async Task RunAsync()
     {
-        // TODO this results in a new msg replying to the ephemeral one, meaning it shows as a reply to an invalid msg.
-        // Is there a better way to do this?
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
         var id = Convert.ToInt32(EventArgs.Values.First());

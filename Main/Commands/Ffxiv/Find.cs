@@ -24,13 +24,15 @@ public sealed class Find : SlashCommand
 
     public override async Task RunAsync()
     {
+        await Ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
         var characterSearch = _server != null
             ? await new XivApiClient().CharacterSearch(_name, _server)
             : await new XivApiClient().CharacterSearch(_name);
 
         if (characterSearch == null || !characterSearch.Results.Any())
         {
-            var errorMsg = $"{_name}{(_server != null ? $"({_server})" : string.Empty)} not found";
+            var errorMsg = $"{_name}{(_server != null ? $" ({_server})" : string.Empty)} not found.";
             await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddErrorEmbed(errorMsg));
             return;
         }
@@ -38,13 +40,9 @@ public sealed class Find : SlashCommand
         if (characterSearch.Results.Length > 1)
         {
             var characterSelect = GetCharacterSelect(characterSearch.Results);
-            await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddComponents(characterSelect)
-                .AsEphemeral());
+            await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddComponents(characterSelect));
             return;
         }
-
-        // TODO send this before first request as that tends to take longer than three seconds
-        await Ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
         var characterData = await new XivApiClient().CharacterProfileExtended(characterSearch.Results.First().Id,
             CharacterProfileOptions.FreeCompany | CharacterProfileOptions.MinionsMounts);
