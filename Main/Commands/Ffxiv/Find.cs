@@ -43,6 +43,7 @@ public sealed class Find : SlashCommand
             return;
         }
 
+        // TODO send this before first request as that tends to take longer than three seconds
         await Ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
         var characterData = await new XivApiClient().CharacterProfileExtended(characterSearch.Results.First().Id,
@@ -64,7 +65,7 @@ public sealed class Find : SlashCommand
     private DiscordSelectComponent GetCharacterSelect(IEnumerable<CharacterSearchResult> results)
     {
         var name = ModalHelper.GetModalName(Ctx.User.Id, "ffxivCharacterSheet");
-        var options = results.Select(x =>
+        var options = results.Take(25).Select(x =>
             new DiscordSelectComponentOption(x.Name, x.Id.ToString(), x.HomeWorldDetails.HomeWorld.ToString()));
         return new DiscordSelectComponent(name, "Select character", options, minOptions: 1, maxOptions: 1);
     }

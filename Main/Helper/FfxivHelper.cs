@@ -25,7 +25,10 @@ public static class FfxivHelper
 
         AddCharacterPortrait(imgBase, character);
         await AddPortraitFrame(imgBase);
+
+        await AddJobIcon(imgBase, character);
         await AddJobFrame(imgBase);
+
         await AddCharacterName(imgBase, character, fontCollection);
         await AddJobLevels(imgBase, character, fontCollection);
 
@@ -69,6 +72,20 @@ public static class FfxivHelper
     {
         var imgJob = await Image.LoadAsync("Resources/characterTemplateJob.png");
         img.Mutate(x => x.DrawImage(imgJob, 1));
+    }
+
+    private static async Task AddJobIcon(Image img, CharacterExtended character)
+    {
+        if (character?.ActiveClassJob.Job.JobEnum == null)
+        {
+            return;
+        }
+
+        var filePath = $"Resources/Jobs/{character.ActiveClassJob.Job.JobEnum.ToString()!.ToLower()}.png";
+        var imgJob = await Image.LoadAsync(filePath);
+
+        imgJob.Mutate(x => x.Resize(68, 68));
+        img.Mutate(x => x.DrawImage(imgJob, CoordinatesOther.JobIcon, 1));
     }
 
     private static Task AddCharacterName(Image img, CharacterExtended character, IFontCollection fontCollection)
