@@ -17,10 +17,11 @@ namespace Main.Helper;
 
 public static class FfxivHelper
 {
-    public static async Task<MemoryStream> GetCharacterSheet(CharacterExtended character)
+    public static async Task<MemoryStream> GetCharacterSheet(CharacterProfileExtended profile)
     {
         using var imgBase = await Image.LoadAsync("Resources/characterTemplateBase.png");
 
+        var character = profile.Character;
         var fontCollection = new FontCollection();
 
         AddCharacterPortrait(imgBase, character);
@@ -33,7 +34,13 @@ public static class FfxivHelper
         await AddJobLevels(imgBase, character, fontCollection);
 
         // must be after AddJobLevels since OpenSans is loaded there
-        await AddGrandCompany(imgBase, character, fontCollection);
+        var gc = await AddGrandCompany(imgBase, character, fontCollection);
+        var fc = await AddFreeCompany(imgBase, profile, fontCollection);
+
+        if (!gc || !fc)
+        {
+            // TODO fill empty top space
+        }
 
         return await ConvertToMemoryStream(imgBase);
     }
@@ -149,7 +156,7 @@ public static class FfxivHelper
     }
 
     private static async Task<bool> AddGrandCompany(Image img, CharacterExtended character,
-        IFontCollection fontCollection)
+        IReadOnlyFontCollection fontCollection)
     {
         if (character.GrandCompany == null)
         {
@@ -157,43 +164,92 @@ public static class FfxivHelper
         }
 
         var crest = await character.GrandCompany.GrandCompanyEnum.GetCrest();
-
-        crest.Mutate(x => x.Resize(Values.DimensionsGcCrest, Values.DimensionsGcCrest, KnownResamplers.Lanczos3));
-
-        var coordinates = character.FreeCompanyId == null
-            ? CoordinatesOther.GrandCompanyTop
-            : CoordinatesOther.GrandCompanyBottom;
+        crest.Mutate(x => x.Resize(Values.DimensionsGcFcCrest, Values.DimensionsGcFcCrest, KnownResamplers.Lanczos3));
 
         if (character.FreeCompanyId == null)
         {
             // if player not in any free company, use the fc space to show the gc logo and name
-
             var gcName = character.GrandCompany.GrandCompanyEnum.GetAttribute<DisplayAttribute>()?.Name ??
                          throw new NullReferenceException(nameof(character.GrandCompany.GrandCompanyEnum));
-
-            var family = fontCollection.Get("Open Sans");
-            var font = family.CreateFont(Values.FontSizeGrandCompany, FontStyle.Regular);
-
-            var options = new TextOptions(font)
-            {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Origin = new Vector2(coordinates.X, coordinates.Y - 2) // arbitrarily move up 2px, looks better
-            };
-
-            // print gc name
-            img.Mutate(x => x.DrawText(options, gcName, Color.White));
-
-            // get gc name width and calculate position of gc crest
-            var textWidth = TextMeasurer.Measure(gcName, options);
-            coordinates.X -= (int) decimal.Divide((int) textWidth.Width, 2) +
-                             Values.DimensionsGcCrest + Values.GcCrestPadding;
-            coordinates.Y -= (int) decimal.Divide(Values.DimensionsGcCrest, 2);
+            await PrintInTopValueArea(img, fontCollection, gcName, crest);
+        }
+        else
+        {
+            // if player is in a free company, print gc crest
+            img.Mutate(x => x.DrawImage(crest, CoordinatesOther.GcBottom, 1));
         }
 
-        img.Mutate(x => x.DrawImage(crest, coordinates, 1));
-
         return true;
+    }
+
+    private static async Task<bool> AddFreeCompany(Image img, CharacterProfileExtended profile,
+        IReadOnlyFontCollection fontCollection)
+    {
+        if (profile.FreeCompany == null)
+        {
+            return false;
+        }
+
+        var crest = await GetFreeCompanyCrest(profile);
+        crest.Mutate(x => x.Resize(Values.DimensionsGcFcCrest, Values.DimensionsGcFcCrest, KnownResamplers.Lanczos3));
+        await PrintInTopValueArea(img, fontCollection, profile.FreeCompany.Name, crest);
+        return true;
+    }
+
+    /// <summary>
+    ///     Sends rest request to XIVAPI and returns FC crest in singular image
+    /// </summary>
+    /// <param name="profile">Free Company must not be null!</param>
+    /// <returns>Free Company Crest</returns>
+    private static Task<Image> GetFreeCompanyCrest(CharacterProfileBase profile)
+    {
+        var client = new RestClient();
+
+        var list = profile.FreeCompany!.Crest
+            .Select(x => new RestRequest(x, Method.GET)) // convert url to rest request
+            .Select(x => client.DownloadData(x)) // download data from lodestone
+            .Select(Image.Load<Rgba32>).ToList(); // add to list
+
+        foreach (var layer in list.Skip(1))
+        {
+            list[0].Mutate(x => x.DrawImage(layer, 1));
+        }
+
+        return Task.FromResult(list[0] as Image);
+    }
+
+    private static Task PrintInTopValueArea(Image img, IReadOnlyFontCollection fontCollection, string text,
+        Image? crest = null)
+    {
+        var family = fontCollection.Get("Open Sans");
+        var font = family.CreateFont(Values.FontSizeGrandCompany, FontStyle.Regular);
+
+        // if no crest, get coordinates without offset
+        var coords = crest == null ? CoordinatesOther.TextTop : CoordinatesOther.FcOrGcTop;
+
+        var textOptions = new TextOptions(font)
+        {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Origin = new Vector2(coords.X, coords.Y - 2) // arbitrarily move text up 2px, looks better
+        };
+
+        // print text
+        img.Mutate(x => x.DrawText(textOptions, text, Color.White));
+
+        if (crest == null)
+        {
+            return Task.CompletedTask;
+        }
+
+        // get text width and calculate position of crest
+        var textWidth = TextMeasurer.Measure(text, textOptions);
+        coords.X -= (int) decimal.Divide((int) textWidth.Width, 2) +
+                    Values.DimensionsGcFcCrest + Values.GcCrestPadding;
+        coords.Y -= (int) decimal.Divide(Values.DimensionsGcFcCrest, 2);
+
+        img.Mutate(x => x.DrawImage(crest, coords, 1));
+        return Task.CompletedTask;
     }
 
     private static async Task<MemoryStream> ConvertToMemoryStream(Image img)

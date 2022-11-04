@@ -53,7 +53,7 @@ public sealed class Find : SlashCommand
             return;
         }
 
-        var stream = await FfxivHelper.GetCharacterSheet(characterData.Character);
+        var stream = await FfxivHelper.GetCharacterSheet(characterData);
         // TODO proper filename
         await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddFile("test123.webp", stream, true));
     }
