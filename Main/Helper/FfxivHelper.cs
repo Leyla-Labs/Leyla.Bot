@@ -61,13 +61,13 @@ public static class FfxivHelper
 
     private static async Task AddPortraitFrame(Image img)
     {
-        using var imgFrame = await Image.LoadAsync("Resources/characterTemplateFrame.png");
+        var imgFrame = await Image.LoadAsync("Resources/characterTemplateFrame.png");
         img.Mutate(x => x.DrawImage(imgFrame, 1));
     }
 
     private static async Task AddJobFrame(Image img)
     {
-        using var imgJob = await Image.LoadAsync("Resources/characterTemplateJob.png");
+        var imgJob = await Image.LoadAsync("Resources/characterTemplateJob.png");
         img.Mutate(x => x.DrawImage(imgJob, 1));
     }
 
