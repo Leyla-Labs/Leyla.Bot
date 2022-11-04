@@ -64,8 +64,7 @@ public sealed class Find : SlashCommand
     {
         var name = ModalHelper.GetModalName(Ctx.User.Id, "ffxivCharacterSheet");
         var options = result.Results.Take(25).Select(x =>
-                new DiscordSelectComponentOption(x.Name, x.Id.ToString(), x.HomeWorldDetails.HomeWorld.ToString()))
-            .ToList();
+            new DiscordSelectComponentOption(x.Name, x.Id.ToString(), x.HomeWorldDetails.HomeWorld.ToString()));
         var t = result.Pagination.ResultsTotal;
         var suffix = t > 25
             ? $" (Showing 25/{t} results)./"
