@@ -37,9 +37,9 @@ public static class FfxivHelper
         var gc = await AddGrandCompany(imgBase, character, fontCollection);
         var fc = await AddFreeCompany(imgBase, profile, fontCollection);
 
-        if (!gc || !fc)
+        if (!gc && !fc)
         {
-            // TODO fill empty top space
+            await AddNewAdventurer(imgBase, fontCollection);
         }
 
         return await ConvertToMemoryStream(imgBase);
@@ -216,6 +216,11 @@ public static class FfxivHelper
         }
 
         return Task.FromResult(list[0] as Image);
+    }
+
+    private static Task AddNewAdventurer(Image img, IReadOnlyFontCollection fontCollection)
+    {
+        return PrintInTopValueArea(img, fontCollection, "New Adventurer");
     }
 
     private static Task PrintInTopValueArea(Image img, IReadOnlyFontCollection fontCollection, string text,
