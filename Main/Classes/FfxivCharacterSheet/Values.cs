@@ -11,4 +11,7 @@ internal static class Values
     public static int ActiveJobLevelThickness => 40;
     public static int ActiveJobLevelRadius => 10;
     public static int ActiveJobLevelFontSize => 30;
+    public static int FontSizeAttributes => 28;
+    public static string AttributeGapSmall => "   ";
+    public static string AttributeGapBig => "          ";
 }

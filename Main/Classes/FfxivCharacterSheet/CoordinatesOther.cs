@@ -14,4 +14,6 @@ internal static class CoordinatesOther
     public static Point JobIcon => new(214, 19);
     public static Point ActiveJobLevelBackground => new(72, 127);
     public static Point ActiveJobLevelText => new(72, 124);
+    public static Point AttributesPrimary => new(853, 443);
+    public static Point AttributesSecondary => new(853, 503);
 }

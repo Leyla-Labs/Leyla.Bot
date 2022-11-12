@@ -12,6 +12,7 @@ using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using xivapi_cs.ViewModels.CharacterProfile;
+using Attribute = xivapi_cs.Enums.Attribute;
 using Job = xivapi_cs.Enums.Job;
 
 namespace Main.Helper;
@@ -38,6 +39,7 @@ public static class FfxivHelper
         // must be after AddJobLevels since OpenSans is loaded there
         var gc = await AddGrandCompany(imgBase, character, fontCollection);
         var fc = await AddFreeCompany(imgBase, profile, fontCollection);
+        await AddAttributes(imgBase, character, fontCollection);
 
         if (!gc && !fc)
         {
@@ -204,7 +206,7 @@ public static class FfxivHelper
         return true;
     }
 
-    private static async Task<bool> AddFreeCompany(Image img, CharacterProfileExtended profile,
+    private static async Task<bool> AddFreeCompany(Image img, CharacterProfileBase profile,
         IReadOnlyFontCollection fontCollection)
     {
         if (profile.FreeCompany == null)
@@ -216,6 +218,44 @@ public static class FfxivHelper
         crest.Mutate(x => x.Resize(Values.DimensionsGcFcCrest, Values.DimensionsGcFcCrest, KnownResamplers.Lanczos3));
         await PrintInTopValueArea(img, fontCollection, profile.FreeCompany.Name, crest);
         return true;
+    }
+
+    private static Task AddAttributes(Image img, CharacterExtended character, IReadOnlyFontCollection fontCollection)
+    {
+        var job = character.ActiveClassJob.Job.JobEnum;
+
+        if (job == null)
+        {
+            throw new ArgumentNullException(nameof(character), "JobEnum is null");
+        }
+
+        var attributes = job.Value.GetDisplayAttributes();
+
+        var family = fontCollection.Get("Open Sans");
+        var font = family.CreateFont(Values.FontSizeAttributes, FontStyle.Regular);
+
+        PrintAttributes(img, character, font, attributes.Take(2), CoordinatesOther.AttributesPrimary, true);
+        PrintAttributes(img, character, font, attributes.Skip(2), CoordinatesOther.AttributesSecondary, false);
+
+        return Task.CompletedTask;
+    }
+
+    private static void PrintAttributes(Image img, CharacterExtended character, Font font,
+        IEnumerable<Attribute> attributes, Point origin, bool primary)
+    {
+        var options = new TextOptions(font)
+        {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Origin = origin
+        };
+
+        var result = attributes.Select(x =>
+            $"{GetAttributeName(x, primary)}:{Values.AttributeGapSmall}{GetAttributeValue(character, x)}");
+
+        var text = string.Join(Values.AttributeGapBig, result);
+
+        img.Mutate(x => x.DrawText(options, text, Color.White));
     }
 
     /// <summary>
@@ -285,5 +325,20 @@ public static class FfxivHelper
         await img.SaveAsync(stream, new WebpEncoder());
         stream.Seek(0, SeekOrigin.Begin);
         return stream;
+    }
+
+    private static string GetAttributeName(Attribute a, bool fullName)
+    {
+        var dAttr = a.GetAttribute<DisplayAttribute>() ?? throw new NullReferenceException("Attribute is null.");
+        return (fullName ? dAttr.Name : dAttr.ShortName ?? dAttr.Name) ??
+               throw new NullReferenceException("Name attribute is missing");
+    }
+
+    private static int GetAttributeValue(CharacterExtended character, Attribute attr)
+    {
+        return character.GearSet.Attributes.Where(x =>
+                x.Attribute == attr)
+            .Select(x => x.Value)
+            .First();
     }
 }
