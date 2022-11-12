@@ -6,6 +6,7 @@ using Main.Extensions;
 using RestSharp;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -29,6 +30,7 @@ public static class FfxivHelper
 
         await AddJobIcon(imgBase, character);
         await AddJobFrame(imgBase);
+        await AddActiveJobLevel(imgBase, character, fontCollection);
 
         await AddCharacterName(imgBase, character, fontCollection);
         await AddJobLevels(imgBase, character, fontCollection);
@@ -93,6 +95,26 @@ public static class FfxivHelper
 
         imgJob.Mutate(x => x.Resize(68, 68));
         img.Mutate(x => x.DrawImage(imgJob, CoordinatesOther.JobIcon, 1));
+    }
+
+    private static Task AddActiveJobLevel(Image img, CharacterExtended character, IFontCollection fontCollection)
+    {
+        var circle = new EllipsePolygon(CoordinatesOther.ActiveJobLevelBackground, Values.ActiveJobLevelRadius);
+        img.Mutate(x => x.Draw(new Color(Values.ActiveJobLevelBackground), Values.ActiveJobLevelThickness, circle));
+
+        var family = fontCollection.Add("Resources/Antonio-ExtraLight.ttf");
+        var font = family.CreateFont(Values.ActiveJobLevelFontSize, FontStyle.Regular);
+        var text = $"Lv. {character.ActiveClassJob.Level}";
+
+        var textOptions = new TextOptions(font)
+        {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Origin = CoordinatesOther.ActiveJobLevelText
+        };
+
+        img.Mutate(x => x.DrawText(textOptions, text, Color.White));
+        return Task.CompletedTask;
     }
 
     private static Task AddCharacterName(Image img, CharacterExtended character, IFontCollection fontCollection)
