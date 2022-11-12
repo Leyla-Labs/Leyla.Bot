@@ -32,7 +32,8 @@ public class FfxivCharacterSheetSelectedHandler : InteractionHandler
             return;
         }
 
-        var stream = await FfxivHelper.GetCharacterSheet(characterData);
+        var helper = await CharacterSheetHelper.Create(characterData);
+        var stream = await helper.GetCharacterSheet();
         // TODO proper filename
         await EventArgs.Interaction.EditOriginalResponseAsync(
             new DiscordWebhookBuilder().AddFile("test123.webp", stream, true));

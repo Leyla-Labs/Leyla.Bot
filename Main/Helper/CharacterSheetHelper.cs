@@ -17,43 +17,69 @@ using Job = xivapi_cs.Enums.Job;
 
 namespace Main.Helper;
 
-public static class FfxivHelper
+public class CharacterSheetHelper
 {
-    public static async Task<MemoryStream> GetCharacterSheet(CharacterProfileExtended profile)
+    private readonly FontCollection _fontCollection = new();
+    private readonly CharacterProfileExtended _profile;
+
+    private CharacterSheetHelper(CharacterProfileExtended profile)
     {
-        using var imgBase = await Image.LoadAsync("Resources/characterTemplateBase.png");
+        _profile = profile;
+    }
 
-        var character = profile.Character;
-        var fontCollection = new FontCollection();
+    private CharacterExtended Character => _profile.Character;
+    private Image Image { get; set; } = null!;
 
-        AddCharacterPortrait(imgBase, character);
-        await AddPortraitFrame(imgBase);
+    public static async Task<CharacterSheetHelper> Create(CharacterProfileExtended profile)
+    {
+        var helper = new CharacterSheetHelper(profile);
+        await helper.Initialize();
+        return helper;
+    }
 
-        await AddJobIcon(imgBase, character);
-        await AddJobFrame(imgBase);
-        await AddActiveJobLevel(imgBase, character, fontCollection);
+    private async Task Initialize()
+    {
+        Image = await Image.LoadAsync("Resources/characterTemplateBase.png");
+        LoadFonts();
+    }
 
-        await AddCharacterName(imgBase, character, fontCollection);
-        await AddJobLevels(imgBase, character, fontCollection);
+    private void LoadFonts()
+    {
+        _fontCollection.Add("Resources/OpenSans-VariableFont_wdth,wght.ttf");
+        _fontCollection.Add("Resources/Vollkorn-VariableFont_wght.ttf");
+        _fontCollection.Add("Resources/Antonio-ExtraLight.ttf");
+    }
+
+    public async Task<MemoryStream> GetCharacterSheet()
+    {
+        AddCharacterPortrait();
+        await AddPortraitFrame();
+
+        await AddJobIcon();
+        await AddJobFrame();
+        await AddActiveJobLevel();
+
+        await AddCharacterName();
+        await AddJobLevels();
 
         // must be after AddJobLevels since OpenSans is loaded there
-        var gc = await AddGrandCompany(imgBase, character, fontCollection);
-        var fc = await AddFreeCompany(imgBase, profile, fontCollection);
-        await AddAttributes(imgBase, character, fontCollection);
+        var gc = await AddGrandCompany();
+        var fc = await AddFreeCompany();
+        await AddAttributes();
 
         if (!gc && !fc)
         {
-            await AddNewAdventurer(imgBase, fontCollection);
+            await AddNewAdventurer();
         }
 
-        return await ConvertToMemoryStream(imgBase);
+        return await ConvertToMemoryStream();
     }
 
-    private static void AddCharacterPortrait(Image img, CharacterBase character)
+    private void AddCharacterPortrait()
     {
         // get portrait as byte[]
         var client = new RestClient();
-        var request = new RestRequest(character.Portrait, Method.GET);
+        var request = new RestRequest(Character.Portrait, Method.GET);
         var restResponse = client.DownloadData(request);
 
         // load image and resize
@@ -70,43 +96,43 @@ public static class FfxivHelper
         imgPortrait.Mutate(x => x.Crop(rect));
 
         // draw cropped portrait on top of base image
-        img.Mutate(x => x.DrawImage(imgPortrait, new Point(16, 66), 1));
+        Image.Mutate(x => x.DrawImage(imgPortrait, new Point(16, 66), 1));
     }
 
-    private static async Task AddPortraitFrame(Image img)
+    private async Task AddPortraitFrame()
     {
         var imgFrame = await Image.LoadAsync("Resources/characterTemplateFrame.png");
-        img.Mutate(x => x.DrawImage(imgFrame, 1));
+        Image.Mutate(x => x.DrawImage(imgFrame, 1));
     }
 
-    private static async Task AddJobFrame(Image img)
+    private async Task AddJobFrame()
     {
         var imgJob = await Image.LoadAsync("Resources/characterTemplateJob.png");
-        img.Mutate(x => x.DrawImage(imgJob, 1));
+        Image.Mutate(x => x.DrawImage(imgJob, 1));
     }
 
-    private static async Task AddJobIcon(Image img, CharacterExtended character)
+    private async Task AddJobIcon()
     {
-        if (character?.ActiveClassJob.Job.JobEnum == null)
+        if (Character.ActiveClassJob.Job.JobEnum == null)
         {
             return;
         }
 
-        var filePath = $"Resources/Jobs/{character.ActiveClassJob.Job.JobEnum.ToString()!.ToLower()}.png";
+        var filePath = $"Resources/Jobs/{Character.ActiveClassJob.Job.JobEnum.ToString()!.ToLower()}.png";
         var imgJob = await Image.LoadAsync(filePath);
 
         imgJob.Mutate(x => x.Resize(68, 68));
-        img.Mutate(x => x.DrawImage(imgJob, CoordinatesOther.JobIcon, 1));
+        Image.Mutate(x => x.DrawImage(imgJob, CoordinatesOther.JobIcon, 1));
     }
 
-    private static Task AddActiveJobLevel(Image img, CharacterExtended character, IFontCollection fontCollection)
+    private Task AddActiveJobLevel()
     {
         var circle = new EllipsePolygon(CoordinatesOther.ActiveJobLevelBackground, Values.ActiveJobLevelRadius);
-        img.Mutate(x => x.Draw(new Color(Values.ActiveJobLevelBackground), Values.ActiveJobLevelThickness, circle));
+        Image.Mutate(x => x.Draw(new Color(Values.ActiveJobLevelBackground), Values.ActiveJobLevelThickness, circle));
 
-        var family = fontCollection.Add("Resources/Antonio-ExtraLight.ttf");
+        var family = _fontCollection.Get("Antonio ExtraLight");
         var font = family.CreateFont(Values.ActiveJobLevelFontSize, FontStyle.Regular);
-        var text = $"Lv. {character.ActiveClassJob.Level}";
+        var text = $"Lv. {Character.ActiveClassJob.Level}";
 
         var textOptions = new TextOptions(font)
         {
@@ -115,14 +141,14 @@ public static class FfxivHelper
             Origin = CoordinatesOther.ActiveJobLevelText
         };
 
-        img.Mutate(x => x.DrawText(textOptions, text, Color.White));
+        Image.Mutate(x => x.DrawText(textOptions, text, Color.White));
         return Task.CompletedTask;
     }
 
-    private static Task AddCharacterName(Image img, CharacterExtended character, IFontCollection fontCollection)
+    private Task AddCharacterName()
     {
-        var family = fontCollection.Add("Resources/Vollkorn-VariableFont_wght.ttf");
-        var nameProperties = new NameProperties(character);
+        var family = _fontCollection.Get("Vollkorn");
+        var nameProperties = new NameProperties(Character);
 
         var fontName = family.CreateFont(nameProperties.Name.Size, FontStyle.Regular);
 
@@ -133,7 +159,7 @@ public static class FfxivHelper
             Origin = new Vector2(nameProperties.Name.X, nameProperties.Name.Y)
         };
 
-        img.Mutate(x => x.DrawText(optionsName, character.Name, Color.Black));
+        Image.Mutate(x => x.DrawText(optionsName, Character.Name, Color.Black));
 
         if (nameProperties.Title == null)
         {
@@ -150,19 +176,19 @@ public static class FfxivHelper
             Origin = new Vector2(nameProperties.Title.X, nameProperties.Title.Y)
         };
 
-        img.Mutate(x => x.DrawText(optionsTitle, character.Title.Name, Color.Black));
+        Image.Mutate(x => x.DrawText(optionsTitle, Character.Title.Name, Color.Black));
 
         return Task.CompletedTask;
     }
 
-    private static Task AddJobLevels(Image img, CharacterExtended character, IFontCollection fontCollection)
+    private Task AddJobLevels()
     {
-        var family = fontCollection.Add("Resources/OpenSans-VariableFont_wdth,wght.ttf");
+        var family = _fontCollection.Get("Open Sans");
         var font = family.CreateFont(28, FontStyle.Regular);
 
         foreach (var job in (Job[]) Enum.GetValues(typeof(Job)))
         {
-            var jobLevel = character.ClassJobs.FirstOrDefault(x =>
+            var jobLevel = Character.ClassJobs.FirstOrDefault(x =>
                 x.Job.JobEnum == job && x.Level > 0)?.Level;
 
             var levelString = jobLevel != null ? jobLevel.ToString() : "-";
@@ -173,75 +199,72 @@ public static class FfxivHelper
                 Origin = JobCoordinates.Get(job)
             };
 
-            img.Mutate(x => x.DrawText(options, levelString, Color.White));
+            Image.Mutate(x => x.DrawText(options, levelString, Color.White));
         }
 
         return Task.CompletedTask;
     }
 
-    private static async Task<bool> AddGrandCompany(Image img, CharacterExtended character,
-        IReadOnlyFontCollection fontCollection)
+    private async Task<bool> AddGrandCompany()
     {
-        if (character.GrandCompany == null)
+        if (Character.GrandCompany == null)
         {
             return false;
         }
 
-        var crest = await character.GrandCompany.GrandCompanyEnum.GetCrest();
+        var crest = await Character.GrandCompany.GrandCompanyEnum.GetCrest();
         crest.Mutate(x => x.Resize(Values.DimensionsGcFcCrest, Values.DimensionsGcFcCrest, KnownResamplers.Lanczos3));
 
-        if (character.FreeCompanyId == null)
+        if (Character.FreeCompanyId == null)
         {
             // if player not in any free company, use the fc space to show the gc logo and name
-            var gcName = character.GrandCompany.GrandCompanyEnum.GetAttribute<DisplayAttribute>()?.Name ??
-                         throw new NullReferenceException(nameof(character.GrandCompany.GrandCompanyEnum));
-            await PrintInTopValueArea(img, fontCollection, gcName, crest);
+            var gcName = Character.GrandCompany.GrandCompanyEnum.GetAttribute<DisplayAttribute>()?.Name ??
+                         throw new NullReferenceException(nameof(Character.GrandCompany.GrandCompanyEnum));
+            await PrintInTopValueArea(gcName, crest);
         }
         else
         {
             // if player is in a free company, print gc crest
-            img.Mutate(x => x.DrawImage(crest, CoordinatesOther.GcBottom, 1));
+            Image.Mutate(x => x.DrawImage(crest, CoordinatesOther.GcBottom, 1));
         }
 
         return true;
     }
 
-    private static async Task<bool> AddFreeCompany(Image img, CharacterProfileBase profile,
-        IReadOnlyFontCollection fontCollection)
+    private async Task<bool> AddFreeCompany()
     {
-        if (profile.FreeCompany == null)
+        if (_profile.FreeCompany == null)
         {
             return false;
         }
 
-        var crest = await GetFreeCompanyCrest(profile);
+        var crest = await GetFreeCompanyCrest(_profile);
         crest.Mutate(x => x.Resize(Values.DimensionsGcFcCrest, Values.DimensionsGcFcCrest, KnownResamplers.Lanczos3));
-        await PrintInTopValueArea(img, fontCollection, profile.FreeCompany.Name, crest);
+        await PrintInTopValueArea(_profile.FreeCompany.Name, crest);
         return true;
     }
 
-    private static Task AddAttributes(Image img, CharacterExtended character, IReadOnlyFontCollection fontCollection)
+    private Task AddAttributes()
     {
-        var job = character.ActiveClassJob.Job.JobEnum;
+        var job = Character.ActiveClassJob.Job.JobEnum;
 
         if (job == null)
         {
-            throw new ArgumentNullException(nameof(character), "JobEnum is null");
+            throw new ArgumentNullException(nameof(Character), "JobEnum is null");
         }
 
         var attributes = job.Value.GetDisplayAttributes();
 
-        var family = fontCollection.Get("Open Sans");
+        var family = _fontCollection.Get("Open Sans");
         var font = family.CreateFont(Values.FontSizeAttributes, FontStyle.Regular);
 
-        PrintAttributes(img, character, font, attributes.Take(2), CoordinatesOther.AttributesPrimary, true);
-        PrintAttributes(img, character, font, attributes.Skip(2), CoordinatesOther.AttributesSecondary, false);
+        PrintAttributes(font, attributes.Take(2), CoordinatesOther.AttributesPrimary, true);
+        PrintAttributes(font, attributes.Skip(2), CoordinatesOther.AttributesSecondary, false);
 
         return Task.CompletedTask;
     }
 
-    private static void PrintAttributes(Image img, CharacterExtended character, Font font,
-        IEnumerable<Attribute> attributes, Point origin, bool primary)
+    private void PrintAttributes(Font font, IEnumerable<Attribute> attributes, Point origin, bool primary)
     {
         var options = new TextOptions(font)
         {
@@ -251,11 +274,57 @@ public static class FfxivHelper
         };
 
         var result = attributes.Select(x =>
-            $"{GetAttributeName(x, primary)}:{Values.AttributeGapSmall}{GetAttributeValue(character, x)}");
+            $"{GetAttributeName(x, primary)}:{Values.AttributeGapSmall}{GetAttributeValue(Character, x)}");
 
         var text = string.Join(Values.AttributeGapBig, result);
 
-        img.Mutate(x => x.DrawText(options, text, Color.White));
+        Image.Mutate(x => x.DrawText(options, text, Color.White));
+    }
+
+    private Task AddNewAdventurer()
+    {
+        return PrintInTopValueArea("New Adventurer");
+    }
+
+    private Task PrintInTopValueArea(string text, Image? crest = null)
+    {
+        var family = _fontCollection.Get("Open Sans");
+        var font = family.CreateFont(Values.FontSizeGrandCompany, FontStyle.Regular);
+
+        // if no crest, get coordinates without offset
+        var coords = crest == null ? CoordinatesOther.TextTop : CoordinatesOther.FcOrGcTop;
+
+        var textOptions = new TextOptions(font)
+        {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Origin = new Vector2(coords.X, coords.Y - 2) // arbitrarily move text up 2px, looks better
+        };
+
+        // print text
+        Image.Mutate(x => x.DrawText(textOptions, text, Color.White));
+
+        if (crest == null)
+        {
+            return Task.CompletedTask;
+        }
+
+        // get text width and calculate position of crest
+        var textWidth = TextMeasurer.Measure(text, textOptions);
+        coords.X -= (int) decimal.Divide((int) textWidth.Width, 2) +
+                    Values.DimensionsGcFcCrest + Values.GcCrestPadding;
+        coords.Y -= (int) decimal.Divide(Values.DimensionsGcFcCrest, 2);
+
+        Image.Mutate(x => x.DrawImage(crest, coords, 1));
+        return Task.CompletedTask;
+    }
+
+    private async Task<MemoryStream> ConvertToMemoryStream()
+    {
+        var stream = new MemoryStream();
+        await Image.SaveAsync(stream, new WebpEncoder());
+        stream.Seek(0, SeekOrigin.Begin);
+        return stream;
     }
 
     /// <summary>
@@ -278,53 +347,6 @@ public static class FfxivHelper
         }
 
         return Task.FromResult(list[0] as Image);
-    }
-
-    private static Task AddNewAdventurer(Image img, IReadOnlyFontCollection fontCollection)
-    {
-        return PrintInTopValueArea(img, fontCollection, "New Adventurer");
-    }
-
-    private static Task PrintInTopValueArea(Image img, IReadOnlyFontCollection fontCollection, string text,
-        Image? crest = null)
-    {
-        var family = fontCollection.Get("Open Sans");
-        var font = family.CreateFont(Values.FontSizeGrandCompany, FontStyle.Regular);
-
-        // if no crest, get coordinates without offset
-        var coords = crest == null ? CoordinatesOther.TextTop : CoordinatesOther.FcOrGcTop;
-
-        var textOptions = new TextOptions(font)
-        {
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center,
-            Origin = new Vector2(coords.X, coords.Y - 2) // arbitrarily move text up 2px, looks better
-        };
-
-        // print text
-        img.Mutate(x => x.DrawText(textOptions, text, Color.White));
-
-        if (crest == null)
-        {
-            return Task.CompletedTask;
-        }
-
-        // get text width and calculate position of crest
-        var textWidth = TextMeasurer.Measure(text, textOptions);
-        coords.X -= (int) decimal.Divide((int) textWidth.Width, 2) +
-                    Values.DimensionsGcFcCrest + Values.GcCrestPadding;
-        coords.Y -= (int) decimal.Divide(Values.DimensionsGcFcCrest, 2);
-
-        img.Mutate(x => x.DrawImage(crest, coords, 1));
-        return Task.CompletedTask;
-    }
-
-    private static async Task<MemoryStream> ConvertToMemoryStream(Image img)
-    {
-        var stream = new MemoryStream();
-        await img.SaveAsync(stream, new WebpEncoder());
-        stream.Seek(0, SeekOrigin.Begin);
-        return stream;
     }
 
     private static string GetAttributeName(Attribute a, bool fullName)
