@@ -117,8 +117,7 @@ public class CharacterSheetHelper
             return;
         }
 
-        var filePath = $"Resources/Jobs/{Character.ActiveClassJob.Job.JobEnum.ToString()!.ToLower()}.png";
-        var imgJob = await Image.LoadAsync(filePath);
+        var imgJob = (await ResourceHelper.Instance).GetJobIcon(Character.ActiveClassJob.Job.JobEnum.Value);
 
         imgJob.Mutate(x => x.Resize(68, 68));
         Image.Mutate(x => x.DrawImage(imgJob, CoordinatesOther.JobIcon, 1));

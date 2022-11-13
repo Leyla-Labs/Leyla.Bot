@@ -1,6 +1,7 @@
 using Main.Enums.CharacterSheet;
 using Nito.AsyncEx;
 using SixLabors.Fonts;
+using xivapi_cs.Enums;
 using Font = Main.Enums.CharacterSheet.Font;
 
 namespace Main.Helper;
@@ -13,6 +14,9 @@ public sealed class ResourceHelper
 
     private IDictionary<Image, SixLabors.ImageSharp.Image> Images { get; } =
         new Dictionary<Image, SixLabors.ImageSharp.Image>();
+
+    private IDictionary<Job, SixLabors.ImageSharp.Image> JobIcons { get; } =
+        new Dictionary<Job, SixLabors.ImageSharp.Image>();
 
     #region Initialisation
 
@@ -30,6 +34,7 @@ public sealed class ResourceHelper
     private async Task Initialize()
     {
         await LoadImages();
+        await LoadJobIcons();
         LoadFonts();
     }
 
@@ -47,6 +52,15 @@ public sealed class ResourceHelper
             await SixLabors.ImageSharp.Image.LoadAsync("Resources/chat_messengericon_town02.png"));
         Images.Add(Image.GcImmortalFlames,
             await SixLabors.ImageSharp.Image.LoadAsync("Resources/chat_messengericon_town03.png"));
+    }
+
+    private async Task LoadJobIcons()
+    {
+        foreach (var job in (Job[]) Enum.GetValues(typeof(Job)))
+        {
+            JobIcons.Add(job,
+                await SixLabors.ImageSharp.Image.LoadAsync($"Resources/Jobs/{job.ToString().ToLower()}.png"));
+        }
     }
 
     private void LoadFonts()
@@ -74,6 +88,11 @@ public sealed class ResourceHelper
     public SixLabors.ImageSharp.Image GetImage(Image image)
     {
         return Images[image];
+    }
+
+    public SixLabors.ImageSharp.Image GetJobIcon(Job job)
+    {
+        return JobIcons[job];
     }
 
     #endregion
