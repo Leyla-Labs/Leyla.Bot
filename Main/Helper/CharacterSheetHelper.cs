@@ -287,7 +287,8 @@ public class CharacterSheetHelper
 
         var crest = await GetFreeCompanyCrest(_profile);
         crest.Mutate(x => x.Resize(Values.DimensionsGcFcCrest, Values.DimensionsGcFcCrest, KnownResamplers.Lanczos3));
-        PrintInTopValueArea(_profile.FreeCompany.Name, crest);
+        var fullName = $"{_profile.FreeCompany.Name} <{_profile.FreeCompany.Tag}>";
+        PrintInTopValueArea(fullName, crest);
         return true;
     }
 
