@@ -118,8 +118,6 @@ public class CharacterSheetHelper
         }
 
         var imgJob = (await ResourceHelper.Instance).GetJobIcon(Character.ActiveClassJob.Job.JobEnum.Value);
-
-        imgJob.Mutate(x => x.Resize(68, 68));
         Image.Mutate(x => x.DrawImage(imgJob, CoordinatesOther.JobIcon, 1));
     }
 
@@ -256,7 +254,6 @@ public class CharacterSheetHelper
         }
 
         var crest = await Character.GrandCompany.GrandCompanyEnum.GetCrest();
-        crest.Mutate(x => x.Resize(Values.DimensionsGcFcCrest, Values.DimensionsGcFcCrest, KnownResamplers.Lanczos3));
 
         if (Character.FreeCompanyId == null)
         {
