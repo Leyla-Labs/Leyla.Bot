@@ -20,7 +20,6 @@ namespace Main.Helper;
 
 public class CharacterSheetHelper
 {
-    private readonly FontCollection _fontCollection = new();
     private readonly CharacterProfileExtended _profile;
 
     private CharacterSheetHelper(CharacterProfileExtended profile)
@@ -40,15 +39,8 @@ public class CharacterSheetHelper
 
     private async Task Initialize()
     {
-        Image = await Image.LoadAsync("Resources/characterTemplateBase.png");
-        LoadFonts();
-    }
-
-    private void LoadFonts()
-    {
-        _fontCollection.Add("Resources/OpenSans-VariableFont_wdth,wght.ttf");
-        _fontCollection.Add("Resources/Vollkorn-VariableFont_wght.ttf");
-        _fontCollection.Add("Resources/Antonio-ExtraLight.ttf");
+        var image = (await ResourceHelper.Instance).GetImage(Enums.CharacterSheet.Image.TemplateBase);
+        Image = image.Clone(x => x.Brightness(1)); // idk how to clone without an operation
     }
 
     public async Task<MemoryStream> GetCharacterSheet()
@@ -58,20 +50,20 @@ public class CharacterSheetHelper
 
         await AddJobIcon();
         await AddJobFrame();
-        AddActiveJobLevel();
+        await AddActiveJobLevel();
 
-        AddCharacterName();
-        AddHomeWorld();
-        AddILvlMinionsMounts();
-        AddJobLevels();
+        await AddCharacterName();
+        await AddHomeWorld();
+        await AddILvlMinionsMounts();
+        await AddJobLevels();
 
         var gc = await AddGrandCompany();
         var fc = await AddFreeCompany();
-        AddAttributes();
+        await AddAttributes();
 
         if (!gc && !fc)
         {
-            AddNewAdventurer();
+            await AddNewAdventurer();
         }
 
         return await ConvertToMemoryStream();
@@ -108,13 +100,13 @@ public class CharacterSheetHelper
 
     private async Task AddPortraitFrame()
     {
-        var imgFrame = await Image.LoadAsync("Resources/characterTemplateFrame.png");
+        var imgFrame = (await ResourceHelper.Instance).GetImage(Enums.CharacterSheet.Image.TemplateFrame);
         Image.Mutate(x => x.DrawImage(imgFrame, 1));
     }
 
     private async Task AddJobFrame()
     {
-        var imgJob = await Image.LoadAsync("Resources/characterTemplateJob.png");
+        var imgJob = (await ResourceHelper.Instance).GetImage(Enums.CharacterSheet.Image.TemplateJobCircle);
         Image.Mutate(x => x.DrawImage(imgJob, 1));
     }
 
@@ -132,12 +124,12 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawImage(imgJob, CoordinatesOther.JobIcon, 1));
     }
 
-    private void AddActiveJobLevel()
+    private async Task AddActiveJobLevel()
     {
         var circle = new EllipsePolygon(CoordinatesOther.ActiveJobLevelBackground, Values.ActiveJobLevelRadius);
         Image.Mutate(x => x.Draw(new Color(Values.ActiveJobLevelBackground), Values.ActiveJobLevelThickness, circle));
 
-        var family = _fontCollection.Get("Antonio ExtraLight");
+        var family = (await ResourceHelper.Instance).GetFontFamily(Enums.CharacterSheet.Font.Antonio);
         var font = family.CreateFont(Values.ActiveJobLevelFontSize, FontStyle.Regular);
         var text = $"Lv. {Character.ActiveClassJob.Level}";
 
@@ -151,9 +143,9 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawText(textOptions, text, Color.White));
     }
 
-    private void AddCharacterName()
+    private async Task AddCharacterName()
     {
-        var family = _fontCollection.Get("Vollkorn");
+        var family = (await ResourceHelper.Instance).GetFontFamily(Enums.CharacterSheet.Font.Vollkorn);
         var nameProperties = new NameProperties(Character);
 
         var fontName = family.CreateFont(nameProperties.Name.Size, FontStyle.Regular);
@@ -185,9 +177,9 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawText(optionsTitle, Character.Title.Name, Color.Black));
     }
 
-    private void AddHomeWorld()
+    private async Task AddHomeWorld()
     {
-        var family = _fontCollection.Get("Open Sans");
+        var family = (await ResourceHelper.Instance).GetFontFamily(Enums.CharacterSheet.Font.OpenSans);
         var font = family.CreateFont(Values.FontSizeHomeWorld, FontStyle.Regular);
 
         var options = new TextOptions(font)
@@ -201,12 +193,12 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawText(options, text, Color.White));
     }
 
-    private void AddILvlMinionsMounts()
+    private async Task AddILvlMinionsMounts()
     {
         var minions = (int) MiMoHelper.GetMinionPercentage(_profile.Minions.Length);
         var mounts = (int) MiMoHelper.GetMountPercentage(_profile.Mounts.Length);
 
-        var family = _fontCollection.Get("Open Sans");
+        var family = (await ResourceHelper.Instance).GetFontFamily(Enums.CharacterSheet.Font.OpenSans);
         var font = family.CreateFont(Values.FontSizeMiMo, FontStyle.Regular);
 
         var optionsLvl = new TextOptions(font)
@@ -235,9 +227,9 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawText(optionsMo, $"{mounts}%", Color.White));
     }
 
-    private void AddJobLevels()
+    private async Task AddJobLevels()
     {
-        var family = _fontCollection.Get("Open Sans");
+        var family = (await ResourceHelper.Instance).GetFontFamily(Enums.CharacterSheet.Font.OpenSans);
         var font = family.CreateFont(28, FontStyle.Regular);
 
         foreach (var job in (Job[]) Enum.GetValues(typeof(Job)))
@@ -272,7 +264,7 @@ public class CharacterSheetHelper
             // if player not in any free company, use the fc space to show the gc logo and name
             var gcName = Character.GrandCompany.GrandCompanyEnum.GetAttribute<DisplayAttribute>()?.Name ??
                          throw new NullReferenceException(nameof(Character.GrandCompany.GrandCompanyEnum));
-            PrintInTopValueArea(gcName, crest);
+            await PrintInTopValueArea(gcName, crest);
         }
         else
         {
@@ -293,11 +285,11 @@ public class CharacterSheetHelper
         var crest = await GetFreeCompanyCrest(_profile);
         crest.Mutate(x => x.Resize(Values.DimensionsGcFcCrest, Values.DimensionsGcFcCrest, KnownResamplers.Lanczos3));
         var fullName = $"{_profile.FreeCompany.Name} <{_profile.FreeCompany.Tag}>";
-        PrintInTopValueArea(fullName, crest);
+        await PrintInTopValueArea(fullName, crest);
         return true;
     }
 
-    private void AddAttributes()
+    private async Task AddAttributes()
     {
         var job = Character.ActiveClassJob.Job.JobEnum;
 
@@ -308,7 +300,7 @@ public class CharacterSheetHelper
 
         var attributes = job.Value.GetDisplayAttributes();
 
-        var family = _fontCollection.Get("Open Sans");
+        var family = (await ResourceHelper.Instance).GetFontFamily(Enums.CharacterSheet.Font.OpenSans);
         var font = family.CreateFont(Values.FontSizeAttributes, FontStyle.Regular);
 
         PrintAttributes(font, attributes.Take(2), CoordinatesOther.AttributesPrimary, true);
@@ -332,14 +324,14 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawText(options, text, Color.White));
     }
 
-    private void AddNewAdventurer()
+    private async Task AddNewAdventurer()
     {
-        PrintInTopValueArea("New Adventurer");
+        await PrintInTopValueArea("New Adventurer");
     }
 
-    private void PrintInTopValueArea(string text, Image? crest = null)
+    private async Task PrintInTopValueArea(string text, Image? crest = null)
     {
-        var family = _fontCollection.Get("Open Sans");
+        var family = (await ResourceHelper.Instance).GetFontFamily(Enums.CharacterSheet.Font.OpenSans);
         var font = family.CreateFont(Values.FontSizeGrandCompany, FontStyle.Regular);
 
         // if no crest, get coordinates without offset

@@ -1,3 +1,4 @@
+using Main.Helper;
 using SixLabors.ImageSharp;
 using xivapi_cs.Enums;
 using Attribute = xivapi_cs.Enums.Attribute;
@@ -7,14 +8,21 @@ namespace Main.Extensions;
 internal static class XivapiExtensions
 {
     /// <summary>
-    ///     Loads Grand Company crest from hard drive and returns it.
+    ///     Loads Grand Company crest (if necessary) and returns it.
     /// </summary>
     /// <param name="gc">Grand Company to get crest for.</param>
     /// <returns>ImageSharp Image, Grand Company crest.</returns>
     public static async Task<Image> GetCrest(this GrandCompany gc)
     {
-        var fileName = $"Resources/chat_messengericon_town0{(int) gc}.png";
-        return await Image.LoadAsync(fileName);
+        var img = gc switch
+        {
+            GrandCompany.Maelstrom => Enums.CharacterSheet.Image.GcMaelstrom,
+            GrandCompany.OrderTwinAdder => Enums.CharacterSheet.Image.GcTwinAdder,
+            GrandCompany.ImmortalFlames => Enums.CharacterSheet.Image.GcImmortalFlames,
+            _ => throw new ArgumentOutOfRangeException(nameof(gc), gc, "Grand Company not in resources.")
+        };
+
+        return (await ResourceHelper.Instance).GetImage(img);
     }
 
     /// <summary>
