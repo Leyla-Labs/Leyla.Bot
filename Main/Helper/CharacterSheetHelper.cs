@@ -11,6 +11,7 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using xivapi_cs.Helper;
 using xivapi_cs.ViewModels.CharacterProfile;
 using Attribute = xivapi_cs.Enums.Attribute;
 using Job = xivapi_cs.Enums.Job;
@@ -57,19 +58,20 @@ public class CharacterSheetHelper
 
         await AddJobIcon();
         await AddJobFrame();
-        await AddActiveJobLevel();
+        AddActiveJobLevel();
 
-        await AddCharacterName();
-        await AddJobLevels();
+        AddCharacterName();
+        AddHomeWorld();
+        AddILvlMinionsMounts();
+        AddJobLevels();
 
-        // must be after AddJobLevels since OpenSans is loaded there
         var gc = await AddGrandCompany();
         var fc = await AddFreeCompany();
-        await AddAttributes();
+        AddAttributes();
 
         if (!gc && !fc)
         {
-            await AddNewAdventurer();
+            AddNewAdventurer();
         }
 
         return await ConvertToMemoryStream();
@@ -125,7 +127,7 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawImage(imgJob, CoordinatesOther.JobIcon, 1));
     }
 
-    private Task AddActiveJobLevel()
+    private void AddActiveJobLevel()
     {
         var circle = new EllipsePolygon(CoordinatesOther.ActiveJobLevelBackground, Values.ActiveJobLevelRadius);
         Image.Mutate(x => x.Draw(new Color(Values.ActiveJobLevelBackground), Values.ActiveJobLevelThickness, circle));
@@ -142,10 +144,9 @@ public class CharacterSheetHelper
         };
 
         Image.Mutate(x => x.DrawText(textOptions, text, Color.White));
-        return Task.CompletedTask;
     }
 
-    private Task AddCharacterName()
+    private void AddCharacterName()
     {
         var family = _fontCollection.Get("Vollkorn");
         var nameProperties = new NameProperties(Character);
@@ -164,7 +165,7 @@ public class CharacterSheetHelper
         if (nameProperties.Title == null)
         {
             // no title, return
-            return Task.CompletedTask;
+            return;
         }
 
         var fontTitle = family.CreateFont(nameProperties.Title.Size, FontStyle.Regular);
@@ -177,11 +178,59 @@ public class CharacterSheetHelper
         };
 
         Image.Mutate(x => x.DrawText(optionsTitle, Character.Title.Name, Color.Black));
-
-        return Task.CompletedTask;
     }
 
-    private Task AddJobLevels()
+    private void AddHomeWorld()
+    {
+        var family = _fontCollection.Get("Open Sans");
+        var font = family.CreateFont(Values.FontSizeHomeWorld, FontStyle.Regular);
+
+        var options = new TextOptions(font)
+        {
+            HorizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment = VerticalAlignment.Center,
+            Origin = CoordinatesOther.HomeWorld
+        };
+
+        var text = Character.HomeWorld.ToString();
+        Image.Mutate(x => x.DrawText(options, text, Color.White));
+    }
+
+    private void AddILvlMinionsMounts()
+    {
+        var minions = (int) MiMoHelper.GetMinionPercentage(_profile.Minions.Length);
+        var mounts = (int) MiMoHelper.GetMountPercentage(_profile.Mounts.Length);
+
+        var family = _fontCollection.Get("Open Sans");
+        var font = family.CreateFont(Values.FontSizeMiMo, FontStyle.Regular);
+
+        var optionsLvl = new TextOptions(font)
+        {
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Top,
+            Origin = CoordinatesOther.ItemLevel
+        };
+
+        var avgItemLevel = ItemLevelHelper.CalculateAvgItemLevel(Character.GearSet.Gear);
+        Image.Mutate(x => x.DrawText(optionsLvl, avgItemLevel.ToString(), Color.White));
+
+        var optionsMi = new TextOptions(optionsLvl)
+        {
+            HorizontalAlignment = HorizontalAlignment.Right,
+            Origin = CoordinatesOther.Minions
+        };
+
+        Image.Mutate(x => x.DrawText(optionsMi, $"{minions}%", Color.White));
+
+        var optionsMo = new TextOptions(optionsMi)
+        {
+            Origin = CoordinatesOther.Mounts
+        };
+
+        Image.Mutate(x => x.DrawText(optionsMo, $"{mounts}%", Color.White));
+    }
+
+    private void AddJobLevels()
     {
         var family = _fontCollection.Get("Open Sans");
         var font = family.CreateFont(28, FontStyle.Regular);
@@ -201,8 +250,6 @@ public class CharacterSheetHelper
 
             Image.Mutate(x => x.DrawText(options, levelString, Color.White));
         }
-
-        return Task.CompletedTask;
     }
 
     private async Task<bool> AddGrandCompany()
@@ -220,7 +267,7 @@ public class CharacterSheetHelper
             // if player not in any free company, use the fc space to show the gc logo and name
             var gcName = Character.GrandCompany.GrandCompanyEnum.GetAttribute<DisplayAttribute>()?.Name ??
                          throw new NullReferenceException(nameof(Character.GrandCompany.GrandCompanyEnum));
-            await PrintInTopValueArea(gcName, crest);
+            PrintInTopValueArea(gcName, crest);
         }
         else
         {
@@ -240,11 +287,11 @@ public class CharacterSheetHelper
 
         var crest = await GetFreeCompanyCrest(_profile);
         crest.Mutate(x => x.Resize(Values.DimensionsGcFcCrest, Values.DimensionsGcFcCrest, KnownResamplers.Lanczos3));
-        await PrintInTopValueArea(_profile.FreeCompany.Name, crest);
+        PrintInTopValueArea(_profile.FreeCompany.Name, crest);
         return true;
     }
 
-    private Task AddAttributes()
+    private void AddAttributes()
     {
         var job = Character.ActiveClassJob.Job.JobEnum;
 
@@ -260,8 +307,6 @@ public class CharacterSheetHelper
 
         PrintAttributes(font, attributes.Take(2), CoordinatesOther.AttributesPrimary, true);
         PrintAttributes(font, attributes.Skip(2), CoordinatesOther.AttributesSecondary, false);
-
-        return Task.CompletedTask;
     }
 
     private void PrintAttributes(Font font, IEnumerable<Attribute> attributes, Point origin, bool primary)
@@ -281,12 +326,12 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawText(options, text, Color.White));
     }
 
-    private Task AddNewAdventurer()
+    private void AddNewAdventurer()
     {
-        return PrintInTopValueArea("New Adventurer");
+        PrintInTopValueArea("New Adventurer");
     }
 
-    private Task PrintInTopValueArea(string text, Image? crest = null)
+    private void PrintInTopValueArea(string text, Image? crest = null)
     {
         var family = _fontCollection.Get("Open Sans");
         var font = family.CreateFont(Values.FontSizeGrandCompany, FontStyle.Regular);
@@ -306,7 +351,7 @@ public class CharacterSheetHelper
 
         if (crest == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         // get text width and calculate position of crest
@@ -316,7 +361,6 @@ public class CharacterSheetHelper
         coords.Y -= (int) decimal.Divide(Values.DimensionsGcFcCrest, 2);
 
         Image.Mutate(x => x.DrawImage(crest, coords, 1));
-        return Task.CompletedTask;
     }
 
     private async Task<MemoryStream> ConvertToMemoryStream()

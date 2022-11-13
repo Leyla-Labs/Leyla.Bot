@@ -14,4 +14,6 @@ internal static class Values
     public static int FontSizeAttributes => 28;
     public static string AttributeGapSmall => "   ";
     public static string AttributeGapBig => "          ";
+    public static int FontSizeHomeWorld => 28;
+    public static int FontSizeMiMo => 32;
 }
