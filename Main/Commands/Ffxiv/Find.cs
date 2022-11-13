@@ -24,10 +24,28 @@ public sealed class Find : SlashCommand
 
     public override async Task RunAsync()
     {
+        HomeWorld? homeWorld = null;
+
+        if (_server != null)
+        {
+            var succ = Enum.TryParse(typeof(HomeWorld), _server, true, out var result);
+
+            if (succ && result != null)
+            {
+                homeWorld = (HomeWorld) result;
+            }
+            else
+            {
+                await Ctx.CreateResponseAsync(
+                    new DiscordInteractionResponseBuilder().AddErrorEmbed("Home world not found."));
+                return;
+            }
+        }
+
         await Ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-        var characterSearch = _server != null
-            ? await new XivApiClient().CharacterSearch(_name, _server)
+        var characterSearch = homeWorld != null
+            ? await new XivApiClient().CharacterSearch(_name, homeWorld.Value)
             : await new XivApiClient().CharacterSearch(_name);
 
         if (characterSearch == null || !characterSearch.Results.Any())
