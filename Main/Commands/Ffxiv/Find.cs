@@ -55,8 +55,8 @@ public sealed class Find : SlashCommand
 
         var helper = await CharacterSheetHelper.Create(characterData);
         var stream = await helper.GetCharacterSheet();
-        // TODO proper filename
-        await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddFile("test123.webp", stream, true));
+        var fileName = helper.GetFileName();
+        await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddFile(fileName, stream, true));
     }
 
     #region Instance methods

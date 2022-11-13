@@ -77,6 +77,11 @@ public class CharacterSheetHelper
         return await ConvertToMemoryStream();
     }
 
+    public string GetFileName()
+    {
+        return $"{DateTime.UtcNow:yyyy-MM-dd HH-mm} {Character.Name}.webp";
+    }
+
     private void AddCharacterPortrait()
     {
         // get portrait as byte[]
