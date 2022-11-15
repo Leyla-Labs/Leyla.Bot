@@ -8,7 +8,7 @@ internal static class DiscordGuildExtensions
     public static async Task<List<LeylaModule>> GetGuildModules(this DiscordGuild guild)
     {
         // tf are these variable names
-        
+
         var modules = new List<LeylaModule>();
 
         var modulesStr = Environment.GetEnvironmentVariable("MODULES") ?? throw new NullReferenceException();
