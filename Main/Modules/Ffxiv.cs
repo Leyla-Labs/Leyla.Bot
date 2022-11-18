@@ -34,5 +34,12 @@ internal sealed class Ffxiv : ApplicationCommandLogModule
         {
             await new Claim(ctx, name, server).RunAsync();
         }
+
+        [SlashCommand("me", "Shows your character sheet.")]
+        [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.AttachFiles)]
+        public async Task SlashMe(InteractionContext ctx)
+        {
+            await new Me(ctx).RunAsync();
+        }
     }
 }

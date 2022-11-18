@@ -149,6 +149,14 @@ internal static class FfxivHelper
         };
     }
 
+    public static async Task RespondToSlashWithSheet(InteractionContext ctx, CharacterProfileExtended profile)
+    {
+        var helper = await CharacterSheetHelper.Create(profile);
+        var stream = await helper.GetCharacterSheet();
+        var fileName = helper.GetFileName();
+        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddFile(fileName, stream, true));
+    }
+
     private static string LodestoneBioToCode(string? bio)
     {
         if (bio == null || bio.Length < 2 || !bio[..2].Equals("L-"))

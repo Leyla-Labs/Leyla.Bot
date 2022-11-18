@@ -28,10 +28,7 @@ public sealed class Find : SlashCommand
             return;
         }
 
-        var helper = await CharacterSheetHelper.Create(profile);
-        var stream = await helper.GetCharacterSheet();
-        var fileName = helper.GetFileName();
-        await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddFile(fileName, stream, true));
+        await FfxivHelper.RespondToSlashWithSheet(Ctx, profile);
     }
 
     #region Instance methods
