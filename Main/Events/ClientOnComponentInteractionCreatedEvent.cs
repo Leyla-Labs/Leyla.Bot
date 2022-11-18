@@ -60,6 +60,9 @@ internal static class ClientOnComponentInteractionCreatedEvent
             case "ffxivCharacterSheet":
                 await new FfxivCharacterSheetSelectedHandler(sender, e).RunAsync();
                 break;
+            case "ffxivCharacterClaim":
+                await new FfxivCharacterClaimSelectedHandler(sender, e).RunAsync();
+                break;
             default:
                 return;
         }
