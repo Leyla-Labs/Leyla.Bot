@@ -50,7 +50,7 @@ public class Me : SlashCommand
             return;
         }
 
-        var profileExtended = await new XivApiClient().CharacterProfileExtended(confirmedClaims.First().Id,
+        var profileExtended = await new XivApiClient().CharacterProfileExtended(confirmedClaims.First().CharacterId,
             CharacterProfileOptions.FreeCompany | CharacterProfileOptions.MinionsMounts);
 
         if (profileExtended == null)
