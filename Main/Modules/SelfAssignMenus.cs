@@ -28,7 +28,7 @@ internal sealed class SelfAssignMenus : ApplicationCommandLogModule
 
     [SlashCommand("rename", "Renames a self assign menu.")]
     public async Task SlashRename(InteractionContext ctx,
-        [Option("Title", "Title of the self assign menu to create")]
+        [Option("Title", "Title of the self assign menu to rename")]
         string title)
     {
         await new Rename(ctx, title).RunAsync();
