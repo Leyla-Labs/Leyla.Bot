@@ -3,6 +3,8 @@ using Common.Helper;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Main.Helper;
+using xivapi_cs;
+using xivapi_cs.Enums;
 using xivapi_cs.ViewModels.CharacterSearch;
 
 namespace Main.Commands.Ffxiv;
@@ -21,7 +23,9 @@ public sealed class Find : SlashCommand
     public override async Task RunAsync()
     {
         var profile =
-            await FfxivHelper.SearchAndGetCharacterProfileExtended(Ctx, _name, _server, "ffxivCharacterSheet", false);
+            await FfxivHelper.SearchAndGetCharacterData(Ctx, _name, _server, "ffxivCharacterSheet", false,
+                async x => await new XivApiClient().CharacterProfileExtended(x,
+                    CharacterProfileOptions.FreeCompany | CharacterProfileOptions.MinionsMounts));
 
         if (profile == null)
         {

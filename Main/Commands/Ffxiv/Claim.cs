@@ -2,6 +2,7 @@ using Common.Classes;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Main.Helper;
+using NetStone;
 
 namespace Main.Commands.Ffxiv;
 
@@ -18,18 +19,23 @@ public class Claim : SlashCommand
 
     public override async Task RunAsync()
     {
-        var profile =
-            await FfxivHelper.SearchAndGetCharacterProfileExtended(Ctx, _name, _server, "ffxivCharacterClaim", true);
+        var (profile, id) =
+            await FfxivHelper.SearchAndGetCharacterData(Ctx, _name, _server, "ffxivCharacterClaim", true, async x =>
+            {
+                var stone = await LodestoneClient.GetClientAsync();
+                return (await stone.GetCharacter(x.ToString()), x);
+            });
 
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (profile == null)
         {
             // profile is null if no result or character selection shown - both handled within previous method
             return;
         }
 
-        var name = profile.Character.Name;
+        var name = profile.Name;
         var (status, code) =
-            await FfxivHelper.CreateClaimIfNotExist(Ctx.User.Id, profile.Character.Id, profile.Character.Bio);
+            await FfxivHelper.CreateClaimIfNotExist(Ctx.User.Id, id, profile.Bio);
         var embed = FfxivHelper.CreateCharacterClaimStatusEmbed(status, name, code);
 
         await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));

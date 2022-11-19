@@ -15,8 +15,8 @@ namespace Main.Helper;
 
 internal static class FfxivHelper
 {
-    public static async Task<CharacterProfileExtended?> SearchAndGetCharacterProfileExtended(InteractionContext ctx,
-        string name, string? server, string selectId, bool asEphemeral)
+    public static async Task<T?> SearchAndGetCharacterData<T>(InteractionContext ctx,
+        string name, string? server, string selectId, bool asEphemeral, Func<int, Task<T?>> func)
     {
         HomeWorld? homeWorld = null;
 
@@ -32,7 +32,7 @@ internal static class FfxivHelper
             {
                 await ctx.CreateResponseAsync(
                     new DiscordInteractionResponseBuilder().AddErrorEmbed("Home world not found."));
-                return null;
+                return default;
             }
         }
 
@@ -46,18 +46,17 @@ internal static class FfxivHelper
         {
             var errorMsg = $"{name}{(server != null ? $" ({server})" : string.Empty)} not found.";
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddErrorEmbed(errorMsg));
-            return null;
+            return default;
         }
 
         if (characterSearch.Results.Length > 1)
         {
             var characterSelect = GetCharacterSelect(ctx, characterSearch, selectId);
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddComponents(characterSelect));
-            return null;
+            return default;
         }
 
-        var characterData = await new XivApiClient().CharacterProfileExtended(characterSearch.Results.First().Id,
-            CharacterProfileOptions.FreeCompany | CharacterProfileOptions.MinionsMounts);
+        var characterData = await func(characterSearch.Results.First().Id);
 
         if (characterData == null)
         {
