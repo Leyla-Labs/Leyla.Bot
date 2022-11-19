@@ -12,6 +12,7 @@ internal static class ClientOnMessageDeleted
     {
         if (e.Guild == null)
         {
+            // do not log messages from direct messages
             return;
         }
 
