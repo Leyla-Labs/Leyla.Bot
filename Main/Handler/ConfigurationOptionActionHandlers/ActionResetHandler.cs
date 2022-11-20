@@ -22,19 +22,19 @@ public class ActionResetHandler : InteractionHandler
         var optionId = Convert.ToInt32(_optionId);
         await ConfigHelper.Instance.Reset(optionId, EventArgs.Guild.Id);
 
-        var embed = CreateEmbed(optionId);
+        var embed = await CreateEmbed(optionId);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
-    private static DiscordEmbed CreateEmbed(int optionId)
+    private async Task<DiscordEmbed> CreateEmbed(int optionId)
     {
         var option = ConfigOptions.Instance.Get(optionId);
 
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Value reset");
         embed.WithDescription($"The value for {option.Name} has been reset.");
-        embed.AddField("New value", option.DefaultValue);
+        embed.AddField("New value", await ConfigHelper.GetDisplayStringForDefaultValue(option, EventArgs.Guild, true));
         return embed.Build();
     }
 }

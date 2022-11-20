@@ -3,6 +3,7 @@ using Common.Enums;
 using Common.Helper;
 using Common.Statics;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 
 namespace Main.Handler;
@@ -44,6 +45,18 @@ internal sealed class ConfigurationOptionValueSelectedHandler : InteractionHandl
                 throw new ArgumentOutOfRangeException();
         }
 
-        await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+        var embed = await CreateEmbed(option);
+        await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+            new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
+    }
+
+    private async Task<DiscordEmbed> CreateEmbed(ConfigOption option)
+    {
+        var embed = new DiscordEmbedBuilder();
+        embed.WithTitle("Value edited");
+        embed.WithDescription($"The value for {option.Name} has been edited.");
+        embed.AddField("New value",
+            await ConfigHelper.Instance.GetDisplayStringForCurrentValue(option, EventArgs.Guild, true));
+        return embed.Build();
     }
 }
