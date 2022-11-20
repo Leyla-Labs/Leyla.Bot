@@ -39,6 +39,25 @@ public sealed class ConfigHelper
         return Task.FromResult(ConfigOptions.Instance.Get(option).DefaultValue);
     }
 
+    public static Task<string?> GetString(int optionId)
+    {
+        // when no guildId provided, return default value
+        return Task.FromResult(ConfigOptions.Instance.Get(optionId).DefaultValue);
+    }
+    
+    public static async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, DiscordGuild guild)
+    {
+        var defaultStr = await GetString(option.Name);
+        return defaultStr != null ? GetDisplayStringForGivenValue(option, guild, defaultStr) : null;
+    }
+
+    public static async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, DiscordGuild guild,
+        string placeholder)
+    {
+        var result = await GetDisplayStringForDefaultValue(option, guild);
+        return result ?? placeholder;
+    }
+
     public async Task<string?> GetString(string option, ulong guildId)
     {
         var defaultOption = ConfigOptions.Instance.Get(option);
@@ -109,38 +128,13 @@ public sealed class ConfigHelper
     public async Task<string?> GetDisplayStringForCurrentValue(ConfigOption option, DiscordGuild guild)
     {
         var currStr = await GetString(option.Name, guild.Id);
-
-        if (currStr == null)
-        {
-            return null;
-        }
-
-        return GetDisplayStringForGivenValue(option, guild, currStr);
+        return currStr != null ? GetDisplayStringForGivenValue(option, guild, currStr) : null;
     }
 
     public async Task<string?> GetDisplayStringForCurrentValue(ConfigOption option, DiscordGuild guild,
         string placeholder)
     {
         var result = await GetDisplayStringForCurrentValue(option, guild);
-        return result ?? placeholder;
-    }
-
-    public async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, DiscordGuild guild)
-    {
-        var defaultStr = await GetString(option.Name);
-
-        if (defaultStr == null)
-        {
-            return null;
-        }
-
-        return GetDisplayStringForGivenValue(option, guild, defaultStr);
-    }
-
-    public async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, DiscordGuild guild,
-        string placeholder)
-    {
-        var result = await GetDisplayStringForDefaultValue(option, guild);
         return result ?? placeholder;
     }
 
@@ -165,6 +159,33 @@ public sealed class ConfigHelper
     public async Task<bool> Set(ConfigOption option, ulong guildId, object value)
     {
         return await SetInternal(option, guildId, value);
+    }
+
+    public async Task<bool> Reset(int optionId, ulong guildId)
+    {
+        var defaultValue = await GetString(optionId);
+        if (defaultValue == null)
+        {
+            return false;
+        }
+
+        return await Set(optionId, guildId, defaultValue);
+    }
+
+    public async Task<bool> Reset(string option, ulong guildId)
+    {
+        var defaultValue = await GetString(option);
+        if (defaultValue == null)
+        {
+            return false;
+        }
+
+        return await Set(option, guildId, defaultValue);
+    }
+
+    public async Task<bool> Reset(ConfigOption option, ulong guildId)
+    {
+        return await Reset(option.Id, guildId);
     }
 
     private async Task<bool> SetInternal(ConfigOption opt, ulong guildId, object value)

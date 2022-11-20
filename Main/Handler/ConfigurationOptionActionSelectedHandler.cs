@@ -29,6 +29,8 @@ internal sealed class ConfigurationOptionActionSelectedHandler : InteractionHand
                 await new ActionEditHandler(Sender, EventArgs, _optionId).RunAsync();
                 break;
             case ConfigurationAction.Reset:
+                await new ActionResetHandler(Sender, EventArgs, _optionId).RunAsync();
+                break;
             case ConfigurationAction.Delete:
             default:
                 throw new ArgumentOutOfRangeException();
