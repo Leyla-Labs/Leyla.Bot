@@ -1,4 +1,3 @@
-using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.Exceptions;
 
@@ -28,14 +27,5 @@ public static class DiscordInteractionExtension
 
             throw;
         }
-    }
-
-    /// <summary>Creates a deferred response to this interaction.</summary>
-    /// <param name="ctx">The InteractionContext</param>
-    /// <param name="ephemeral">Whether the response should be ephemeral.</param>
-    public static Task DeferAsync(this DiscordInteraction ctx, bool ephemeral = false)
-    {
-        return ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource,
-            new DiscordInteractionResponseBuilder().AsEphemeral(ephemeral));
     }
 }
