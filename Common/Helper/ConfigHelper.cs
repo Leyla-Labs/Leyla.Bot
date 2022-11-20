@@ -1,6 +1,9 @@
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Common.Db;
 using Common.Db.Models;
 using Common.Enums;
+using Common.Extensions;
 using Common.Statics;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -83,7 +86,7 @@ public sealed class ConfigHelper
 
     public async Task<decimal?> GetDecimal(string option, ulong guildId)
     {
-        return await GetString(option, guildId) is { } s ? Convert.ToDecimal(s) : null;
+        return await GetString(option, guildId) is { } s ? Convert.ToDecimal(s, CultureInfo.InvariantCulture) : null;
     }
 
     public async Task<DiscordRole?> GetRole(string option, DiscordGuild guild)
@@ -101,6 +104,50 @@ public sealed class ConfigHelper
     public async Task<T?> GetEnum<T>(string option, ulong guildId) where T : Enum
     {
         return await GetString(option, guildId) is { } s ? (T) (object) Convert.ToInt32(s) : default;
+    }
+
+    public async Task<string?> GetDisplayStringForCurrentValue(ConfigOption option, DiscordGuild guild)
+    {
+        var currStr = await GetString(option.Name, guild.Id);
+
+        if (currStr == null)
+        {
+            return null;
+        }
+
+        return GetDisplayStringForGivenValue(option, guild, currStr);
+    }
+
+    public async Task<string?> GetDisplayStringForCurrentValue(ConfigOption option, DiscordGuild guild,
+        string placeholder)
+    {
+        var result = await GetDisplayStringForCurrentValue(option, guild);
+        return result ?? placeholder;
+    }
+
+    public async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, DiscordGuild guild)
+    {
+        var defaultStr = await GetString(option.Name);
+
+        if (defaultStr == null)
+        {
+            return null;
+        }
+
+        return GetDisplayStringForGivenValue(option, guild, defaultStr);
+    }
+
+    public async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, DiscordGuild guild,
+        string placeholder)
+    {
+        var result = await GetDisplayStringForDefaultValue(option, guild);
+        return result ?? placeholder;
+    }
+
+    public async Task<bool> IsDefaultValue(ConfigOption option, ulong guildId)
+    {
+        var currValue = await GetString(option.Name, guildId);
+        return option.DefaultValue == currValue;
     }
 
     public async Task<bool> Set(int optionId, ulong guildId, object value)
@@ -204,6 +251,27 @@ public sealed class ConfigHelper
         {
             return false;
         }
+    }
+
+    private static string? GetDisplayStringForGivenValue(ConfigOption option, DiscordGuild guild, string value)
+    {
+        return option.ConfigType switch
+        {
+            ConfigType.String => value,
+            ConfigType.Boolean => value.Equals("1") ? "Yes" : "No",
+            ConfigType.Int => value,
+            ConfigType.Char => value,
+            ConfigType.Role => guild.Roles.TryGetValue(Convert.ToUInt64(value), out var result)
+                ? result.Mention
+                : null,
+            ConfigType.Channel => guild.Channels.TryGetValue(Convert.ToUInt64(value), out var result)
+                ? result.Mention
+                : null,
+            ConfigType.Decimal => value,
+            ConfigType.Enum when Enum.Parse(option.EnumType!, value) is { } enumVal => enumVal
+                .GetAttribute<DisplayAttribute>()?.Name ?? enumVal.ToString(),
+            _ => throw new ArgumentOutOfRangeException(nameof(option), option.ConfigType, "ConfigType not supported")
+        };
     }
 
     #region Singleton

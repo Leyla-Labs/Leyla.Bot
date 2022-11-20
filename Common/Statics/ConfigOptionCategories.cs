@@ -31,7 +31,7 @@ public class ConfigOptionCategory : StaticField
     public readonly string Description;
     public readonly LeylaModule Module;
 
-    public ConfigOptionCategory(int id, int sortId, DisplayString displayString, LeylaModule module)
+    internal ConfigOptionCategory(int id, int sortId, DisplayString displayString, LeylaModule module)
         : base(id, sortId, displayString.Name)
     {
         Description = displayString.Description;
