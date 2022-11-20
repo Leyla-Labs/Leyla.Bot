@@ -7,11 +7,11 @@ using DSharpPlus.EventArgs;
 
 namespace Main.Handler.ConfigurationOptionActionHandlers;
 
-public class ActionResetHandler : InteractionHandler
+public class ActionDeleteHandler : InteractionHandler
 {
     private readonly string _optionId;
 
-    public ActionResetHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e, string optionId) :
+    public ActionDeleteHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e, string optionId) :
         base(sender, e)
     {
         _optionId = optionId;
@@ -20,7 +20,7 @@ public class ActionResetHandler : InteractionHandler
     public override async Task RunAsync()
     {
         var optionId = Convert.ToInt32(_optionId);
-        await ConfigHelper.Instance.Reset(optionId, EventArgs.Guild.Id);
+        await ConfigHelper.Instance.Delete(optionId, EventArgs.Guild.Id);
 
         var embed = CreateEmbed(optionId);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
@@ -33,8 +33,7 @@ public class ActionResetHandler : InteractionHandler
 
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Value reset");
-        embed.WithDescription($"The value for {option.Name} has been reset.");
-        embed.AddField("New value", option.DefaultValue);
+        embed.WithDescription($"The value for {option.Name} has been deleted.");
         return embed.Build();
     }
 }

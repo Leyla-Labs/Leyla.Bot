@@ -44,7 +44,7 @@ public sealed class ConfigHelper
         // when no guildId provided, return default value
         return Task.FromResult(ConfigOptions.Instance.Get(optionId).DefaultValue);
     }
-    
+
     public static async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, DiscordGuild guild)
     {
         var defaultStr = await GetString(option.Name);
@@ -70,7 +70,10 @@ public sealed class ConfigHelper
 
         if (cfgGuild != null)
         {
-            return cfgGuild.Value;
+            // Delete function sets value to string.Empty as null would return default value
+            // Because of this, we need this check, as an empty string is equivalent to a non-existent config value
+            // It just exists as an empty string to block the logic from resetting it to the default value
+            return !string.IsNullOrWhiteSpace(cfgGuild.Value) ? cfgGuild.Value : null;
         }
 
         // if no config set, get default value, set for guild, and return
@@ -161,31 +164,53 @@ public sealed class ConfigHelper
         return await SetInternal(option, guildId, value);
     }
 
-    public async Task<bool> Reset(int optionId, ulong guildId)
+    public async Task Reset(int optionId, ulong guildId)
     {
         var defaultValue = await GetString(optionId);
         if (defaultValue == null)
         {
-            return false;
+            throw new InvalidOperationException("Option does not have a default value");
         }
 
-        return await Set(optionId, guildId, defaultValue);
+        await Set(optionId, guildId, defaultValue);
     }
 
-    public async Task<bool> Reset(string option, ulong guildId)
+    public async Task Reset(string option, ulong guildId)
     {
         var defaultValue = await GetString(option);
         if (defaultValue == null)
         {
-            return false;
+            throw new InvalidOperationException("Option does not have a default value");
         }
 
-        return await Set(option, guildId, defaultValue);
+        await Set(option, guildId, defaultValue);
     }
 
-    public async Task<bool> Reset(ConfigOption option, ulong guildId)
+    public async Task Reset(ConfigOption option, ulong guildId)
     {
-        return await Reset(option.Id, guildId);
+        await Reset(option.Id, guildId);
+    }
+
+    public async Task Delete(int optionId, ulong guildId)
+    {
+        var option = ConfigOptions.Instance.Get(optionId);
+        await Delete(option, guildId);
+    }
+
+    public async Task Delete(string optionName, ulong guildId)
+    {
+        var option = ConfigOptions.Instance.Get(optionName);
+        await Delete(option, guildId);
+    }
+
+    public async Task Delete(ConfigOption option, ulong guildId)
+    {
+        if (!option.Nullable)
+        {
+            throw new InvalidOperationException("Option value cannot be deleted as it is not nullable.");
+        }
+
+        await Set(option, guildId, string.Empty);
     }
 
     private async Task<bool> SetInternal(ConfigOption opt, ulong guildId, object value)

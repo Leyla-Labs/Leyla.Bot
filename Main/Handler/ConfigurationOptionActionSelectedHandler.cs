@@ -32,8 +32,10 @@ internal sealed class ConfigurationOptionActionSelectedHandler : InteractionHand
                 await new ActionResetHandler(Sender, EventArgs, _optionId).RunAsync();
                 break;
             case ConfigurationAction.Delete:
+                await new ActionDeleteHandler(Sender, EventArgs, _optionId).RunAsync();
+                break;
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(action), action, null);
         }
     }
 }
