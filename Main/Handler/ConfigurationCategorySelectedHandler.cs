@@ -1,6 +1,6 @@
 using Common.Classes;
+using Common.GuildConfig;
 using Common.Helper;
-using Common.Statics;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -42,8 +42,8 @@ internal sealed class ConfigurationCategorySelectedHandler : InteractionHandler
     private async Task<DiscordSelectComponent> GetOptionSelect(int categoryId)
     {
         var modules = await EventArgs.Guild.GetGuildModules();
-        var configOptions = ConfigOptions.Instance.Get().Where(x => x.ConfigOptionCategoryId == categoryId);
-        configOptions = configOptions.Where(x => x.Module == null || modules.Contains(x.Module.Value)).ToArray();
+        var configOptions = ConfigOptions.Instance.Get().Where(x => x.ConfigOptionCategory.Id == categoryId);
+        configOptions = configOptions.Where(x => modules.Contains(x.Module)).ToArray();
 
         var currentValues = new Dictionary<int, string>();
         foreach (var configOption in configOptions)

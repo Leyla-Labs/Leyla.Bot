@@ -1,6 +1,6 @@
 using Common.Classes;
+using Common.GuildConfig;
 using Common.Helper;
-using Common.Statics;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -16,8 +16,6 @@ internal sealed class Configure : SlashCommand
 
     public override async Task RunAsync()
     {
-        //var categorySelect = await GetCategorySelect();
-
         var categories = await GetCategories();
         var embed = CreateCategoryEmbed(categories);
         var buttons = CreateButtons(categories);

@@ -1,6 +1,6 @@
 using Common.Classes;
+using Common.GuildConfig;
 using Common.Helper;
-using Common.Statics;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
