@@ -226,7 +226,7 @@ public sealed class ConfigHelper
             ConfigType.Channel when value is ulong => value.ToString()!,
             ConfigType.Role when value is DiscordRole role => role.Id.ToString(),
             ConfigType.Channel when value is DiscordChannel channel => channel.Id.ToString(),
-            ConfigType.Decimal when value is decimal => value.ToString()!,
+            ConfigType.Decimal when value is decimal d => d.ToString(CultureInfo.InvariantCulture),
             ConfigType.Enum when value is Enum => ((int) value).ToString(),
             _ => GetStringFromObject(value)
         };

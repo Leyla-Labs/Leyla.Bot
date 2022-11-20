@@ -1,3 +1,4 @@
+using System.Globalization;
 using Common.Classes;
 using Common.Enums;
 using Common.Helper;
@@ -36,7 +37,7 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
                 await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueChar);
                 break;
             case ConfigType.Decimal:
-                var valueDecimal = Convert.ToDecimal(value);
+                var valueDecimal = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
                 await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueDecimal);
                 break;
             case ConfigType.Boolean:
