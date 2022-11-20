@@ -45,16 +45,17 @@ public sealed class ConfigHelper
         return Task.FromResult(ConfigOptions.Instance.Get(optionId).DefaultValue);
     }
 
-    public static async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, DiscordGuild guild)
+    public static async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, DiscordGuild guild,
+        bool allowMentions)
     {
         var defaultStr = await GetString(option.Name);
-        return defaultStr != null ? GetDisplayStringForGivenValue(option, guild, defaultStr) : null;
+        return defaultStr != null ? GetDisplayStringForGivenValue(option, guild, defaultStr, allowMentions) : null;
     }
 
     public static async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, DiscordGuild guild,
-        string placeholder)
+        bool allowMentions, string placeholder)
     {
-        var result = await GetDisplayStringForDefaultValue(option, guild);
+        var result = await GetDisplayStringForDefaultValue(option, guild, allowMentions);
         return result ?? placeholder;
     }
 
@@ -128,16 +129,17 @@ public sealed class ConfigHelper
         return await GetString(option, guildId) is { } s ? (T) (object) Convert.ToInt32(s) : default;
     }
 
-    public async Task<string?> GetDisplayStringForCurrentValue(ConfigOption option, DiscordGuild guild)
+    public async Task<string?> GetDisplayStringForCurrentValue(ConfigOption option, DiscordGuild guild,
+        bool allowMentions)
     {
         var currStr = await GetString(option.Name, guild.Id);
-        return currStr != null ? GetDisplayStringForGivenValue(option, guild, currStr) : null;
+        return currStr != null ? GetDisplayStringForGivenValue(option, guild, currStr, allowMentions) : null;
     }
 
     public async Task<string?> GetDisplayStringForCurrentValue(ConfigOption option, DiscordGuild guild,
-        string placeholder)
+        bool allowMentions, string placeholder)
     {
-        var result = await GetDisplayStringForCurrentValue(option, guild);
+        var result = await GetDisplayStringForCurrentValue(option, guild, allowMentions);
         return result ?? placeholder;
     }
 
@@ -299,7 +301,8 @@ public sealed class ConfigHelper
         }
     }
 
-    private static string? GetDisplayStringForGivenValue(ConfigOption option, DiscordGuild guild, string value)
+    private static string? GetDisplayStringForGivenValue(ConfigOption option, DiscordGuild guild, string value,
+        bool allowMentions)
     {
         return option.ConfigType switch
         {
@@ -308,10 +311,10 @@ public sealed class ConfigHelper
             ConfigType.Int => value,
             ConfigType.Char => value,
             ConfigType.Role => guild.Roles.TryGetValue(Convert.ToUInt64(value), out var result)
-                ? result.Mention
+                ? allowMentions ? result.Mention : result.Name
                 : null,
             ConfigType.Channel => guild.Channels.TryGetValue(Convert.ToUInt64(value), out var result)
-                ? result.Mention
+                ? allowMentions ? result.Mention : $"#{result.Name}"
                 : null,
             ConfigType.Decimal => value,
             ConfigType.Enum when Enum.Parse(option.EnumType!, value) is { } enumVal => enumVal

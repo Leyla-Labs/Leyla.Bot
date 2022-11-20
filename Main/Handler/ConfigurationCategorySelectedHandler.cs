@@ -43,9 +43,22 @@ internal sealed class ConfigurationCategorySelectedHandler : InteractionHandler
     {
         var modules = await EventArgs.Guild.GetGuildModules();
         var configOptions = ConfigOptions.Instance.Get().Where(x => x.ConfigOptionCategoryId == categoryId);
-        configOptions = configOptions.Where(x => x.Module == null || modules.Contains(x.Module.Value));
+        configOptions = configOptions.Where(x => x.Module == null || modules.Contains(x.Module.Value)).ToArray();
+
+        var currentValues = new Dictionary<int, string>();
+        foreach (var configOption in configOptions)
+        {
+            var currVal =
+                await ConfigHelper.Instance.GetDisplayStringForCurrentValue(configOption, EventArgs.Guild, false);
+            if (currVal != null)
+            {
+                currentValues.Add(configOption.Id, currVal);
+            }
+        }
+
         var options = configOptions.Select(x =>
-            new DiscordSelectComponentOption(x.Name, x.Id.ToString(), x.Description));
+            new DiscordSelectComponentOption(x.Name, x.Id.ToString(),
+                currentValues.TryGetValue(x.Id, out var result) ? result : null));
         var customId = ModalHelper.GetModalName(EventArgs.User.Id, "configOptions");
         return new DiscordSelectComponent(customId, "Select option to configure", options,
             minOptions: 1, maxOptions: 1);

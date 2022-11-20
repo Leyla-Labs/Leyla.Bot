@@ -31,7 +31,7 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
         var placeholder = "/";
 
         var displayString =
-            await ConfigHelper.Instance.GetDisplayStringForCurrentValue(option, EventArgs.Guild, placeholder);
+            await ConfigHelper.Instance.GetDisplayStringForCurrentValue(option, EventArgs.Guild, true, placeholder);
 
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle(option.Name);
@@ -45,7 +45,7 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
 
         // add default value if option has one
         var defaultDisplayString =
-            await ConfigHelper.GetDisplayStringForDefaultValue(option, EventArgs.Guild, placeholder);
+            await ConfigHelper.GetDisplayStringForDefaultValue(option, EventArgs.Guild, true, placeholder);
         embed.AddField("Default value", defaultDisplayString, true);
 
         return embed.Build();
