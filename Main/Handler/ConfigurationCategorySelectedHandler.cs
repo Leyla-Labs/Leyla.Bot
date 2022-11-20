@@ -10,14 +10,18 @@ namespace Main.Handler;
 
 internal sealed class ConfigurationCategorySelectedHandler : InteractionHandler
 {
-    public ConfigurationCategorySelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e) :
+    private readonly string _categoryId;
+
+    public ConfigurationCategorySelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e,
+        string categoryId) :
         base(sender, e)
     {
+        _categoryId = categoryId;
     }
 
     public override async Task RunAsync()
     {
-        var categoryId = Convert.ToInt32(EventArgs.Values[0]);
+        var categoryId = Convert.ToInt32(_categoryId);
         var optionEmbed = GetOptionEmbed(categoryId);
         var optionSelect = await GetOptionSelect(categoryId);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,

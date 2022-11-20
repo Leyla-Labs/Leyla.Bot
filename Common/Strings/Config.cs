@@ -6,7 +6,7 @@ public static class Config
 {
     public static class Roles
     {
-        public static readonly DisplayString Category = new("Roles");
+        public static readonly DisplayString Category = new("Roles", "Description TODO");
 
         public static readonly DisplayString Mod = new("Moderator Role");
         public static readonly DisplayString Verification = new("Verification Role");
@@ -15,7 +15,7 @@ public static class Config
 
     public static class Channels
     {
-        public static readonly DisplayString Category = new("Channels");
+        public static readonly DisplayString Category = new("Channels", "Description TODO");
 
         public static readonly DisplayString Mod = new("Moderator Channel");
         public static readonly DisplayString Log = new("Log Channel");
@@ -25,7 +25,7 @@ public static class Config
 
     public static class Spam
     {
-        public static readonly DisplayString Category = new("Spam");
+        public static readonly DisplayString Category = new("Spam", "Description TODO");
 
         public static readonly DisplayString BasePressure = new(Strings.Spam.BasePressure);
         public static readonly DisplayString ImagePressure = new(Strings.Spam.ImagePressure);
@@ -42,7 +42,7 @@ public static class Config
 
     public static class Raid
     {
-        public static readonly DisplayString Category = new("Raid");
+        public static readonly DisplayString Category = new("Raid", "Description TODO");
 
         public static readonly DisplayString RaidMode = new("Raid Mode");
         public static readonly DisplayString RaidSize = new("Raid Size");

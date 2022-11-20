@@ -29,9 +29,10 @@ internal static class ClientOnComponentInteractionCreatedEvent
             case "manageMenu" when additionalInfo.Length < 1:
             case "selfAssignMenu" when additionalInfo.Length < 1:
             case "selfAssignMenuSelected" when additionalInfo.Length < 1:
+            case "configCategories" when additionalInfo.Length < 1:
                 throw new NullReferenceException(nameof(additionalInfo));
             case "configCategories":
-                await new ConfigurationCategorySelectedHandler(sender, e).RunAsync();
+                await new ConfigurationCategorySelectedHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
             case "configOptions":
                 await new ConfigurationOptionSelectedHandler(sender, e).RunAsync();
