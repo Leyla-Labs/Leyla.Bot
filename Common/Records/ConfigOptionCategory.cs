@@ -1,9 +1,10 @@
+using Common.Classes;
 using Common.Enums;
 using Common.Interfaces;
 
-namespace Common.Classes;
+namespace Common.Records;
 
-public class ConfigOptionCategory : IIdentifiable
+public record ConfigOptionCategory : IIdentifiable
 {
     public ConfigOptionCategory(int id, int sortId, DisplayString displayString, LeylaModule module)
     {

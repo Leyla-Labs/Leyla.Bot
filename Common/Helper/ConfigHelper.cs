@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using Common.Classes;
 using Common.Db;
 using Common.Db.Models;
 using Common.Enums;
 using Common.Extensions;
 using Common.GuildConfig;
+using Common.Records;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
 

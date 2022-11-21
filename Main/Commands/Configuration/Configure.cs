@@ -1,6 +1,7 @@
 using Common.Classes;
 using Common.GuildConfig;
 using Common.Helper;
+using Common.Records;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;

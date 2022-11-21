@@ -1,10 +1,11 @@
+using Common.Classes;
 using Common.Enums;
 using Common.GuildConfig;
 using Common.Interfaces;
 
-namespace Common.Classes;
+namespace Common.Records;
 
-public class ConfigOption : IIdentifiable
+public record ConfigOption : IIdentifiable
 {
     private readonly int _configOptionCategoryId;
 
