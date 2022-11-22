@@ -33,6 +33,9 @@ internal static class ClientOnComponentInteractionCreatedEvent
             case "configCategories":
                 await new ConfigurationCategorySelectedHandler(sender, e).RunAsync();
                 break;
+            case "configOptions" when additionalInfo.Length == 1:
+                await new ConfigurationOptionSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
+                break;
             case "configOptions":
                 await new ConfigurationOptionSelectedHandler(sender, e).RunAsync();
                 break;
