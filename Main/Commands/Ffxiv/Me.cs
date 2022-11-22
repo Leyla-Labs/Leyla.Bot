@@ -69,7 +69,7 @@ public class Me : SlashCommand
         await using var context = new DatabaseContext();
 
         return await context.CharacterClaims.Where(x =>
-                x.UserId == Ctx.User.Id && x.Confirmed)
+                x.UserId == Ctx.User.Id)
             .ToArrayAsync();
     }
 
