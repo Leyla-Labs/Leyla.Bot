@@ -36,6 +36,7 @@ public class DatabaseContext : DbContext
         builder.HasPostgresEnum<DiscordEntityType>();
         builder.HasPostgresEnum<UserLogType>();
 
+        builder.HasPostgresExtension("uuid-ossp");
         builder.ApplyConfigurationsFromAssembly(typeof(DatabaseContext).Assembly);
     }
 
@@ -72,7 +73,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DatabaseCo
     public DatabaseContext CreateDbContext(string[] args)
     {
         var b = new DbContextOptionsBuilder<DatabaseContext>();
-        var conn = Environment.GetEnvironmentVariable("CONNECTION_STRING")!;
+        var conn = "Host=localhost;Database=leyla_dev;Username=tawmy";
         b.UseNpgsql(conn).UseSnakeCaseNamingConvention();
         return new DatabaseContext(b.Options);
     }

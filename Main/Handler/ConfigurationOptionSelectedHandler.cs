@@ -12,14 +12,28 @@ namespace Main.Handler;
 
 internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
 {
+    private readonly string? _optionId;
+
     public ConfigurationOptionSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e) :
         base(sender, e)
     {
     }
 
+    public ConfigurationOptionSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e,
+        string optionId) :
+        this(sender, e)
+    {
+        _optionId = optionId;
+    }
+
     public override async Task RunAsync()
     {
-        var optionId = Convert.ToInt32(EventArgs.Values[0]);
+        // try to get from values (select menu, see ConfigurationCategorySelectedHandler)
+        // fallback to optionId (button, see ConfigurationOptionValueGivenHandler)
+        var optionIdString = EventArgs.Values.FirstOrDefault() ?? _optionId
+            ?? throw new ArgumentNullException(nameof(_optionId), "both value sources are null.");
+
+        var optionId = Convert.ToInt32(optionIdString);
         var option = ConfigOptions.Instance.Get(optionId);
         var optionDetailsEmbed = GetOptionDetailsEmbed(option);
 
@@ -40,12 +54,28 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
                 break;
             case ConfigType.Role:
                 var roleSelect = await GetRoleSelect(option);
+                var currentRole = await ConfigHelper.Instance.GetRole(option.Name, EventArgs.Guild);
+                if (currentRole != null)
+                {
+                    // Workaround until Discord adds support for default values to these select types
+                    optionDetailsEmbed = new DiscordEmbedBuilder(optionDetailsEmbed)
+                        .AddField("Current Value", currentRole.Mention)
+                        .Build();
+                }
                 await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                     new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(roleSelect)
                         .AsEphemeral());
                 break;
             case ConfigType.Channel:
-                var channelSelect = await GetChannelSelect(option);
+                var channelSelect = await GetTextChannelSelect(option);
+                var currentChannel = await ConfigHelper.Instance.GetChannel(option.Name, EventArgs.Guild);
+                if (currentChannel != null)
+                {
+                    // Workaround until Discord adds support for default values to these select types
+                    optionDetailsEmbed = new DiscordEmbedBuilder(optionDetailsEmbed)
+                        .AddField("Current Value", currentChannel.Mention)
+                        .Build();
+                }
                 await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                     new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(channelSelect)
                         .AsEphemeral());
@@ -56,7 +86,6 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
                     new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(enumSelect)
                         .AsEphemeral());
                 break;
-            // TODO
             default:
                 throw new ArgumentOutOfRangeException(nameof(option.ConfigType));
         }
@@ -71,31 +100,21 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
         return embed.Build();
     }
 
-    private async Task<DiscordSelectComponent> GetRoleSelect(ConfigOption option)
+    private Task<DiscordRoleSelectComponent> GetRoleSelect(ConfigOption option)
     {
-        // TODO support more than 25 roles
         // TODO support clearing config by selecting none
-        var currentConfig = await ConfigHelper.Instance.GetRole(option.Name, EventArgs.Guild);
-        var options = EventArgs.Guild.Roles.Take(25).Select(x =>
-            new DiscordSelectComponentOption(x.Value.Name, x.Key.ToString(), isDefault: x.Key == currentConfig?.Id));
         var customId =
             ModalHelper.GetModalName(EventArgs.User.Id, "configOptionValueSelected", new[] {option.Id.ToString()});
-        return new DiscordSelectComponent(customId, "Select role", options,
-            minOptions: 1, maxOptions: 1);
+        return Task.FromResult(new DiscordRoleSelectComponent(customId, "Select role",
+            minOptions: 1, maxOptions: 1));
     }
 
-    private async Task<DiscordSelectComponent> GetChannelSelect(ConfigOption option)
+    private Task<DiscordChannelSelectComponent> GetTextChannelSelect(ConfigOption option)
     {
-        // TODO support more than 25 channels
-        var currentConfig = await ConfigHelper.Instance.GetChannel(option.Name, EventArgs.Guild);
-        var channels = await EventArgs.Guild.GetChannelsAsync();
-        var channelsFiltered = channels.Where(x => !x.IsCategory).Take(25);
-        var options = channelsFiltered.Select(x =>
-            new DiscordSelectComponentOption(x.Name, x.Id.ToString(), isDefault: x.Id == currentConfig?.Id));
         var customId =
             ModalHelper.GetModalName(EventArgs.User.Id, "configOptionValueSelected", new[] {option.Id.ToString()});
-        return new DiscordSelectComponent(customId, "Select channel", options,
-            minOptions: 1, maxOptions: 1);
+        return Task.FromResult(new DiscordChannelSelectComponent(customId, "Select channel",
+            minOptions: 1, maxOptions: 1, channelTypes: new[] {ChannelType.Text}));
     }
 
     private async Task<DiscordSelectComponent> GetBoolSelect(ConfigOption option)
