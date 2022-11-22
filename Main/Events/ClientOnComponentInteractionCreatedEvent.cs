@@ -60,6 +60,12 @@ internal static class ClientOnComponentInteractionCreatedEvent
             case "selfAssignMenuSelected":
                 await new SelfAssignMenuRolesSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
+            case "ffxivCharacterSheet":
+                await new FfxivCharacterSheetSelectedHandler(sender, e).RunAsync();
+                break;
+            case "ffxivCharacterClaim":
+                await new FfxivCharacterClaimSelectedHandler(sender, e).RunAsync();
+                break;
             default:
                 return;
         }
