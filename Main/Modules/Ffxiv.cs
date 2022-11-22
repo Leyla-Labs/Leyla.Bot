@@ -23,5 +23,23 @@ internal sealed class Ffxiv : ApplicationCommandLogModule
         {
             await new Find(ctx, name, server).RunAsync();
         }
+
+        [SlashCommand("claim", "Claims a character.")]
+        [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.AttachFiles)]
+        public async Task SlashClaim(InteractionContext ctx,
+            [Option("Name", "Title of character to search for")]
+            string name,
+            [Option("HomeWorld", "Home world of the character")]
+            string? server = null)
+        {
+            await new Claim(ctx, name, server).RunAsync();
+        }
+
+        [SlashCommand("me", "Shows your character sheet.")]
+        [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.AttachFiles)]
+        public async Task SlashMe(InteractionContext ctx)
+        {
+            await new Me(ctx).RunAsync();
+        }
     }
 }

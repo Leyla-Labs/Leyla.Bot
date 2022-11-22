@@ -192,8 +192,8 @@ public class CharacterSheetHelper
 
     private async Task AddILvlMinionsMounts()
     {
-        var minions = (int) MiMoHelper.GetMinionPercentage(_profile.Minions.Length);
-        var mounts = (int) MiMoHelper.GetMountPercentage(_profile.Mounts.Length);
+        var minions = (int) _profile.MinionPercentage;
+        var mounts = (int) _profile.MountPercentage;
 
         var family = (await ResourceHelper.Instance).GetFontFamily(Enums.CharacterSheet.Font.OpenSans);
         var font = family.CreateFont(Values.FontSizeMiMo, FontStyle.Regular);
@@ -205,7 +205,7 @@ public class CharacterSheetHelper
             Origin = CoordinatesOther.ItemLevel
         };
 
-        var avgItemLevel = ItemLevelHelper.CalculateAvgItemLevel(Character.GearSet.Gear);
+        var avgItemLevel = Character.GearSet.Gear.AverageItemLevel;
         Image.Mutate(x => x.DrawText(optionsLvl, avgItemLevel.ToString(), Color.White));
 
         var optionsMi = new TextOptions(optionsLvl)
