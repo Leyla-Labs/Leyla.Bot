@@ -21,15 +21,13 @@ public class Me : SlashCommand
 
     public override async Task RunAsync()
     {
-        await Ctx.DeferAsync();
-
         var claims = await GetCharacterClaims();
 
         if (!claims.Any())
         {
-            await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddErrorEmbed("No claimed characters.",
-                "You have not yet claimed any characters as your own. " +
-                "You can do so using `/ffxiv character claim`."));
+            await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed(
+                "No claimed characters.", "You have not yet claimed any characters as your own. " +
+                                          "You can do so using `/ffxiv character claim`.").AsEphemeral());
             return;
         }
 
@@ -37,11 +35,13 @@ public class Me : SlashCommand
 
         if (!confirmedClaims.Any())
         {
-            await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddErrorEmbed("No confirmed claims.",
+            await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("No confirmed claims.",
                 "You have not yet finished claiming any characters ." +
-                "Please make sure to follow the instructions when running `/ffxiv character claim.`"));
+                "Please make sure to follow the instructions when running `/ffxiv character claim.`").AsEphemeral());
             return;
         }
+
+        await Ctx.DeferAsync();
 
         if (confirmedClaims.Length > 1)
         {
