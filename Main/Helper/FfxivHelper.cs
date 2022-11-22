@@ -97,14 +97,16 @@ internal static class FfxivHelper
                     return (CharacterClaimStatus.ClaimAlreadyConfirmed, characterClaim.Code);
                 }
 
-                if (characterClaim.Code.Equals(code))
+                if (!characterClaim.Code.Equals(code))
                 {
-                    characterClaim.Confirmed = true;
-                    await context.SaveChangesAsync();
-                    return (CharacterClaimStatus.ClaimNewlyConfirmed, code);
+                    // Claim already exists, remind user to confirm it
+                    return (CharacterClaimStatus.ClaimExists, characterClaim.Code);
                 }
 
-                return (CharacterClaimStatus.ClaimExists, characterClaim.Code);
+                // code matches, confirm claim
+                characterClaim.Confirmed = true;
+                await context.SaveChangesAsync();
+                return (CharacterClaimStatus.ClaimNewlyConfirmed, code);
             }
 
             if (!characterClaim.Confirmed && characterClaim.ValidUntil < DateTime.UtcNow)
@@ -121,11 +123,12 @@ internal static class FfxivHelper
             }
         }
 
+        // no claim yet, create new one
         var cObj = new CharacterClaim
         {
             UserId = userId,
             CharacterId = characterId,
-            Code = code,
+            Code = GenerateNewCode(), // specifically generate new code to prevent https://github.com/Leyla-Labs/Leyla.Bot/issues/5#issuecomment-1323905671
             ValidUntil = DateTime.UtcNow.AddDays(7)
         };
 
