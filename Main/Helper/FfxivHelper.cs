@@ -160,6 +160,12 @@ internal static class FfxivHelper
         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddFile(fileName, stream, true).AddComponents(btn));
     }
 
+    public static DiscordLinkButtonComponent GetLodestoneLinkButton(int characterId)
+    {
+        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}/";
+        return new DiscordLinkButtonComponent(url, "Open Lodestone profile");
+    }
+
     private static string LodestoneBioToCode(string? bio)
     {
         if (bio == null || bio.Length < 2 || !bio[..2].Equals("L-"))
@@ -185,12 +191,6 @@ internal static class FfxivHelper
             ? $" (Showing 25/{t} results)./"
             : $" ({t} results).";
         return new DiscordSelectComponent(name, $"Select character {suffix}", options, minOptions: 1, maxOptions: 1);
-    }
-
-    private static DiscordLinkButtonComponent GetLodestoneLinkButton(int characterId)
-    {
-        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}/";
-        return new DiscordLinkButtonComponent(url, "Open Lodestone profile");
     }
 
     #region CharacterClaimStatus embed

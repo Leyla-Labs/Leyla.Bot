@@ -11,7 +11,6 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using xivapi_cs.Helper;
 using xivapi_cs.ViewModels.CharacterProfile;
 using Attribute = xivapi_cs.Enums.Attribute;
 using Job = xivapi_cs.Enums.Job;
