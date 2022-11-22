@@ -12,14 +12,28 @@ namespace Main.Handler;
 
 internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
 {
+    private readonly string? _optionId;
+
     public ConfigurationOptionSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e) :
         base(sender, e)
     {
     }
 
+    public ConfigurationOptionSelectedHandler(DiscordClient sender, ComponentInteractionCreateEventArgs e,
+        string optionId) :
+        this(sender, e)
+    {
+        _optionId = optionId;
+    }
+
     public override async Task RunAsync()
     {
-        var optionId = Convert.ToInt32(EventArgs.Values[0]);
+        // try to get from values (select menu, see ConfigurationCategorySelectedHandler)
+        // fallback to optionId (button, see ConfigurationOptionValueGivenHandler)
+        var optionIdString = EventArgs.Values.FirstOrDefault() ?? _optionId
+            ?? throw new ArgumentNullException(nameof(_optionId), "both value sources are null.");
+
+        var optionId = Convert.ToInt32(optionIdString);
         var option = ConfigOptions.Instance.Get(optionId);
         var optionDetailsEmbed = GetOptionDetailsEmbed(option);
 
