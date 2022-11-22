@@ -35,7 +35,8 @@ public class FfxivCharacterSheetSelectedHandler : InteractionHandler
         var helper = await CharacterSheetHelper.Create(characterData);
         var stream = await helper.GetCharacterSheet();
         var fileName = helper.GetFileName();
+        var btn = FfxivHelper.GetLodestoneLinkButton(characterData.Character.Id);
         await EventArgs.Interaction.EditOriginalResponseAsync(
-            new DiscordWebhookBuilder().AddFile(fileName, stream, true));
+            new DiscordWebhookBuilder().AddFile(fileName, stream, true).AddComponents(btn));
     }
 }

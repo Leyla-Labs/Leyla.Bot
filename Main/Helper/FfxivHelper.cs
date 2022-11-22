@@ -156,7 +156,14 @@ internal static class FfxivHelper
         var helper = await CharacterSheetHelper.Create(profile);
         var stream = await helper.GetCharacterSheet();
         var fileName = helper.GetFileName();
-        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddFile(fileName, stream, true));
+        var btn = GetLodestoneLinkButton(profile.Character.Id);
+        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddFile(fileName, stream, true).AddComponents(btn));
+    }
+
+    public static DiscordLinkButtonComponent GetLodestoneLinkButton(int characterId)
+    {
+        var url = $"https://eu.finalfantasyxiv.com/lodestone/character/{characterId}/";
+        return new DiscordLinkButtonComponent(url, "Open Lodestone profile");
     }
 
     private static string LodestoneBioToCode(string? bio)
