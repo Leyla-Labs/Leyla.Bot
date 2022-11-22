@@ -48,6 +48,7 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
                         .AddField("Current Value", currentRole.Mention)
                         .Build();
                 }
+
                 await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                     new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(roleSelect)
                         .AsEphemeral());
@@ -62,6 +63,7 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
                         .AddField("Current Value", currentChannel.Mention)
                         .Build();
                 }
+
                 await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                     new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(channelSelect)
                         .AsEphemeral());

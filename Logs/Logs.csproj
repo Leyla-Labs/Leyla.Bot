@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <OutputType>Library</OutputType>
@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DSharpPlus.SlashCommands" Version="4.3.0-nightly-01180"/>
+        <PackageReference Include="DSharpPlus.SlashCommands" Version="4.3.0-nightly-01188"/>
         <PackageReference Include="Humanizer.Core" Version="2.14.1"/>
     </ItemGroup>
 
