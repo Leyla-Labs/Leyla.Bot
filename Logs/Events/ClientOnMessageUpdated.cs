@@ -12,6 +12,13 @@ internal static class ClientOnMessageUpdated
     {
         if (e.Guild == null)
         {
+            // do not log messages from direct messages
+            return;
+        }
+
+        if (LeylaModuleHelper.UserIds.Contains(e.Author.Id))
+        {
+            // do not log messages from Leyla modules
             return;
         }
 
