@@ -129,7 +129,7 @@ internal static class FfxivHelper
             UserId = userId,
             CharacterId = characterId,
             Code = GenerateNewCode(), // specifically generate new code to prevent https://github.com/Leyla-Labs/Leyla.Bot/issues/5#issuecomment-1323905671
-            ValidUntil = DateTime.UtcNow.AddDays(7)
+            ValidUntil = DateTime.UtcNow.AddHours(1)
         };
 
         await context.CharacterClaims.AddAsync(cObj);
@@ -206,7 +206,7 @@ internal static class FfxivHelper
         embed.WithTitle($"Claim already exists: {name}");
         embed.WithDescription(
             "To confirm this claim, please copy and paste the code below onto your Lodestone profile. " +
-            "If you have already added the code to your profile, please wait a few hours and try again.");
+            "If you have already added the code to your profile, please try again in a few minutes.");
         embed.AddField("Code", $"`{code}`");
         // TODO add video tutorial
         return embed.Build();
@@ -236,7 +236,7 @@ internal static class FfxivHelper
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle($"Claim already exists: {name}");
         embed.WithDescription("An unconfirmed claim for this character already exists for a different user. " +
-                              "Unconfirmed claims expire after three days, so you may try again in a few days.");
+                              "Unconfirmed claims expire after one hour, so you may try again later.");
         return embed.Build();
     }
 
