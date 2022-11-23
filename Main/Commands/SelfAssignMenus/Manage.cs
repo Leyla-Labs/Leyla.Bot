@@ -36,9 +36,9 @@ internal sealed class Manage : SlashCommand
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AddComponents(selectMenu).AsEphemeral());
     }
 
-    #region Static methods
+    #region Instance methods
 
-    private static DiscordEmbed GetEmbed(SelfAssignMenu menu)
+    private DiscordEmbed GetEmbed(SelfAssignMenu menu)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle(menu.Title);
@@ -47,13 +47,23 @@ internal sealed class Manage : SlashCommand
             embed.WithDescription(menu.Description);
         }
 
+        if (menu.SelfAssignMenuDiscordEntityAssignments.Count > 0)
+        {
+            var description = $"{embed.Description}{Environment.NewLine}{Environment.NewLine}" +
+                              "This following list will be overwritten by selecting new roles.";
+
+            embed.WithDescription(description);
+
+            var roleNames = Ctx.Guild.Roles
+                .Where(x => menu.SelfAssignMenuDiscordEntityAssignments.Select(y => y.DiscordEntityId).Contains(x.Key))
+                .Select(x => x.Value.Mention);
+            var rolesStr = string.Join(Environment.NewLine, roleNames);
+            embed.AddField("Roles", rolesStr);
+        }
+
         embed.WithColor(DiscordColor.Blurple);
         return embed.Build();
     }
-
-    #endregion
-
-    #region Instance methods
 
     private async Task<SelfAssignMenu?> GetSelfAssignMenu()
     {
@@ -64,16 +74,11 @@ internal sealed class Manage : SlashCommand
             .FirstOrDefaultAsync();
     }
 
-    private DiscordSelectComponent GetSelectMenu(SelfAssignMenu menu)
+    private DiscordRoleSelectComponent GetSelectMenu(SelfAssignMenu menu)
     {
-        var roles = Ctx.Guild.Roles.Select(x => x.Value);
-
-        var options = roles.Select(x => new DiscordSelectComponentOption(x.Name, x.Id.ToString(),
-                isDefault: menu.SelfAssignMenuDiscordEntityAssignments.Select(y => y.DiscordEntityId).Contains(x.Id)))
-            .ToList();
+        var roleCount = Ctx.Guild.Roles.Count;
         var customId = ModalHelper.GetModalName(Ctx.User.Id, "manageMenu", new[] {menu.Id.ToString()});
-        return new DiscordSelectComponent(customId, "Select roles", options, minOptions: 2,
-            maxOptions: options.Count);
+        return new DiscordRoleSelectComponent(customId, "Select roles", minOptions: 2, maxOptions: roleCount);
     }
 
     #endregion
