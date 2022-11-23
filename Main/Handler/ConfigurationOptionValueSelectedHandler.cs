@@ -28,15 +28,15 @@ internal sealed class ConfigurationOptionValueSelectedHandler : InteractionHandl
         {
             case ConfigType.Boolean:
                 var valueBool = value.Equals("1");
-                await ConfigHelper.Instance.Set(option, EventArgs.Guild.Id, valueBool);
+                await GuildConfigHelper.Instance.Set(option, EventArgs.Guild.Id, valueBool);
                 break;
             case ConfigType.Role:
             case ConfigType.Channel:
                 var valueUlong = Convert.ToUInt64(value);
-                await ConfigHelper.Instance.Set(option, EventArgs.Guild.Id, valueUlong);
+                await GuildConfigHelper.Instance.Set(option, EventArgs.Guild.Id, valueUlong);
                 break;
             case ConfigType.Enum:
-                await ConfigHelper.Instance.Set(option, EventArgs.Guild.Id, value);
+                await GuildConfigHelper.Instance.Set(option, EventArgs.Guild.Id, value);
                 break;
             case ConfigType.String:
             case ConfigType.Int:
@@ -51,13 +51,13 @@ internal sealed class ConfigurationOptionValueSelectedHandler : InteractionHandl
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
-    private async Task<DiscordEmbed> CreateEmbed(ConfigOption option)
+    private async Task<DiscordEmbed> CreateEmbed(GuildConfigOption option)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Value edited");
         embed.WithDescription($"The value for {option.Name} has been edited.");
         embed.AddField("New value",
-            await ConfigHelper.Instance.GetDisplayStringForCurrentValue(option, EventArgs.Guild, true));
+            await GuildConfigHelper.Instance.GetDisplayStringForCurrentValue(option, EventArgs.Guild, true));
         return embed.Build();
     }
 }

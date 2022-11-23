@@ -44,7 +44,7 @@ public class ActionEditHandler : InteractionHandler
                 break;
             case ConfigType.Role:
                 var roleSelect = await GetRoleSelect(option);
-                var currentRole = await ConfigHelper.Instance.GetRole(option.Name, EventArgs.Guild);
+                var currentRole = await GuildConfigHelper.Instance.GetRole(option.Name, EventArgs.Guild);
                 if (currentRole != null)
                 {
                     // Workaround until Discord adds support for default values to these select types
@@ -59,7 +59,7 @@ public class ActionEditHandler : InteractionHandler
                 break;
             case ConfigType.Channel:
                 var channelSelect = await GetTextChannelSelect(option);
-                var currentChannel = await ConfigHelper.Instance.GetChannel(option.Name, EventArgs.Guild);
+                var currentChannel = await GuildConfigHelper.Instance.GetChannel(option.Name, EventArgs.Guild);
                 if (currentChannel != null)
                 {
                     // Workaround until Discord adds support for default values to these select types
@@ -83,7 +83,7 @@ public class ActionEditHandler : InteractionHandler
         }
     }
 
-    private static DiscordEmbed GetOptionDetailsEmbed(ConfigOption option)
+    private static DiscordEmbed GetOptionDetailsEmbed(GuildConfigOption option)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle(option.Name);
@@ -92,7 +92,7 @@ public class ActionEditHandler : InteractionHandler
         return embed.Build();
     }
 
-    private Task<DiscordRoleSelectComponent> GetRoleSelect(ConfigOption option)
+    private Task<DiscordRoleSelectComponent> GetRoleSelect(GuildConfigOption option)
     {
         // TODO support clearing config by selecting none
         var customId =
@@ -101,7 +101,7 @@ public class ActionEditHandler : InteractionHandler
             minOptions: 1, maxOptions: 1));
     }
 
-    private Task<DiscordChannelSelectComponent> GetTextChannelSelect(ConfigOption option)
+    private Task<DiscordChannelSelectComponent> GetTextChannelSelect(GuildConfigOption option)
     {
         var customId =
             ModalHelper.GetModalName(EventArgs.User.Id, "configOptionValueSelected", new[] {option.Id.ToString()});
@@ -109,9 +109,9 @@ public class ActionEditHandler : InteractionHandler
             minOptions: 1, maxOptions: 1, channelTypes: new[] {ChannelType.Text}));
     }
 
-    private async Task<DiscordSelectComponent> GetBoolSelect(ConfigOption option)
+    private async Task<DiscordSelectComponent> GetBoolSelect(GuildConfigOption option)
     {
-        var currentConfig = await ConfigHelper.Instance.GetBool(option.Name, EventArgs.Guild.Id);
+        var currentConfig = await GuildConfigHelper.Instance.GetBool(option.Name, EventArgs.Guild.Id);
         var options = new List<DiscordSelectComponentOption>
             {new("On", "1", isDefault: currentConfig == true), new("Off", "0", isDefault: currentConfig != true)};
         var customId =
@@ -119,14 +119,14 @@ public class ActionEditHandler : InteractionHandler
         return new DiscordSelectComponent(customId, "Select value", options, minOptions: 1, maxOptions: 1);
     }
 
-    private async Task<DiscordSelectComponent> GetEnumSelect(ConfigOption option)
+    private async Task<DiscordSelectComponent> GetEnumSelect(GuildConfigOption option)
     {
         if (option.EnumType == null)
         {
             throw new NullReferenceException(nameof(option.EnumType));
         }
 
-        var currentConfig = await ConfigHelper.Instance.GetString(option.Name, EventArgs.Guild.Id);
+        var currentConfig = await GuildConfigHelper.Instance.GetString(option.Name, EventArgs.Guild.Id);
 
         var options = new List<DiscordSelectComponentOption>();
 
@@ -146,7 +146,7 @@ public class ActionEditHandler : InteractionHandler
         return new DiscordSelectComponent(customId, "Select value", options, minOptions: 1, maxOptions: 1);
     }
 
-    private async Task<DiscordInteractionResponseBuilder> GetModal(ConfigOption option)
+    private async Task<DiscordInteractionResponseBuilder> GetModal(GuildConfigOption option)
     {
         var response = new DiscordInteractionResponseBuilder();
         response.WithTitle(option.Name);
@@ -169,7 +169,7 @@ public class ActionEditHandler : InteractionHandler
             _ => 100
         };
 
-        var currentConfig = await ConfigHelper.Instance.GetString(option.Name, EventArgs.Guild.Id) ?? string.Empty;
+        var currentConfig = await GuildConfigHelper.Instance.GetString(option.Name, EventArgs.Guild.Id) ?? string.Empty;
 
         response.AddComponents(new TextInputComponent("Value", "value", placeholder, currentConfig, min_length: 1,
             max_length: maxLength));

@@ -10,7 +10,7 @@ internal static class ClientOnGuildMemberRemoved
 {
     public static async Task HandleEvent(DiscordClient sender, GuildMemberRemoveEventArgs e)
     {
-        var channel = await ConfigHelper.Instance.GetChannel("Moderator Channel", e.Guild);
+        var channel = await GuildConfigHelper.Instance.GetChannel("Moderator Channel", e.Guild);
         if (channel == null)
         {
             return;

@@ -5,11 +5,11 @@ using Common.Interfaces;
 
 namespace Common.Records;
 
-public record ConfigOption : IIdentifiable
+public record GuildConfigOption : IIdentifiable
 {
     private readonly int _configOptionCategoryId;
 
-    public ConfigOption(int id,
+    public GuildConfigOption(int id,
         int sortId,
         DisplayString displayString,
         int categoryId,
@@ -30,7 +30,7 @@ public record ConfigOption : IIdentifiable
         Nullable = nullable;
     }
 
-    public ConfigOption(int id,
+    public GuildConfigOption(int id,
         int sortId,
         DisplayString displayString,
         int categoryId,
@@ -53,7 +53,10 @@ public record ConfigOption : IIdentifiable
     public Type? EnumType { get; }
     public LeylaModule Module { get; }
     public bool Nullable { get; }
-    public ConfigOptionCategory ConfigOptionCategory => ConfigOptionCategories.Instance.Get(_configOptionCategoryId);
+
+    public GuildConfigOptionCategory GuildConfigOptionCategory =>
+        ConfigOptionCategories.Instance.Get(_configOptionCategoryId);
+
     public int Id { get; }
     public string Name { get; }
     public string Description { get; }

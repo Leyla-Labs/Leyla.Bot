@@ -2,15 +2,15 @@ using Common.Records;
 
 namespace Common.Comparer;
 
-public class ConfigOptionComparer : IComparer<ConfigOption>
+public class ConfigOptionComparer : IComparer<GuildConfigOption>
 {
 #pragma warning disable CS8767
-    public int Compare(ConfigOption x, ConfigOption y)
+    public int Compare(GuildConfigOption x, GuildConfigOption y)
 #pragma warning restore CS8767
     {
-        return x.ConfigOptionCategory.SortId == y.ConfigOptionCategory.SortId
+        return x.GuildConfigOptionCategory.SortId == y.GuildConfigOptionCategory.SortId
             ? new IdentifiableComparer().Compare(x, y)
-            : x.ConfigOptionCategory.Id > y.ConfigOptionCategory.Id
+            : x.GuildConfigOptionCategory.Id > y.GuildConfigOptionCategory.Id
                 ? 1
                 : 0;
     }

@@ -25,7 +25,7 @@ internal class CheckSilences : IScheduledTask
 
         foreach (var member in membersToUnsilence)
         {
-            var role = await ConfigHelper.Instance.GetRole(Config.Roles.Silence.Name, member.Guild);
+            var role = await GuildConfigHelper.Instance.GetRole(Config.Roles.Silence.Name, member.Guild);
 
             var updatedMember = await member.Guild.GetMemberAsync(member.Id);
 
@@ -45,7 +45,7 @@ internal class CheckSilences : IScheduledTask
 
     private static async Task SendModMessage(DiscordMember member)
     {
-        if (await ConfigHelper.Instance.GetChannel(Config.Channels.Mod.Name, member.Guild) is { } modChannel)
+        if (await GuildConfigHelper.Instance.GetChannel(Config.Channels.Mod.Name, member.Guild) is { } modChannel)
         {
             var embed = new DiscordEmbedBuilder();
             embed.WithTitle("Silence Expired");

@@ -42,14 +42,14 @@ internal sealed class ConfigurationCategorySelectedHandler : InteractionHandler
     private async Task<DiscordSelectComponent> GetOptionSelect(int categoryId)
     {
         var modules = await EventArgs.Guild.GetGuildModules();
-        var configOptions = ConfigOptions.Instance.Get().Where(x => x.ConfigOptionCategory.Id == categoryId);
+        var configOptions = ConfigOptions.Instance.Get().Where(x => x.GuildConfigOptionCategory.Id == categoryId);
         configOptions = configOptions.Where(x => modules.Contains(x.Module)).ToArray();
 
         var currentValues = new Dictionary<int, string>();
         foreach (var configOption in configOptions)
         {
             var currVal =
-                await ConfigHelper.Instance.GetDisplayStringForCurrentValue(configOption, EventArgs.Guild, false);
+                await GuildConfigHelper.Instance.GetDisplayStringForCurrentValue(configOption, EventArgs.Guild, false);
             if (currVal != null)
             {
                 currentValues.Add(configOption.Id, currVal);

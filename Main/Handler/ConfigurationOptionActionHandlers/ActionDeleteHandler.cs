@@ -20,7 +20,7 @@ public class ActionDeleteHandler : InteractionHandler
     public override async Task RunAsync()
     {
         var optionId = Convert.ToInt32(_optionId);
-        await ConfigHelper.Instance.Delete(optionId, EventArgs.Guild.Id);
+        await GuildConfigHelper.Instance.Delete(optionId, EventArgs.Guild.Id);
 
         var embed = CreateEmbed(optionId);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,

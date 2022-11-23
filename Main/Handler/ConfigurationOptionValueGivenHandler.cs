@@ -32,7 +32,7 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
         switch (option.ConfigType)
         {
             case ConfigType.String:
-                await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, value);
+                await GuildConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, value);
                 break;
             case ConfigType.Int:
                 if (!int.TryParse(value, out var valueInt))
@@ -41,11 +41,11 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
                     return;
                 }
 
-                await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueInt);
+                await GuildConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueInt);
                 break;
             case ConfigType.Char:
                 var valueChar = Convert.ToChar(value);
-                await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueChar);
+                await GuildConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueChar);
                 break;
             case ConfigType.Decimal:
                 if (!decimal.TryParse(value, CultureInfo.InvariantCulture, out var valueDecimal))
@@ -54,7 +54,7 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
                     return;
                 }
 
-                await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueDecimal);
+                await GuildConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueDecimal);
                 break;
             case ConfigType.Boolean:
             case ConfigType.Role:
@@ -69,17 +69,18 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
-    private async Task<DiscordEmbed> CreateEmbed(ConfigOption option)
+    private async Task<DiscordEmbed> CreateEmbed(GuildConfigOption option)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Value edited");
         embed.WithDescription($"The value for {option.Name} has been edited.");
         embed.AddField("New value",
-            await ConfigHelper.Instance.GetDisplayStringForCurrentValue(option, EventArgs.Interaction.Guild, true));
+            await GuildConfigHelper.Instance.GetDisplayStringForCurrentValue(option, EventArgs.Interaction.Guild,
+                true));
         return embed.Build();
     }
 
-    private async Task ShowError(ConfigOption option)
+    private async Task ShowError(GuildConfigOption option)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithColor(DiscordColor.Red);

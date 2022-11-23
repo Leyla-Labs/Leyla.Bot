@@ -4,9 +4,9 @@ using Common.Interfaces;
 
 namespace Common.Records;
 
-public record ConfigOptionCategory : IIdentifiable
+public record GuildConfigOptionCategory : IIdentifiable
 {
-    public ConfigOptionCategory(int id, int sortId, DisplayString displayString, LeylaModule module)
+    public GuildConfigOptionCategory(int id, int sortId, DisplayString displayString, LeylaModule module)
     {
         Id = id;
         SortId = sortId;

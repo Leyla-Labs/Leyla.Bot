@@ -5,33 +5,24 @@ using Common.Db.Models;
 using Common.Enums;
 using Common.Extensions;
 using Common.GuildConfig;
+using Common.Interfaces;
 using Common.Records;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Common.Helper;
 
-public sealed class ConfigHelper
+public sealed class GuildConfigHelper : IConfigHelper<GuildConfigOption>
 {
     private Dictionary<ulong, List<Config>> _guildConfigs = new();
 
-    private ConfigHelper()
+    private GuildConfigHelper()
     {
     }
 
     public async Task Initialise()
     {
         _guildConfigs = await LoadGuildConfigs();
-    }
-
-    private static async Task<Dictionary<ulong, List<Config>>> LoadGuildConfigs()
-    {
-        await using var context = new DatabaseContext();
-
-        var configs = await context.Configs.ToListAsync();
-        var guilds = configs.Select(x => x.GuildId).Distinct().ToList();
-
-        return guilds.ToDictionary(x => x, x => configs.Where(y => y.GuildId == x).ToList());
     }
 
     public static Task<string?> GetString(string option)
@@ -46,14 +37,14 @@ public sealed class ConfigHelper
         return Task.FromResult(ConfigOptions.Instance.Get(optionId).DefaultValue);
     }
 
-    public static async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, DiscordGuild guild,
+    public static async Task<string?> GetDisplayStringForDefaultValue(GuildConfigOption option, DiscordGuild guild,
         bool allowMentions)
     {
         var defaultStr = await GetString(option.Name);
         return defaultStr != null ? GetDisplayStringForGivenValue(option, guild, defaultStr, allowMentions) : null;
     }
 
-    public static async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, DiscordGuild guild,
+    public static async Task<string?> GetDisplayStringForDefaultValue(GuildConfigOption option, DiscordGuild guild,
         bool allowMentions, string placeholder)
     {
         var result = await GetDisplayStringForDefaultValue(option, guild, allowMentions);
@@ -130,21 +121,21 @@ public sealed class ConfigHelper
         return await GetString(option, guildId) is { } s ? (T) (object) Convert.ToInt32(s) : default;
     }
 
-    public async Task<string?> GetDisplayStringForCurrentValue(ConfigOption option, DiscordGuild guild,
+    public async Task<string?> GetDisplayStringForCurrentValue(GuildConfigOption option, DiscordGuild guild,
         bool allowMentions)
     {
         var currStr = await GetString(option.Name, guild.Id);
         return currStr != null ? GetDisplayStringForGivenValue(option, guild, currStr, allowMentions) : null;
     }
 
-    public async Task<string?> GetDisplayStringForCurrentValue(ConfigOption option, DiscordGuild guild,
+    public async Task<string?> GetDisplayStringForCurrentValue(GuildConfigOption option, DiscordGuild guild,
         bool allowMentions, string placeholder)
     {
         var result = await GetDisplayStringForCurrentValue(option, guild, allowMentions);
         return result ?? placeholder;
     }
 
-    public async Task<bool> IsDefaultValue(ConfigOption option, ulong guildId)
+    public async Task<bool> IsDefaultValue(GuildConfigOption option, ulong guildId)
     {
         var currValue = await GetString(option.Name, guildId);
         return option.DefaultValue == currValue;
@@ -162,7 +153,7 @@ public sealed class ConfigHelper
         return await SetInternal(opt, guildId, value);
     }
 
-    public async Task<bool> Set(ConfigOption option, ulong guildId, object value)
+    public async Task<bool> Set(GuildConfigOption option, ulong guildId, object value)
     {
         return await SetInternal(option, guildId, value);
     }
@@ -189,7 +180,7 @@ public sealed class ConfigHelper
         await Set(option, guildId, defaultValue);
     }
 
-    public async Task Reset(ConfigOption option, ulong guildId)
+    public async Task Reset(GuildConfigOption option, ulong guildId)
     {
         await Reset(option.Id, guildId);
     }
@@ -206,7 +197,7 @@ public sealed class ConfigHelper
         await Delete(option, guildId);
     }
 
-    public async Task Delete(ConfigOption option, ulong guildId)
+    public async Task Delete(GuildConfigOption option, ulong guildId)
     {
         if (!option.Nullable)
         {
@@ -216,7 +207,17 @@ public sealed class ConfigHelper
         await Set(option, guildId, string.Empty);
     }
 
-    private async Task<bool> SetInternal(ConfigOption opt, ulong guildId, object value)
+    private static async Task<Dictionary<ulong, List<Config>>> LoadGuildConfigs()
+    {
+        await using var context = new DatabaseContext();
+
+        var configs = await context.Configs.ToListAsync();
+        var guilds = configs.Select(x => x.GuildId).Distinct().ToList();
+
+        return guilds.ToDictionary(x => x, x => configs.Where(y => y.GuildId == x).ToList());
+    }
+
+    private async Task<bool> SetInternal(GuildConfigOption opt, ulong guildId, object value)
     {
         var valueStr = opt.ConfigType switch
         {
@@ -302,7 +303,7 @@ public sealed class ConfigHelper
         }
     }
 
-    private static string? GetDisplayStringForGivenValue(ConfigOption option, DiscordGuild guild, string value,
+    private static string? GetDisplayStringForGivenValue(GuildConfigOption option, DiscordGuild guild, string value,
         bool allowMentions)
     {
         return option.ConfigType switch
@@ -326,8 +327,8 @@ public sealed class ConfigHelper
 
     #region Singleton
 
-    private static readonly Lazy<ConfigHelper> Lazy = new(() => new ConfigHelper());
-    public static ConfigHelper Instance => Lazy.Value;
+    private static readonly Lazy<GuildConfigHelper> Lazy = new(() => new GuildConfigHelper());
+    public static IConfigHelper<GuildConfigOption> Instance => Lazy.Value;
 
     #endregion
 }

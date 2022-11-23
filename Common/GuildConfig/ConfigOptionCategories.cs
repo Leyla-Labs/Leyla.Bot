@@ -7,15 +7,16 @@ using static Common.Strings.Config;
 
 namespace Common.GuildConfig;
 
-public class ConfigOptionCategories : IdentifiableSetProvider<ConfigOptionCategory>, ISetProvider<ConfigOptionCategory>
+public class ConfigOptionCategories : IdentifiableSetProvider<GuildConfigOptionCategory>,
+    ISetProvider<GuildConfigOptionCategory>
 {
     private ConfigOptionCategories() : base(CreateSet())
     {
     }
 
-    public static SortedSet<ConfigOptionCategory> CreateSet()
+    public static SortedSet<GuildConfigOptionCategory> CreateSet()
     {
-        return new SortedSet<ConfigOptionCategory>(new IdentifiableComparer())
+        return new SortedSet<GuildConfigOptionCategory>(new IdentifiableComparer())
         {
             new(2, 2, Roles.Category, LeylaModule.Main),
             new(3, 3, Channels.Category, LeylaModule.Main),

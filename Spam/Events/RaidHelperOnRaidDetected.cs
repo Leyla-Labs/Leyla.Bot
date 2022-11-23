@@ -15,7 +15,7 @@ internal static class RaidHelperOnRaidDetected
     {
         var guild = args.RaidMembers[0].Guild;
 
-        var modChannel = await ConfigHelper.Instance.GetChannel(Config.Channels.Mod.Name, guild);
+        var modChannel = await GuildConfigHelper.Instance.GetChannel(Config.Channels.Mod.Name, guild);
 
         if (modChannel == null)
         {
@@ -27,7 +27,7 @@ internal static class RaidHelperOnRaidDetected
         var embed = GetEmbed(args.RaidMembers);
         var components = new List<DiscordButtonComponent> {GetRaidModeButton()};
 
-        var lockdownDuration = await ConfigHelper.Instance.GetInt(Config.Raid.LockdownDuration.Name, guild.Id);
+        var lockdownDuration = await GuildConfigHelper.Instance.GetInt(Config.Raid.LockdownDuration.Name, guild.Id);
 
         if (lockdownDuration > 0)
         {
@@ -38,9 +38,9 @@ internal static class RaidHelperOnRaidDetected
 
         var builder = new DiscordMessageBuilder().AddEmbed(embed).AddComponents(components);
 
-        if (await ConfigHelper.Instance.GetBool(Config.Raid.NotifyModerators.Name, guild.Id) == true)
+        if (await GuildConfigHelper.Instance.GetBool(Config.Raid.NotifyModerators.Name, guild.Id) == true)
         {
-            if (await ConfigHelper.Instance.GetRole(Config.Roles.Mod.Name, guild) is { } role)
+            if (await GuildConfigHelper.Instance.GetRole(Config.Roles.Mod.Name, guild) is { } role)
             {
                 builder.WithContent(role.Mention);
             }

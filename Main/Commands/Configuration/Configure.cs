@@ -27,7 +27,7 @@ internal sealed class Configure : SlashCommand
 
     #region Static methods
 
-    private static DiscordEmbed CreateCategoryEmbed(IEnumerable<ConfigOptionCategory> categories)
+    private static DiscordEmbed CreateCategoryEmbed(IEnumerable<GuildConfigOptionCategory> categories)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Select Category to configure");
@@ -44,13 +44,13 @@ internal sealed class Configure : SlashCommand
 
     #region Instance methods
 
-    private async Task<ICollection<ConfigOptionCategory>> GetCategories()
+    private async Task<ICollection<GuildConfigOptionCategory>> GetCategories()
     {
         var modules = await Ctx.Guild.GetGuildModules();
         return ConfigOptionCategories.Instance.Get().Where(x => modules.Contains(x.Module)).ToArray();
     }
 
-    private IEnumerable<DiscordButtonComponent> CreateButtons(IEnumerable<ConfigOptionCategory> categories)
+    private IEnumerable<DiscordButtonComponent> CreateButtons(IEnumerable<GuildConfigOptionCategory> categories)
     {
         return categories
             .Select(x => new

@@ -21,12 +21,12 @@ internal static class SpamHelperOnMaxPressureExceeded
         }
 
         var guild = lastMessage.Channel.Guild;
-        var silenceRole = await ConfigHelper.Instance.GetRole("Silence Role", guild);
-        var modChannel = await ConfigHelper.Instance.GetChannel("Moderator Channel", guild);
-        var silenceChannel = await ConfigHelper.Instance.GetChannel("Silence Channel", guild);
-        var silenceMessage = await ConfigHelper.Instance.GetString(Common.Strings.Spam.SilenceMessage, guild.Id);
+        var silenceRole = await GuildConfigHelper.Instance.GetRole("Silence Role", guild);
+        var modChannel = await GuildConfigHelper.Instance.GetChannel("Moderator Channel", guild);
+        var silenceChannel = await GuildConfigHelper.Instance.GetChannel("Silence Channel", guild);
+        var silenceMessage = await GuildConfigHelper.Instance.GetString(Common.Strings.Spam.SilenceMessage, guild.Id);
         var timeoutDuration =
-            await ConfigHelper.Instance.GetEnum<TimeoutDuration>(Common.Strings.Spam.Timeout, guild.Id);
+            await GuildConfigHelper.Instance.GetEnum<TimeoutDuration>(Common.Strings.Spam.Timeout, guild.Id);
 
         var member = (DiscordMember) lastMessage.Author;
         var reason = $"Pressure {args.UserPressure:N2} > {args.MaxPressure}";
@@ -52,7 +52,7 @@ internal static class SpamHelperOnMaxPressureExceeded
         }
 
         var messagesDeleted = 0;
-        if (await ConfigHelper.Instance.GetBool(Common.Strings.Spam.DeleteMessages, guild.Id) ==
+        if (await GuildConfigHelper.Instance.GetBool(Common.Strings.Spam.DeleteMessages, guild.Id) ==
             true)
         {
             var messagesAfter = (await lastMessage.Channel.GetMessagesAfterAsync(lastMessage.Id))

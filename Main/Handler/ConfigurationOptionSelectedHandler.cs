@@ -43,7 +43,7 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AddComponents(buttons).AsEphemeral());
     }
 
-    private async Task<DiscordEmbed> CreateEmbed(ConfigOption option)
+    private async Task<DiscordEmbed> CreateEmbed(GuildConfigOption option)
     {
         var placeholder = "/";
         var embed = new DiscordEmbedBuilder();
@@ -53,7 +53,8 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
         embed.AddField($"Type: {typeDisplayAttr.Name}", typeDisplayAttr.Description);
 
         var displayString =
-            await ConfigHelper.Instance.GetDisplayStringForCurrentValue(option, EventArgs.Guild, true, placeholder);
+            await GuildConfigHelper.Instance.GetDisplayStringForCurrentValue(option, EventArgs.Guild, true,
+                placeholder);
 
         embed.WithTitle(option.Name);
         embed.WithDescription(option.Description);
@@ -66,13 +67,13 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
 
         // add default value if option has one
         var defaultDisplayString =
-            await ConfigHelper.GetDisplayStringForDefaultValue(option, EventArgs.Guild, true, placeholder);
+            await GuildConfigHelper.GetDisplayStringForDefaultValue(option, EventArgs.Guild, true, placeholder);
         embed.AddField("Default value", defaultDisplayString, true);
 
         return embed.Build();
     }
 
-    private async Task<IEnumerable<DiscordButtonComponent>> CreateButtons(ConfigOption option)
+    private async Task<IEnumerable<DiscordButtonComponent>> CreateButtons(GuildConfigOption option)
     {
         var list = new List<DiscordButtonComponent>();
 
@@ -80,7 +81,7 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
             new[] {ConfigurationAction.Edit.ToString(), option.Id.ToString()});
         list.Add(new DiscordButtonComponent(ButtonStyle.Primary, customIdEdit, "Edit"));
 
-        var isDefaultValue = await ConfigHelper.Instance.IsDefaultValue(option, EventArgs.Guild.Id);
+        var isDefaultValue = await GuildConfigHelper.Instance.IsDefaultValue(option, EventArgs.Guild.Id);
 
         if (option.DefaultValue != null && !isDefaultValue)
         {
@@ -90,7 +91,7 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
             list.Add(new DiscordButtonComponent(ButtonStyle.Secondary, customIdReset, "Reset to default"));
         }
 
-        if (!option.Nullable || await ConfigHelper.Instance.GetString(option.Name, EventArgs.Guild.Id) == null)
+        if (!option.Nullable || await GuildConfigHelper.Instance.GetString(option.Name, EventArgs.Guild.Id) == null)
         {
             return list;
         }

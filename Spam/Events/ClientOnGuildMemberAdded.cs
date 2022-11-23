@@ -12,11 +12,11 @@ internal static class ClientOnGuildMemberAdded
     {
         await SilenceHelper.Instance.ProcessUserJoined(e.Guild, e.Member);
 
-        var raidMode = await ConfigHelper.Instance.GetBool(Config.Raid.RaidMode.Name, e.Guild.Id);
+        var raidMode = await GuildConfigHelper.Instance.GetBool(Config.Raid.RaidMode.Name, e.Guild.Id);
 
         if (raidMode == true)
         {
-            var raidRole = await ConfigHelper.Instance.GetRole(Config.Raid.RaidRole.Name, e.Guild);
+            var raidRole = await GuildConfigHelper.Instance.GetRole(Config.Raid.RaidRole.Name, e.Guild);
             await e.Member.GrantRoleAsync(raidRole);
 
             await RaidHelper.MentionMembersInRaidChannel(e.Guild, e.Member);

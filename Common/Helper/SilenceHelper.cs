@@ -14,7 +14,7 @@ public class SilenceHelper
 
     public async Task ProcessUserLeft(DiscordGuild guild, DiscordMember member)
     {
-        var silenceRole = await ConfigHelper.Instance.GetRole(Config.Roles.Silence.Name, guild);
+        var silenceRole = await GuildConfigHelper.Instance.GetRole(Config.Roles.Silence.Name, guild);
 
         if (silenceRole != null && member.Roles.Select(x => x.Id).Contains(silenceRole.Id))
         {
@@ -41,7 +41,7 @@ public class SilenceHelper
             return;
         }
 
-        var silenceRole = await ConfigHelper.Instance.GetRole(Config.Roles.Silence.Name, guild);
+        var silenceRole = await GuildConfigHelper.Instance.GetRole(Config.Roles.Silence.Name, guild);
 
         if (silenceRole == null)
         {
