@@ -35,6 +35,9 @@ internal static class ClientOnComponentInteractionCreatedEvent
             case "configCategories":
                 await new ConfigurationCategorySelectedHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
+            case "configOptions" when additionalInfo.Length == 1:
+                await new ConfigurationOptionSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
+                break;
             case "configOptions":
                 await new ConfigurationOptionSelectedHandler(sender, e).RunAsync();
                 break;
@@ -62,6 +65,12 @@ internal static class ClientOnComponentInteractionCreatedEvent
                 break;
             case "selfAssignMenuSelected":
                 await new SelfAssignMenuRolesSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
+                break;
+            case "ffxivCharacterSheet":
+                await new FfxivCharacterSheetSelectedHandler(sender, e).RunAsync();
+                break;
+            case "ffxivCharacterClaim":
+                await new FfxivCharacterClaimSelectedHandler(sender, e).RunAsync();
                 break;
             default:
                 return;

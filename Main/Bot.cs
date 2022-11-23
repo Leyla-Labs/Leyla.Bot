@@ -41,6 +41,7 @@ public sealed class Bot : Leyla
         commands.RegisterCommands<Stashes>();
         commands.RegisterCommands<StashesM>();
         commands.RegisterCommands<AniList>();
+        commands.RegisterCommands<Ffxiv>();
 
         return commands;
     }

@@ -23,7 +23,52 @@ namespace Common.Db.Migrations
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "discord_entity_type", new[] { "channel", "role" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "user_log_type", new[] { "warning", "silence", "ban" });
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Common.Db.Models.CharacterClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CharacterId")
+                        .HasColumnType("integer")
+                        .HasColumnName("character_id");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("code");
+
+                    b.Property<bool>("Confirmed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("confirmed");
+
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)")
+                        .HasColumnName("user_id");
+
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("valid_until");
+
+                    b.HasKey("Id")
+                        .HasName("pk_character_claims");
+
+                    b.HasIndex("CharacterId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_character_claims_character_id");
+
+                    b.HasIndex("Code")
+                        .IsUnique()
+                        .HasDatabaseName("ix_character_claims_code");
+
+                    b.ToTable("character_claims", (string)null);
+                });
 
             modelBuilder.Entity("Common.Db.Models.CommandLog", b =>
                 {

@@ -1,8 +1,10 @@
 using System.Globalization;
 using Common.Classes;
 using Common.Enums;
-using Common.GuildConfig;
+using Common.Extensions;
 using Common.Helper;
+using Common.GuildConfig;
+using Common.Interfaces;
 using Common.Records;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -31,7 +33,11 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
                 await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, value);
                 break;
             case ConfigType.Int:
-                var valueInt = Convert.ToInt32(value);
+                if (!int.TryParse(value, out var valueInt))
+                {
+                    await ShowError(option);
+                    return;
+                }
                 await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueInt);
                 break;
             case ConfigType.Char:
@@ -39,7 +45,11 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
                 await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueChar);
                 break;
             case ConfigType.Decimal:
-                var valueDecimal = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+                if (!decimal.TryParse(value, CultureInfo.InvariantCulture, out var valueDecimal))
+                {
+                    await ShowError(option);
+                    return;
+                }
                 await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueDecimal);
                 break;
             case ConfigType.Boolean:
@@ -47,7 +57,7 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
             case ConfigType.Channel:
             case ConfigType.Enum:
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(option.ConfigType));
         }
 
         var embed = await CreateEmbed(option);
@@ -63,5 +73,31 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
         embed.AddField("New value",
             await ConfigHelper.Instance.GetDisplayStringForCurrentValue(option, EventArgs.Interaction.Guild, true));
         return embed.Build();
+    }
+
+    private async Task ShowError(ConfigOption option)
+    {
+        if (!new[] {ConfigType.Int, ConfigType.Decimal}.Contains(option.ConfigType))
+        {
+            throw new ArgumentOutOfRangeException(nameof(option), option.ConfigType,
+                "Only int and decimal have error handling.");
+        }
+
+        var description = option.ConfigType == ConfigType.Int
+            ? "The input needs to be a whole number. (eg. 2; 84; 0)"
+            : "The input needs to be a decimal number. (eg. 14; 8.4; 2.65)";
+
+        var button = CreateButton(option);
+
+        await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+            new DiscordInteractionResponseBuilder().AddErrorEmbed("Invalid input", description).AddComponents(button)
+                .AsEphemeral());
+    }
+
+    private DiscordButtonComponent CreateButton(IIdentifiable option)
+    {
+        var customId =
+            ModalHelper.GetModalName(EventArgs.Interaction.User.Id, "configOptions", new[] {option.Id.ToString()});
+        return new DiscordButtonComponent(ButtonStyle.Primary, customId, "Reopen modal");
     }
 }
