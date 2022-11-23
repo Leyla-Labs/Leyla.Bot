@@ -77,8 +77,9 @@ internal sealed class Manage : SlashCommand
     private DiscordRoleSelectComponent GetSelectMenu(SelfAssignMenu menu)
     {
         var roleCount = Ctx.Guild.Roles.Count;
+        var maxOptions = roleCount > 25 ? 25 : roleCount;
         var customId = ModalHelper.GetModalName(Ctx.User.Id, "manageMenu", new[] {menu.Id.ToString()});
-        return new DiscordRoleSelectComponent(customId, "Select roles", minOptions: 2, maxOptions: roleCount);
+        return new DiscordRoleSelectComponent(customId, "Select roles", minOptions: 2, maxOptions: maxOptions);
     }
 
     #endregion
