@@ -1,9 +1,10 @@
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using Common.Classes;
 using Common.Enums;
 using Common.Extensions;
-using Common.Helper;
 using Common.GuildConfig;
+using Common.Helper;
 using Common.Interfaces;
 using Common.Records;
 using DSharpPlus;
@@ -38,6 +39,7 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
                     await ShowError(option);
                     return;
                 }
+
                 await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueInt);
                 break;
             case ConfigType.Char:
@@ -50,6 +52,7 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
                     await ShowError(option);
                     return;
                 }
+
                 await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueDecimal);
                 break;
             case ConfigType.Boolean:
@@ -77,21 +80,20 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
 
     private async Task ShowError(ConfigOption option)
     {
-        if (!new[] {ConfigType.Int, ConfigType.Decimal}.Contains(option.ConfigType))
-        {
-            throw new ArgumentOutOfRangeException(nameof(option), option.ConfigType,
-                "Only int and decimal have error handling.");
-        }
+        var embed = new DiscordEmbedBuilder();
+        embed.WithColor(DiscordColor.Red);
 
-        var description = option.ConfigType == ConfigType.Int
-            ? "The input needs to be a whole number. (eg. 2; 84; 0)"
-            : "The input needs to be a decimal number. (eg. 14; 8.4; 2.65)";
+        embed.WithTitle("Invalid input");
+        embed.WithDescription("The input was in a wrong format.");
+        var typeDisplayAttr = option.ConfigType.GetAttribute<DisplayAttribute>() ??
+                              throw new NullReferenceException("DisplayAttribute for ConfigType must not be null");
+
+        embed.AddField(typeDisplayAttr.Name, typeDisplayAttr.Description);
 
         var button = CreateButton(option);
 
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
-            new DiscordInteractionResponseBuilder().AddErrorEmbed("Invalid input", description).AddComponents(button)
-                .AsEphemeral());
+            new DiscordInteractionResponseBuilder().AddEmbed(embed.Build()).AddComponents(button).AsEphemeral());
     }
 
     private DiscordButtonComponent CreateButton(IIdentifiable option)
