@@ -34,9 +34,11 @@ internal sealed class SelfAssignMenuManageHandler : InteractionHandler
             return;
         }
 
-        var roleIds = EventArgs.Values.Select(x => Convert.ToUInt64(x));
+        var roleIds = EventArgs.Values.Select(x => Convert.ToUInt64(x)).ToArray();
         await SetValues(context, menu, roleIds);
-        await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+        var embed = CreateEmbed(menu, roleIds);
+        await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+            new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
     private async Task<SelfAssignMenu?> GetSelfAssignMenu(DatabaseContext context)
@@ -46,6 +48,18 @@ internal sealed class SelfAssignMenuManageHandler : InteractionHandler
                 x.Id == id)
             .Include(x => x.SelfAssignMenuDiscordEntityAssignments)
             .FirstOrDefaultAsync();
+    }
+
+    private DiscordEmbed CreateEmbed(SelfAssignMenu menu, IEnumerable<ulong> roleIds)
+    {
+        var embed = new DiscordEmbedBuilder();
+        embed.WithTitle($"Updated: {menu.Title}");
+        embed.WithDescription("The previous roles have been overwritten by your new selection.");
+
+        var roles = EventArgs.Guild.Roles.Where(x => roleIds.Contains(x.Key)).Select(x => x.Value.Mention);
+        embed.AddField("Roles", string.Join(Environment.NewLine, roles));
+
+        return embed.Build();
     }
 
     private static async Task SetValues(DatabaseContext context, SelfAssignMenu menu, IEnumerable<ulong> roleIds)
