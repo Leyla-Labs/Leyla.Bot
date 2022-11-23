@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Common.Classes;
 using Common.GuildConfig;
 using Common.Helper;
@@ -6,6 +7,7 @@ using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Main.Enums;
+using xivapi_cs.Extensions;
 
 namespace Main.Handler;
 
@@ -44,14 +46,18 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
     private async Task<DiscordEmbed> CreateEmbed(ConfigOption option)
     {
         var placeholder = "/";
+        var embed = new DiscordEmbedBuilder();
+
+        var typeDisplayAttr = option.ConfigType.GetAttribute<DisplayAttribute>() ??
+                              throw new NullReferenceException("DisplayAttribute for ConfigType must not be null");
+        embed.AddField($"Type: {typeDisplayAttr.Name}", typeDisplayAttr.Description);
 
         var displayString =
             await ConfigHelper.Instance.GetDisplayStringForCurrentValue(option, EventArgs.Guild, true, placeholder);
 
-        var embed = new DiscordEmbedBuilder();
         embed.WithTitle(option.Name);
         embed.WithDescription(option.Description);
-        embed.AddField("Current Value", displayString);
+        embed.AddField("Current Value", displayString, true);
 
         if (option.DefaultValue == null)
         {
