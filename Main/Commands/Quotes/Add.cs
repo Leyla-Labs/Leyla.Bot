@@ -25,7 +25,7 @@ internal sealed class Add : ContextMenuCommand
         {
             await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AddErrorEmbed("Duplicate Quote",
-                    "That message has already been quoted."));
+                    "That message has already been quoted.").AsEphemeral());
             return;
         }
 
