@@ -22,7 +22,7 @@ internal sealed class List : SlashCommand
         if (!menus.Any())
         {
             await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("No Self Assign Menus",
-                "There are no self assign menus yet. You can create the first using /menu create.").AsEphemeral());
+                "There are no self assign menus yet. You can create the first using `/menu create`.").AsEphemeral());
             return;
         }
 
