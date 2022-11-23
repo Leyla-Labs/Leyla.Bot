@@ -10,6 +10,7 @@ using Common.Records;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Main.Enums;
 
 namespace Main.Handler;
 
@@ -99,7 +100,8 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
     private DiscordButtonComponent CreateButton(IIdentifiable option)
     {
         var customId =
-            ModalHelper.GetModalName(EventArgs.Interaction.User.Id, "configOptions", new[] {option.Id.ToString()});
+            ModalHelper.GetModalName(EventArgs.Interaction.User.Id, "configOptionAction",
+                new[] {ConfigurationAction.Edit.ToString(), option.Id.ToString()});
         return new DiscordButtonComponent(ButtonStyle.Primary, customId, "Reopen modal");
     }
 }
