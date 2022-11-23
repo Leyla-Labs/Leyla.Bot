@@ -33,7 +33,7 @@ public class ActionResetHandler : InteractionHandler
 
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Value reset");
-        embed.WithDescription($"The value for {option.Name} has been reset.");
+        embed.WithDescription($"The value for {option.Name} has been reverted.");
         embed.AddField("New value",
             await GuildConfigHelper.GetDisplayStringForDefaultValue(option, EventArgs.Guild, true));
         return embed.Build();

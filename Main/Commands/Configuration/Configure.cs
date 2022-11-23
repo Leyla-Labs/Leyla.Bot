@@ -21,7 +21,8 @@ internal sealed class Configure : SlashCommand
         var embed = CreateCategoryEmbed(categories);
         var buttons = CreateButtons(categories);
 
-        await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddComponents(buttons).AddEmbed(embed)
+        await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddComponents(buttons)
+            .AddComponents(CreateLinkButton()).AddEmbed(embed)
             .AsEphemeral());
     }
 
@@ -34,10 +35,16 @@ internal sealed class Configure : SlashCommand
 
         foreach (var category in categories)
         {
-            embed.AddField(category.Name, category.Description);
+            embed.AddField(category.Name, category.ConfigStrings.Description);
         }
 
         return embed.Build();
+    }
+
+    private static DiscordLinkButtonComponent CreateLinkButton()
+    {
+        var url = "https://github.com/Leyla-Labs/Leyla.Bot/wiki/Server-Configuration";
+        return new DiscordLinkButtonComponent(url, "Show more details on the wiki");
     }
 
     #endregion
@@ -58,7 +65,7 @@ internal sealed class Configure : SlashCommand
                 category = x,
                 customId = ModalHelper.GetModalName(Ctx.User.Id, "configCategories", new[] {x.Id.ToString()})
             })
-            .Select(x => new DiscordButtonComponent(ButtonStyle.Secondary, x.customId, x.category.Name))
+            .Select(x => new DiscordButtonComponent(ButtonStyle.Primary, x.customId, x.category.Name))
             .ToArray();
     }
 

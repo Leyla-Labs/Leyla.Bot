@@ -1,6 +1,7 @@
 using Common.Classes;
 using Common.GuildConfig;
 using Common.Helper;
+using Common.Records;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -22,19 +23,27 @@ internal sealed class ConfigurationCategorySelectedHandler : InteractionHandler
     public override async Task RunAsync()
     {
         var categoryId = Convert.ToInt32(_categoryId);
-        var optionEmbed = GetOptionEmbed(categoryId);
+        var category = ConfigOptionCategories.Instance.Get(categoryId);
+        var optionEmbed = GetOptionEmbed(category);
         var optionSelect = await GetOptionSelect(categoryId);
+
+        var buttons = new List<DiscordComponent>();
+
+        if (category.ConfigStrings.WikiUrl is { } url)
+        {
+            buttons.Add(new DiscordLinkButtonComponent(url, "More details on the wiki"));
+        }
+
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
-            new DiscordInteractionResponseBuilder().AddEmbed(optionEmbed).AddComponents(optionSelect).AsEphemeral());
+            new DiscordInteractionResponseBuilder().AddEmbed(optionEmbed).AddComponents(optionSelect)
+                .AddComponents(buttons).AsEphemeral());
     }
 
-    private static DiscordEmbed GetOptionEmbed(int categoryId)
+    private static DiscordEmbed GetOptionEmbed(GuildConfigOptionCategory category)
     {
-        var category = ConfigOptionCategories.Instance.Get(categoryId);
-
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle(category.Name);
-        embed.WithDescription(category.Description);
+        embed.WithDescription(category.ConfigStrings.Description);
         embed.WithColor(DiscordColor.Blurple);
         return embed.Build();
     }

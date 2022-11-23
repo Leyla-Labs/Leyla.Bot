@@ -57,7 +57,7 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
                 placeholder);
 
         embed.WithTitle(option.Name);
-        embed.WithDescription(option.Description);
+        embed.WithDescription(option.ConfigStrings.Description);
         embed.AddField("Current Value", displayString, true);
 
         if (option.DefaultValue == null)
@@ -73,9 +73,9 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
         return embed.Build();
     }
 
-    private async Task<IEnumerable<DiscordButtonComponent>> CreateButtons(GuildConfigOption option)
+    private async Task<IEnumerable<DiscordComponent>> CreateButtons(GuildConfigOption option)
     {
-        var list = new List<DiscordButtonComponent>();
+        var list = new List<DiscordComponent>();
 
         var customIdEdit = ModalHelper.GetModalName(EventArgs.User.Id, "configOptionAction",
             new[] {ConfigurationAction.Edit.ToString(), option.Id.ToString()});
@@ -88,18 +88,21 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
             // option has default value and currently set value is not said default value
             var customIdReset = ModalHelper.GetModalName(EventArgs.User.Id, "configOptionAction",
                 new[] {ConfigurationAction.Reset.ToString(), option.Id.ToString()});
-            list.Add(new DiscordButtonComponent(ButtonStyle.Secondary, customIdReset, "Reset to default"));
+            list.Add(new DiscordButtonComponent(ButtonStyle.Danger, customIdReset, "Revert to default"));
         }
 
-        if (!option.Nullable || await GuildConfigHelper.Instance.GetString(option.Name, EventArgs.Guild.Id) == null)
+        if (option.Nullable && await GuildConfigHelper.Instance.GetString(option.Name, EventArgs.Guild.Id) != null)
         {
-            return list;
+            // option is nullable and currently set value is not null
+            var customIdDelete = ModalHelper.GetModalName(EventArgs.User.Id, "configOptionAction",
+                new[] {ConfigurationAction.Delete.ToString(), option.Id.ToString()});
+            list.Add(new DiscordButtonComponent(ButtonStyle.Danger, customIdDelete, "Delete value"));
         }
 
-        // option is nullable and currently set value is not null
-        var customIdDelete = ModalHelper.GetModalName(EventArgs.User.Id, "configOptionAction",
-            new[] {ConfigurationAction.Delete.ToString(), option.Id.ToString()});
-        list.Add(new DiscordButtonComponent(ButtonStyle.Danger, customIdDelete, "Delete value"));
+        if (option.ConfigStrings.WikiUrl is { } url)
+        {
+            list.Add(new DiscordLinkButtonComponent(url, "More details on the wiki"));
+        }
 
         return list;
     }

@@ -11,7 +11,7 @@ public record GuildConfigOption : IIdentifiable
 
     public GuildConfigOption(int id,
         int sortId,
-        DisplayString displayString,
+        ConfigStrings configStrings,
         int categoryId,
         ConfigType type,
         bool nullable,
@@ -20,8 +20,7 @@ public record GuildConfigOption : IIdentifiable
     {
         Id = id;
         SortId = sortId;
-        Name = displayString.Name;
-        Description = displayString.Description;
+        ConfigStrings = configStrings;
         _configOptionCategoryId = categoryId;
         ConfigType = type;
         Nullable = nullable;
@@ -32,12 +31,12 @@ public record GuildConfigOption : IIdentifiable
 
     public GuildConfigOption(int id,
         int sortId,
-        DisplayString displayString,
+        ConfigStrings configStrings,
         int categoryId,
         Type enumType,
         bool nullable,
         string? defaultValue,
-        LeylaModule module) : this(id, sortId, displayString, categoryId, ConfigType.Enum, nullable, defaultValue,
+        LeylaModule module) : this(id, sortId, configStrings, categoryId, ConfigType.Enum, nullable, defaultValue,
         module)
     {
         if (!enumType.IsEnum)
@@ -48,6 +47,7 @@ public record GuildConfigOption : IIdentifiable
         EnumType = enumType;
     }
 
+    public ConfigStrings ConfigStrings { get; }
     public ConfigType ConfigType { get; }
     public string? DefaultValue { get; }
     public Type? EnumType { get; }
@@ -58,7 +58,6 @@ public record GuildConfigOption : IIdentifiable
         ConfigOptionCategories.Instance.Get(_configOptionCategoryId);
 
     public int Id { get; }
-    public string Name { get; }
-    public string Description { get; }
     public int SortId { get; }
+    public string Name => ConfigStrings.Name;
 }

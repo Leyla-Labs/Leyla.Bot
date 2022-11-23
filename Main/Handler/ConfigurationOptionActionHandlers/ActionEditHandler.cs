@@ -87,7 +87,7 @@ public class ActionEditHandler : InteractionHandler
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle(option.Name);
-        embed.WithDescription(option.Description);
+        embed.WithDescription(option.ConfigStrings.Description);
         embed.WithColor(DiscordColor.Blurple);
         return embed.Build();
     }
