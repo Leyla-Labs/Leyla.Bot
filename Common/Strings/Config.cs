@@ -1,4 +1,4 @@
-using Common.Classes;
+using Common.Records;
 
 namespace Common.Strings;
 
