@@ -7,15 +7,15 @@ using static Common.Strings.Config;
 
 namespace Common.GuildConfig;
 
-public class ConfigOptions : IdentifiableSetProvider<GuildConfigOption>, ISetProvider<GuildConfigOption>
+public class GuildConfigOptions : IdentifiableSetProvider<ConfigOption>, ISetProvider<ConfigOption>
 {
-    private ConfigOptions() : base(CreateSet())
+    private GuildConfigOptions() : base(CreateSet())
     {
     }
 
-    public static SortedSet<GuildConfigOption> CreateSet()
+    public static SortedSet<ConfigOption> CreateSet()
     {
-        var set = new SortedSet<GuildConfigOption>(new ConfigOptionComparer());
+        var set = new SortedSet<ConfigOption>(new ConfigOptionComparer());
         AddRoles(set);
         AddChannels(set);
         AddSpam(set);
@@ -23,12 +23,12 @@ public class ConfigOptions : IdentifiableSetProvider<GuildConfigOption>, ISetPro
         return set;
     }
 
-    private static void AddRoles(ISet<GuildConfigOption> set)
+    private static void AddRoles(ISet<ConfigOption> set)
     {
         var c = 2;
         var t = ConfigType.Role;
 
-        var roleOptions = new SortedSet<GuildConfigOption>(new ConfigOptionComparer())
+        var roleOptions = new SortedSet<ConfigOption>(new ConfigOptionComparer())
         {
             new(1, 1, Roles.Mod, c, t, false, null, LeylaModule.Main),
             new(5, 2, Roles.Verification, c, t, true, null, LeylaModule.Main),
@@ -38,12 +38,12 @@ public class ConfigOptions : IdentifiableSetProvider<GuildConfigOption>, ISetPro
         set.UnionWith(roleOptions);
     }
 
-    private static void AddChannels(ISet<GuildConfigOption> set)
+    private static void AddChannels(ISet<ConfigOption> set)
     {
         var c = 3;
         var t = ConfigType.Channel;
 
-        var channelOptions = new SortedSet<GuildConfigOption>(new ConfigOptionComparer())
+        var channelOptions = new SortedSet<ConfigOption>(new ConfigOptionComparer())
         {
             new(2, 1, Channels.Mod, c, t, false, null, LeylaModule.Main),
             new(3, 2, Channels.Log, c, t, true, null, LeylaModule.Logs),
@@ -54,13 +54,13 @@ public class ConfigOptions : IdentifiableSetProvider<GuildConfigOption>, ISetPro
         set.UnionWith(channelOptions);
     }
 
-    private static void AddSpam(ISet<GuildConfigOption> set)
+    private static void AddSpam(ISet<ConfigOption> set)
     {
         var c = 4;
         var d = ConfigType.Decimal;
         var m = LeylaModule.Spam;
 
-        var spamOptions = new SortedSet<GuildConfigOption>(new ConfigOptionComparer())
+        var spamOptions = new SortedSet<ConfigOption>(new ConfigOptionComparer())
         {
             new(6, 1, Spam.BasePressure, c, d, false, "10", m),
             new(7, 2, Spam.ImagePressure, c, d, false, "8.3", m),
@@ -77,12 +77,12 @@ public class ConfigOptions : IdentifiableSetProvider<GuildConfigOption>, ISetPro
         set.UnionWith(spamOptions);
     }
 
-    private static void AddRaid(ISet<GuildConfigOption> set)
+    private static void AddRaid(ISet<ConfigOption> set)
     {
         var c = 5;
         var m = LeylaModule.Spam;
 
-        var raidOptions = new SortedSet<GuildConfigOption>(new ConfigOptionComparer())
+        var raidOptions = new SortedSet<ConfigOption>(new ConfigOptionComparer())
         {
             new(19, 1, Raid.RaidMode, c, ConfigType.Boolean, false, "false", m),
             new(20, 2, Raid.RaidSize, c, ConfigType.Int, false, null, m),
@@ -95,25 +95,25 @@ public class ConfigOptions : IdentifiableSetProvider<GuildConfigOption>, ISetPro
         set.UnionWith(raidOptions);
     }
 
-    public IEnumerable<GuildConfigOption> GetByCategory(int id)
+    public IEnumerable<ConfigOption> GetByCategory(int id)
     {
-        return Set.Where(x => x.GuildConfigOptionCategory.Id == id);
+        return Set.Where(x => x.ConfigOptionCategory.Id == id);
     }
 
-    public IEnumerable<GuildConfigOption> GetByCategory(string name)
+    public IEnumerable<ConfigOption> GetByCategory(string name)
     {
-        return Set.Where(x => x.GuildConfigOptionCategory.Name.Equals(name));
+        return Set.Where(x => x.ConfigOptionCategory.Name.Equals(name));
     }
 
-    public IEnumerable<GuildConfigOption> GetByCategory(GuildConfigOptionCategory category)
+    public IEnumerable<ConfigOption> GetByCategory(ConfigOptionCategory category)
     {
         return GetByCategory(category.Id);
     }
 
     #region Singleton
 
-    private static readonly Lazy<ConfigOptions> Lazy = new(() => new ConfigOptions());
-    public static ConfigOptions Instance => Lazy.Value;
+    private static readonly Lazy<GuildConfigOptions> Lazy = new(() => new GuildConfigOptions());
+    public static GuildConfigOptions Instance => Lazy.Value;
 
     #endregion
 }

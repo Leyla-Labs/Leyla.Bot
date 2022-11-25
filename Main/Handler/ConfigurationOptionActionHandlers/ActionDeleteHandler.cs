@@ -29,7 +29,7 @@ public class ActionDeleteHandler : InteractionHandler
 
     private static DiscordEmbed CreateEmbed(int optionId)
     {
-        var option = ConfigOptions.Instance.Get(optionId);
+        var option = GuildConfigOptions.Instance.Get(optionId);
 
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Value reset");

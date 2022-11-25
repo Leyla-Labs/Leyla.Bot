@@ -21,7 +21,7 @@ internal sealed class ConfigurationOptionValueSelectedHandler : InteractionHandl
 
     public override async Task RunAsync()
     {
-        var option = ConfigOptions.Instance.Get(Convert.ToInt32(_optionId));
+        var option = GuildConfigOptions.Instance.Get(Convert.ToInt32(_optionId));
         var value = EventArgs.Values[0];
 
         switch (option.ConfigType)
@@ -51,7 +51,7 @@ internal sealed class ConfigurationOptionValueSelectedHandler : InteractionHandl
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
-    private async Task<DiscordEmbed> CreateEmbed(GuildConfigOption option)
+    private async Task<DiscordEmbed> CreateEmbed(ConfigOption option)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Value edited");

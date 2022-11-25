@@ -23,7 +23,7 @@ internal sealed class ConfigurationCategorySelectedHandler : InteractionHandler
     public override async Task RunAsync()
     {
         var categoryId = Convert.ToInt32(_categoryId);
-        var category = ConfigOptionCategories.Instance.Get(categoryId);
+        var category = GuildConfigOptionCategories.Instance.Get(categoryId);
         var optionEmbed = GetOptionEmbed(category);
         var optionSelect = await GetOptionSelect(categoryId);
 
@@ -39,7 +39,7 @@ internal sealed class ConfigurationCategorySelectedHandler : InteractionHandler
                 .AddComponents(buttons).AsEphemeral());
     }
 
-    private static DiscordEmbed GetOptionEmbed(GuildConfigOptionCategory category)
+    private static DiscordEmbed GetOptionEmbed(ConfigOptionCategory category)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle(category.Name);
@@ -51,7 +51,7 @@ internal sealed class ConfigurationCategorySelectedHandler : InteractionHandler
     private async Task<DiscordSelectComponent> GetOptionSelect(int categoryId)
     {
         var modules = await EventArgs.Guild.GetGuildModules();
-        var configOptions = ConfigOptions.Instance.Get().Where(x => x.GuildConfigOptionCategory.Id == categoryId);
+        var configOptions = GuildConfigOptions.Instance.Get().Where(x => x.ConfigOptionCategory.Id == categoryId);
         configOptions = configOptions.Where(x => modules.Contains(x.Module)).ToArray();
 
         var currentValues = new Dictionary<int, string>();

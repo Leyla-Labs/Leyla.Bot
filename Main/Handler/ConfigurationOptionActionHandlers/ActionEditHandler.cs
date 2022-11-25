@@ -24,7 +24,7 @@ public class ActionEditHandler : InteractionHandler
     public override async Task RunAsync()
     {
         var optionId = Convert.ToInt32(_optionId);
-        var option = ConfigOptions.Instance.Get(optionId);
+        var option = GuildConfigOptions.Instance.Get(optionId);
         var optionDetailsEmbed = GetOptionDetailsEmbed(option);
 
         switch (option.ConfigType)
@@ -83,7 +83,7 @@ public class ActionEditHandler : InteractionHandler
         }
     }
 
-    private static DiscordEmbed GetOptionDetailsEmbed(GuildConfigOption option)
+    private static DiscordEmbed GetOptionDetailsEmbed(ConfigOption option)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle(option.Name);
@@ -92,7 +92,7 @@ public class ActionEditHandler : InteractionHandler
         return embed.Build();
     }
 
-    private Task<DiscordRoleSelectComponent> GetRoleSelect(GuildConfigOption option)
+    private Task<DiscordRoleSelectComponent> GetRoleSelect(ConfigOption option)
     {
         // TODO support clearing config by selecting none
         var customId =
@@ -101,7 +101,7 @@ public class ActionEditHandler : InteractionHandler
             minOptions: 1, maxOptions: 1));
     }
 
-    private Task<DiscordChannelSelectComponent> GetTextChannelSelect(GuildConfigOption option)
+    private Task<DiscordChannelSelectComponent> GetTextChannelSelect(ConfigOption option)
     {
         var customId =
             ModalHelper.GetModalName(EventArgs.User.Id, "configOptionValueSelected", new[] {option.Id.ToString()});
@@ -109,7 +109,7 @@ public class ActionEditHandler : InteractionHandler
             minOptions: 1, maxOptions: 1, channelTypes: new[] {ChannelType.Text}));
     }
 
-    private async Task<DiscordSelectComponent> GetBoolSelect(GuildConfigOption option)
+    private async Task<DiscordSelectComponent> GetBoolSelect(ConfigOption option)
     {
         var currentConfig = await GuildConfigHelper.Instance.GetBool(option.Name, EventArgs.Guild.Id);
         var options = new List<DiscordSelectComponentOption>
@@ -119,7 +119,7 @@ public class ActionEditHandler : InteractionHandler
         return new DiscordSelectComponent(customId, "Select value", options, minOptions: 1, maxOptions: 1);
     }
 
-    private async Task<DiscordSelectComponent> GetEnumSelect(GuildConfigOption option)
+    private async Task<DiscordSelectComponent> GetEnumSelect(ConfigOption option)
     {
         if (option.EnumType == null)
         {
@@ -146,7 +146,7 @@ public class ActionEditHandler : InteractionHandler
         return new DiscordSelectComponent(customId, "Select value", options, minOptions: 1, maxOptions: 1);
     }
 
-    private async Task<DiscordInteractionResponseBuilder> GetModal(GuildConfigOption option)
+    private async Task<DiscordInteractionResponseBuilder> GetModal(ConfigOption option)
     {
         var response = new DiscordInteractionResponseBuilder();
         response.WithTitle(option.Name);

@@ -26,7 +26,7 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
 
     public override async Task RunAsync()
     {
-        var option = ConfigOptions.Instance.Get(Convert.ToInt32(_optionId));
+        var option = GuildConfigOptions.Instance.Get(Convert.ToInt32(_optionId));
         var value = EventArgs.Values.First(x => x.Key.Equals("value")).Value;
 
         switch (option.ConfigType)
@@ -69,7 +69,7 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
-    private async Task<DiscordEmbed> CreateEmbed(GuildConfigOption option)
+    private async Task<DiscordEmbed> CreateEmbed(ConfigOption option)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Value edited");
@@ -80,7 +80,7 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
         return embed.Build();
     }
 
-    private async Task ShowError(GuildConfigOption option)
+    private async Task ShowError(ConfigOption option)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithColor(DiscordColor.Red);

@@ -27,15 +27,15 @@ public class ActionResetHandler : InteractionHandler
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
-    private async Task<DiscordEmbed> CreateEmbed(int optionId)
+    private static async Task<DiscordEmbed> CreateEmbed(int optionId)
     {
-        var option = ConfigOptions.Instance.Get(optionId);
+        var option = GuildConfigOptions.Instance.Get(optionId);
 
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Value reset");
         embed.WithDescription($"The value for {option.Name} has been reverted.");
         embed.AddField("New value",
-            await GuildConfigHelper.GetDisplayStringForDefaultValue(option, EventArgs.Guild, true));
+            await GuildConfigHelper.GetDisplayStringForDefaultValue(option, true));
         return embed.Build();
     }
 }

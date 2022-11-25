@@ -4,7 +4,7 @@ using Common.Interfaces;
 
 namespace Common.Records;
 
-public record GuildConfigOptionCategory
+public record ConfigOptionCategory
     (int Id, int SortId, ConfigStrings ConfigStrings, LeylaModule Module) : IIdentifiable
 {
     public string Name => ConfigStrings.Name;
