@@ -34,7 +34,7 @@ internal sealed class SelfAssignMenuManageHandler : InteractionHandler
             return;
         }
 
-        var roleIds = EventArgs.Values.Select(x => Convert.ToUInt64(x)).ToArray();
+        var roleIds = EventArgs.Values.Select(x => Convert.ToUInt64(x)).ToArray(); // skipcq: CS-R1068
         await SetValues(context, menu, roleIds);
         var embed = CreateEmbed(menu, roleIds);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,

@@ -1,4 +1,5 @@
 using Common.Helper;
+using Common.Interfaces;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -6,9 +7,9 @@ using Humanizer;
 
 namespace Logs.Events;
 
-internal static class ClientOnMessageUpdated
+internal abstract class ClientOnMessageUpdated : IEventHandler<MessageUpdateEventArgs>
 {
-    public static async Task HandleEvent(DiscordClient sender, MessageUpdateEventArgs e)
+    public static async Task HandleEventAsync(DiscordClient sender, MessageUpdateEventArgs e)
     {
         if (e.Guild == null)
         {

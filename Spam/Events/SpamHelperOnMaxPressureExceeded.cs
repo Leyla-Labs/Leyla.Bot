@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Common.Enums;
 using Common.Extensions;
 using Common.Helper;
+using Common.Interfaces;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using Spam.Classes;
@@ -9,16 +10,11 @@ using Spam.Extensions;
 
 namespace Spam.Events;
 
-internal static class SpamHelperOnMaxPressureExceeded
+internal abstract class SpamHelperOnMaxPressureExceeded : IEventHandler<MaxPressureExceededEventArgs>
 {
-    public static async void HandleEvent(DiscordClient sender, MaxPressureExceededEventArgs args)
+    public static async Task HandleEventAsync(DiscordClient sender, MaxPressureExceededEventArgs args)
     {
         var lastMessage = args.SessionMessages.Last();
-
-        if (lastMessage.Channel.Guild == null)
-        {
-            throw new NullReferenceException(nameof(lastMessage.Channel.Guild));
-        }
 
         var guild = lastMessage.Channel.Guild;
         var silenceRole = await ConfigHelper.Instance.GetRole("Silence Role", guild);

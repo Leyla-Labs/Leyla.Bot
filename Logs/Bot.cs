@@ -17,10 +17,10 @@ public class Bot : Leyla
                       | DiscordIntents.GuildMembers
         });
         client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
-        client.GuildMemberAdded += ClientOnGuildMemberAdded.HandleEvent;
-        client.GuildMemberRemoved += ClientOnGuildMemberRemoved.HandleEvent;
-        client.MessageDeleted += ClientOnMessageDeleted.HandleEvent;
-        client.MessageUpdated += ClientOnMessageUpdated.HandleEvent;
+        client.GuildMemberAdded += ClientOnGuildMemberAdded.HandleEventAsync;
+        client.GuildMemberRemoved += ClientOnGuildMemberRemoved.HandleEventAsync;
+        client.MessageDeleted += ClientOnMessageDeleted.HandleEventAsync;
+        client.MessageUpdated += ClientOnMessageUpdated.HandleEventAsync;
         return Task.FromResult(client);
     }
 }

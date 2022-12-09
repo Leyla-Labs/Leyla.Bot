@@ -11,28 +11,28 @@ internal sealed class Raid : ApplicationCommandLogModule
 {
     [SlashCommand("on", "Turns raid mode on.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
-    public async Task SlashRaidOn(InteractionContext ctx)
+    public async Task SlashRaidOnAsync(InteractionContext ctx)
     {
         await new On(ctx).RunAsync();
     }
 
     [SlashCommand("off", "Turns raid mode off.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
-    public async Task SlashRaidOff(InteractionContext ctx)
+    public async Task SlashRaidOffAsync(InteractionContext ctx)
     {
         await new Off(ctx).RunAsync();
     }
 
     [SlashCommand("list", "Lists all members from the most recent raid.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
-    public async Task SlashRaidList(InteractionContext ctx)
+    public async Task SlashRaidListAsync(InteractionContext ctx)
     {
         await new List(ctx).RunAsync();
     }
 
     [SlashCommand("ban", "Bans all members from the most recent raid. USE WITH CAUTION!")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
-    public async Task SlashRaidBan(InteractionContext ctx)
+    public async Task SlashRaidBanAsync(InteractionContext ctx)
     {
         await new Ban(ctx).RunAsync();
     }

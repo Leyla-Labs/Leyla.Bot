@@ -1,4 +1,5 @@
 using Common.Helper;
+using Common.Interfaces;
 using Common.Strings;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
@@ -6,9 +7,9 @@ using Spam.Helper;
 
 namespace Spam.Events;
 
-internal static class ClientOnGuildMemberAdded
+internal abstract class ClientOnGuildMemberAdded : IEventHandler<GuildMemberAddEventArgs>
 {
-    public static async Task HandleEvent(DiscordClient sender, GuildMemberAddEventArgs e)
+    public static async Task HandleEventAsync(DiscordClient sender, GuildMemberAddEventArgs e)
     {
         await SilenceHelper.Instance.ProcessUserJoined(e.Guild, e.Member);
 
@@ -19,11 +20,11 @@ internal static class ClientOnGuildMemberAdded
             var raidRole = await ConfigHelper.Instance.GetRole(Config.Raid.RaidRole.Name, e.Guild);
             await e.Member.GrantRoleAsync(raidRole);
 
-            await RaidHelper.MentionMembersInRaidChannel(e.Guild, e.Member);
+            await RaidHelper.MentionMembersInRaidChannelAsync(e.Guild, e.Member);
         }
         else
         {
-            await RaidHelper.Instance.AddMember(sender, e.Member);
+            await RaidHelper.Instance.AddMemberAsync(sender, e.Member);
         }
     }
 }

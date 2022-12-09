@@ -20,13 +20,13 @@ public class Bot : Leyla
                       DiscordIntents.GuildMembers
         });
         client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
-        client.MessageCreated += ClientOnMessageCreated.HandleEvent;
-        client.GuildMemberAdded += ClientOnGuildMemberAdded.HandleEvent;
-        client.GuildMemberRemoved += ClientOnGuildMemberRemoved.HandleEvent;
+        client.MessageCreated += ClientOnMessageCreated.HandleEventAsync;
+        client.GuildMemberAdded += ClientOnGuildMemberAdded.HandleEventAsync;
+        client.GuildMemberRemoved += ClientOnGuildMemberRemoved.HandleEventAsync;
         client.ComponentInteractionCreated +=
-            ClientOnComponentInteractionCreatedEvent.HandleEvent;
-        SpamHelper.MaxPressureExceeded += SpamHelperOnMaxPressureExceeded.HandleEvent;
-        RaidHelper.RaidDetected += RaidHelperOnRaidDetected.HandleEvent;
+            ClientOnComponentInteractionCreatedEvent.HandleEventAsync;
+        SpamHelper.MaxPressureExceeded += SpamHelperOnMaxPressureExceeded.HandleEventAsync;
+        RaidHelper.RaidDetected += RaidHelperOnRaidDetected.HandleEventAsync;
         return Task.FromResult(client);
     }
 

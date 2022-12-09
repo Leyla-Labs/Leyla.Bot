@@ -23,7 +23,7 @@ public sealed class Bot : Leyla
         client.ComponentInteractionCreated +=
             ClientOnComponentInteractionCreatedEvent.ClientOnComponentInteractionCreated;
         client.ModalSubmitted += ClientOnModalSubmittedEvent.ClientOnModalSubmitted;
-        client.GuildRoleDeleted += ClientOnGuildRoleDeleted.HandleEvent;
+        client.GuildRoleDeleted += ClientOnGuildRoleDeleted.HandleEventAsync;
         return client;
     }
 

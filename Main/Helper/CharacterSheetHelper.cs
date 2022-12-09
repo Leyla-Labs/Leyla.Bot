@@ -375,7 +375,7 @@ public class CharacterSheetHelper
 
         var list = profile.FreeCompany!.Crest
             .Select(x => new RestRequest(x, Method.GET)) // convert url to rest request
-            .Select(x => client.DownloadData(x)) // download data from lodestone
+            .Select(client.DownloadData) // download data from lodestone
             .Select(Image.Load<Rgba32>).ToList(); // add to list
 
         foreach (var layer in list.Skip(1))

@@ -26,7 +26,7 @@ internal static class ClientOnModalSubmittedEvent
             case "addUserLog" when additionalInfo.Length < 2:
             case "editUserLog" when additionalInfo.Length < 1:
             case "renameMenu" when additionalInfo.Length < 1:
-                throw new NullReferenceException(nameof(additionalInfo));
+                throw new ArgumentNullException(nameof(e), nameof(additionalInfo));
             case "configOptionValueGiven":
                 await new ConfigurationOptionValueGivenHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;
