@@ -12,7 +12,7 @@ internal sealed class Stashes : ApplicationCommandLogModule
 {
     [SlashCommand("list", "List all entries in stash.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
-    public async Task SlashList(InteractionContext ctx,
+    public async Task SlashListAsync(InteractionContext ctx,
         [Option("Name", "Name of the stash list entries of")]
         string? title = null)
     {
@@ -22,7 +22,7 @@ internal sealed class Stashes : ApplicationCommandLogModule
 
     [SlashCommand("pick", "Pick a random entry.")]
     [SlashRequireBotPermissions(Permissions.SendMessages)]
-    public async Task SlashPick(InteractionContext ctx,
+    public async Task SlashPickAsync(InteractionContext ctx,
         [Option("Name", "Name of the stash pick from. Picks from all stashes if not provided.")]
         string? title = null)
     {
@@ -31,7 +31,7 @@ internal sealed class Stashes : ApplicationCommandLogModule
 
     [SlashCommand("show", "Shows a specific stash entry.")]
     [SlashRequireBotPermissions(Permissions.SendMessages)]
-    public async Task SlashShowEntry(InteractionContext ctx,
+    public async Task SlashShowEntryAsync(InteractionContext ctx,
         [Option("Name", "Name of the stash to show entry from.")]
         string title,
         [Option("n", "Number of the entry to show. You can find this using /stash list.")]
@@ -46,7 +46,7 @@ internal sealed class Stashes : ApplicationCommandLogModule
 internal sealed class StashesM : ApplicationCommandLogModule
 {
     [ContextMenu(ApplicationCommandType.MessageContextMenu, "Add to Stash")]
-    public async Task MenuAddTo(ContextMenuContext ctx)
+    public async Task MenuAddToAsync(ContextMenuContext ctx)
     {
         await new AddTo(ctx).RunAsync();
     }
@@ -60,7 +60,7 @@ internal sealed class StashesM : ApplicationCommandLogModule
     }
 
     [SlashCommand("remove", "Removes entry from a stash.")]
-    public async Task SlashRemoveFrom(InteractionContext ctx,
+    public async Task SlashRemoveFromAsync(InteractionContext ctx,
         [Option("Name", "Name of the stash to delete entry from.")]
         string title,
         [Option("value",
@@ -71,7 +71,7 @@ internal sealed class StashesM : ApplicationCommandLogModule
     }
 
     [SlashCommand("delete", "Deletes a stash. This is irreversible!")]
-    public async Task SlashDelete(InteractionContext ctx,
+    public async Task SlashDeleteAsync(InteractionContext ctx,
         [Option("Name", "Name of the stash to delete. This is irreversible!")]
         string title)
     {

@@ -7,7 +7,7 @@ namespace Main.Modules;
 internal sealed class Configuration : ApplicationCommandLogModule
 {
     [SlashCommand("configure", "Configure bot settings.")]
-    public async Task SlashConfigure(InteractionContext ctx)
+    public async Task SlashConfigureAsync(InteractionContext ctx)
     {
         await new Configure(ctx).RunAsync();
     }
