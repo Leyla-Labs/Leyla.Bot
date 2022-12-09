@@ -1,5 +1,6 @@
 namespace Common.Classes;
 
+// skipcq CS-R1078
 public abstract class CommandLogBase
 {
     public string Command { get; set; } = null!;
