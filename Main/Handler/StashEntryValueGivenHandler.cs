@@ -25,7 +25,7 @@ internal sealed class StashEntryValueGivenHandler : ModalHandler
     private async Task AddToDatabase(string value)
     {
         // this is so wack i cannot even
-        var stashIds = _stashIds.Split(",").Select(x => Convert.ToInt32(x));
+        var stashIds = _stashIds.Split(",").Select(x => Convert.ToInt32(x)); // skipcq: CS-R1068
 
         await using var context = new DatabaseContext();
 
