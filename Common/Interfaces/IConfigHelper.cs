@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Common.Records;
 using DSharpPlus.Entities;
 
@@ -34,6 +35,7 @@ public interface IConfigHelper<in T> where T : SnowflakeObject
     /// <inheritdoc cref="GetDisplayStringForDefaultValue(ConfigOption, bool)" />
     /// <param name="placeholder">Value to return if option does not have a default value.</param>
     /// <remarks>This overload is meant to be used when the returned value must not be null.</remarks>
+    [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
     static abstract string GetDisplayStringForDefaultValue(ConfigOption option, bool allowMentions,
         string placeholder);
 
@@ -93,6 +95,7 @@ public interface IConfigHelper<in T> where T : SnowflakeObject
     /// <inheritdoc cref="GetDisplayStringForCurrentValueAsync(ConfigOption,T,bool)" />
     /// <param name="placeholder">Value to return if option does not have a default value.</param>
     /// <remarks>This overload is meant to be used when the returned value must not be null.</remarks>
+    [SuppressMessage("ReSharper", "InvalidXmlDocComment")]
     Task<string?> GetDisplayStringForCurrentValueAsync(ConfigOption option, T entity, bool allowMentions,
         string placeholder);
 

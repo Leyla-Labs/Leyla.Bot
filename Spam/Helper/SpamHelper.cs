@@ -74,7 +74,7 @@ internal class SpamHelper
             {
                 var pressureDecay =
                     await GuildConfigHelper.Instance.GetDecimalAsync(Common.Strings.Spam.PressureDecay, guildId);
-                guildDict[userId].IncreasePressure(value, pressureDecay.Value);
+                guildDict[userId].IncreasePressure(value, pressureDecay!.Value);
             }
             else
             {
@@ -111,8 +111,8 @@ internal class SpamHelper
     private static async Task<decimal> GetPressureConfigAsync(PressureType type, ulong guildId)
     {
         var configOptionName = type.GetAttribute<DisplayAttribute>();
-        var config = await GuildConfigHelper.Instance.GetDecimalAsync(configOptionName.Name, guildId);
-        return config.Value;
+        var config = await GuildConfigHelper.Instance.GetDecimalAsync(configOptionName!.Name!, guildId);
+        return config!.Value;
     }
 
     #region Singleton
