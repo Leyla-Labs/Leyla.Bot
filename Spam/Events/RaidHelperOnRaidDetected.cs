@@ -38,12 +38,10 @@ internal static class RaidHelperOnRaidDetected
 
         var builder = new DiscordMessageBuilder().AddEmbed(embed).AddComponents(components);
 
-        if (await ConfigHelper.Instance.GetBool(Config.Raid.NotifyModerators.Name, guild.Id) == true)
+        if (await ConfigHelper.Instance.GetBool(Config.Raid.NotifyModerators.Name, guild.Id) == true &&
+            await ConfigHelper.Instance.GetRole(Config.Roles.Mod.Name, guild) is { } role)
         {
-            if (await ConfigHelper.Instance.GetRole(Config.Roles.Mod.Name, guild) is { } role)
-            {
-                builder.WithContent(role.Mention);
-            }
+            builder.WithContent(role.Mention);
         }
 
         await modChannel.SendMessageAsync(builder);

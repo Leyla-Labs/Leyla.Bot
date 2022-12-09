@@ -15,11 +15,6 @@ internal static class SpamHelperOnMaxPressureExceeded
     {
         var lastMessage = args.SessionMessages.Last();
 
-        if (lastMessage.Channel.Guild == null)
-        {
-            throw new NullReferenceException(nameof(lastMessage.Channel.Guild));
-        }
-
         var guild = lastMessage.Channel.Guild;
         var silenceRole = await ConfigHelper.Instance.GetRole("Silence Role", guild);
         var modChannel = await ConfigHelper.Instance.GetChannel("Moderator Channel", guild);
