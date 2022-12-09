@@ -18,7 +18,7 @@ public class SilenceHelper
 
         if (silenceRole != null && member.Roles.Select(x => x.Id).Contains(silenceRole.Id))
         {
-            if (!_memberSilences.Any(x => x.Member.Guild.Id == member.Guild.Id && x.Member.Id == member.Id))
+            if (_memberSilences.All(x => x.Member.Guild.Id != member.Guild.Id || x.Member.Id != member.Id))
             {
                 _memberSilences.Add(new MemberSilence(member));
             }
