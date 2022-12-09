@@ -9,7 +9,7 @@ namespace Spam;
 
 public class Bot : Leyla
 {
-    protected override Task<DiscordClient> InitBot()
+    protected override Task<DiscordClient> InitBotAsync()
     {
         var client = new DiscordClient(new DiscordConfiguration
         {
@@ -19,7 +19,7 @@ public class Bot : Leyla
                       DiscordIntents.GuildMessages |
                       DiscordIntents.GuildMembers
         });
-        client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
+        client.GuildDownloadCompleted += ClientOnGuildDownloadCompletedAsync;
         client.MessageCreated += ClientOnMessageCreated.HandleEventAsync;
         client.GuildMemberAdded += ClientOnGuildMemberAdded.HandleEventAsync;
         client.GuildMemberRemoved += ClientOnGuildMemberRemoved.HandleEventAsync;

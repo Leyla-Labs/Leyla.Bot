@@ -17,7 +17,7 @@ internal sealed class List : SlashCommand
 
     public override async Task RunAsync()
     {
-        var menus = await GetSelfAssignMenus();
+        var menus = await GetSelfAssignMenusAsync();
 
         if (!menus.Any())
         {
@@ -33,7 +33,7 @@ internal sealed class List : SlashCommand
 
     #region Instance methods
 
-    private async Task<List<SelfAssignMenu>> GetSelfAssignMenus()
+    private async Task<List<SelfAssignMenu>> GetSelfAssignMenusAsync()
     {
         return await DbCtx.SelfAssignMenus.Where(x =>
                 x.GuildId == Ctx.Guild.Id)
@@ -41,7 +41,11 @@ internal sealed class List : SlashCommand
             .ToListAsync();
     }
 
-    private DiscordEmbed GetEmbed(IReadOnlyCollection<SelfAssignMenu> menus)
+    #endregion
+
+    #region Static methods
+
+    private static DiscordEmbed GetEmbed(IReadOnlyCollection<SelfAssignMenu> menus)
     {
         var embed = new DiscordEmbedBuilder();
         var c = menus.Count;
@@ -53,7 +57,7 @@ internal sealed class List : SlashCommand
         return embed.Build();
     }
 
-    private string GetMenuString(SelfAssignMenu m)
+    private static string GetMenuString(SelfAssignMenu m)
     {
         var sb = new StringBuilder();
         sb.Append($"**{m.Title}**");

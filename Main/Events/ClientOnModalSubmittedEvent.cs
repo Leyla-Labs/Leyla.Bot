@@ -6,7 +6,7 @@ namespace Main.Events;
 
 internal static class ClientOnModalSubmittedEvent
 {
-    public static async Task ClientOnModalSubmitted(DiscordClient sender, ModalSubmitEventArgs e)
+    public static async Task ClientOnModalSubmittedAsync(DiscordClient sender, ModalSubmitEventArgs e)
     {
         // info consists of userId, name, and any further information after that
         var info = e.Interaction.Data.CustomId.Split("_");

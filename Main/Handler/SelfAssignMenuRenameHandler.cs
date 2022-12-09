@@ -23,7 +23,7 @@ internal sealed class SelfAssignMenuRenameHandler : ModalHandler
     {
         await using var context = new DatabaseContext();
 
-        var menu = await GetSelfAssignMenu(context);
+        var menu = await GetSelfAssignMenuAsync(context);
 
         if (menu == null)
         {
@@ -44,17 +44,18 @@ internal sealed class SelfAssignMenuRenameHandler : ModalHandler
         }
 
         var description = EventArgs.Values["description"];
-        await EditInDatabase(context, menu, title, description);
+        await EditInDatabaseAsync(context, menu, title, description);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
     }
 
-    private async Task<SelfAssignMenu?> GetSelfAssignMenu(DatabaseContext context)
+    private async Task<SelfAssignMenu?> GetSelfAssignMenuAsync(DatabaseContext context)
     {
         var id = Convert.ToInt32(_menuId);
         return await context.SelfAssignMenus.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    private static async Task EditInDatabase(DbContext context, SelfAssignMenu menu, string title, string? description)
+    private static async Task EditInDatabaseAsync(DbContext context, SelfAssignMenu menu, string title,
+        string? description)
     {
         menu.Title = title;
         menu.Description = description;

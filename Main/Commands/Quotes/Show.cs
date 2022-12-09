@@ -26,7 +26,7 @@ internal sealed class Show : SlashCommand
             return;
         }
 
-        var quote = await QuoteHelper.GetQuote(Ctx.Guild.Id, _member.Id, (int) _n);
+        var quote = await QuoteHelper.GetQuoteAsync(Ctx.Guild.Id, _member.Id, (int) _n);
 
         if (quote == null)
         {

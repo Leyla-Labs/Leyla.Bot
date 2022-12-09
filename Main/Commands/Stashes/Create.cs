@@ -20,14 +20,14 @@ internal sealed class Create : SlashCommand
     {
         // TODO check if stash with name already exists and show error
 
-        await CreateStashInDatabase(null);
+        await CreateStashInDatabaseAsync(null);
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(GetConfirmationEmbed()).AsEphemeral());
     }
 
     #region Instance methods
 
-    private async Task CreateStashInDatabase(ulong? requiredRoleId)
+    private async Task CreateStashInDatabaseAsync(ulong? requiredRoleId)
     {
         await using var context = new DatabaseContext();
         await context.Stashes.AddAsync(new Stash

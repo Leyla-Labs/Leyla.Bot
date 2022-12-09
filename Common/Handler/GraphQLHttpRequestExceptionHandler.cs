@@ -16,7 +16,7 @@ public sealed class GraphQlHttpRequestExceptionHandler : SlashCommandErrorHandle
         _ex = ex;
     }
 
-    public override async Task HandleException()
+    public override async Task HandleExceptionAsync()
     {
         if (_ex.StatusCode == HttpStatusCode.NotFound)
         {

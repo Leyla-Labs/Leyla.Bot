@@ -5,7 +5,7 @@ namespace Common.Extensions;
 
 public static class DiscordInteractionExtension
 {
-    public static async Task<DiscordMember?> GetMember(this DiscordInteraction interaction, ulong userId)
+    public static async Task<DiscordMember?> GetMemberAsync(this DiscordInteraction interaction, ulong userId)
     {
         var member = interaction.Guild.Members.FirstOrDefault(x => x.Key == userId).Value;
 

@@ -9,7 +9,7 @@ namespace Main;
 
 public sealed class Bot : Leyla
 {
-    protected override async Task<DiscordClient> InitBot()
+    protected override async Task<DiscordClient> InitBotAsync()
     {
         await ConfigHelper.Instance.Initialise();
 
@@ -19,10 +19,10 @@ public sealed class Bot : Leyla
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.Guilds
         });
-        client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
+        client.GuildDownloadCompleted += ClientOnGuildDownloadCompletedAsync;
         client.ComponentInteractionCreated +=
-            ClientOnComponentInteractionCreatedEvent.ClientOnComponentInteractionCreated;
-        client.ModalSubmitted += ClientOnModalSubmittedEvent.ClientOnModalSubmitted;
+            ClientOnComponentInteractionCreatedEvent.ClientOnComponentInteractionCreatedAsync;
+        client.ModalSubmitted += ClientOnModalSubmittedEvent.ClientOnModalSubmittedAsync;
         client.GuildRoleDeleted += ClientOnGuildRoleDeleted.HandleEventAsync;
         return client;
     }
@@ -48,7 +48,7 @@ public sealed class Bot : Leyla
 
     public override async Task StopAsync()
     {
-        await CommandLogHelper.Instance.TransferToDb();
+        await CommandLogHelper.Instance.TransferToDbAsync();
         await base.StopAsync();
     }
 }

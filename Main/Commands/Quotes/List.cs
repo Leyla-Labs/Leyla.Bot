@@ -18,7 +18,7 @@ internal sealed class List : SlashCommand
 
     public override async Task RunAsync()
     {
-        var quotes = await GetQuotesForMember(Ctx.Guild.Id, _member.Id);
+        var quotes = await GetQuotesForMemberAsync(Ctx.Guild.Id, _member.Id);
 
         var b = new StringBuilder();
         for (var i = 0; i < quotes.Count; i++)
@@ -40,7 +40,7 @@ internal sealed class List : SlashCommand
 
     #region Instance methods
 
-    private async Task<List<Quote>> GetQuotesForMember(ulong guildId, ulong userId)
+    private async Task<List<Quote>> GetQuotesForMemberAsync(ulong guildId, ulong userId)
     {
         return await DbCtx.Quotes.Where(x =>
                 x.GuildId == guildId &&

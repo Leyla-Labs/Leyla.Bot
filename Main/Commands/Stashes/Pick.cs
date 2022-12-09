@@ -20,7 +20,7 @@ internal sealed class Pick : SlashCommand
 
     public override async Task RunAsync()
     {
-        var entry = await PickEntry();
+        var entry = await PickEntryAsync();
 
         if (entry == null)
         {
@@ -35,7 +35,7 @@ internal sealed class Pick : SlashCommand
 
     #region Instance members
 
-    private async Task<StashEntry?> PickEntry()
+    private async Task<StashEntry?> PickEntryAsync()
     {
         await using var context = new DatabaseContext();
 

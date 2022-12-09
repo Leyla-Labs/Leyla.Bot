@@ -5,7 +5,7 @@ namespace Common.Extensions;
 
 public static class BaseContextExtensions
 {
-    public static async Task<DiscordMember?> GetMember(this BaseContext ctx, ulong userId)
+    public static async Task<DiscordMember?> GetMemberAsync(this BaseContext ctx, ulong userId)
     {
         var member = ctx.Guild.Members.FirstOrDefault(x => x.Key == userId).Value;
 
@@ -14,9 +14,9 @@ public static class BaseContextExtensions
             : member;
     }
 
-    public static async Task<string> GetDisplayName(this BaseContext ctx, ulong userId)
+    public static async Task<string> GetDisplayNameAsync(this BaseContext ctx, ulong userId)
     {
-        var member = await ctx.GetMember(userId);
+        var member = await ctx.GetMemberAsync(userId);
         return member?.DisplayName ?? userId.ToString();
     }
 }

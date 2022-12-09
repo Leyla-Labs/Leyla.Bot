@@ -33,9 +33,10 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
             case ConfigType.Int:
                 if (!int.TryParse(value, out var valueInt))
                 {
-                    await ShowError(option);
+                    await ShowErrorAsync(option);
                     return;
                 }
+
                 await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueInt);
                 break;
             case ConfigType.Char:
@@ -45,9 +46,10 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
             case ConfigType.Decimal:
                 if (!decimal.TryParse(value, out var valueDecimal))
                 {
-                    await ShowError(option);
+                    await ShowErrorAsync(option);
                     return;
                 }
+
                 await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueDecimal);
                 break;
             case ConfigType.Boolean:
@@ -61,7 +63,7 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
     }
 
-    private async Task ShowError(ConfigOption option)
+    private async Task ShowErrorAsync(ConfigOption option)
     {
         if (!new[] {ConfigType.Int, ConfigType.Decimal}.Contains(option.ConfigType))
         {

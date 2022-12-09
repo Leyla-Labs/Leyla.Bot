@@ -21,7 +21,7 @@ internal sealed class UserLogTypeSelectedHandler : InteractionHandler
     public override async Task RunAsync()
     {
         var userLogType = (UserLogType) Convert.ToInt32(EventArgs.Values[0]);
-        var member = await EventArgs.Interaction.GetMember(Convert.ToUInt64(_userId));
+        var member = await EventArgs.Interaction.GetMemberAsync(Convert.ToUInt64(_userId));
         var displayName = member?.DisplayName ?? _userId;
 
         var modal = GetModal(userLogType, displayName);

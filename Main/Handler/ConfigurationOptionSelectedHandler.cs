@@ -4,6 +4,7 @@ using Common.Enums;
 using Common.Extensions;
 using Common.Helper;
 using Common.Statics;
+using Common.Statics.BaseClasses;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -43,17 +44,17 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
             case ConfigType.Int:
             case ConfigType.Char:
             case ConfigType.Decimal:
-                var modalBuilder = await GetModal(option);
+                var modalBuilder = await GetModalAsync(option);
                 await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.Modal, modalBuilder);
                 break;
             case ConfigType.Boolean:
-                var boolSelect = await GetBoolSelect(option);
+                var boolSelect = await GetBoolSelectAsync(option);
                 await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                     new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(boolSelect)
                         .AsEphemeral());
                 break;
             case ConfigType.Role:
-                var roleSelect = await GetRoleSelect(option);
+                var roleSelect = GetRoleSelect(option);
                 var currentRole = await ConfigHelper.Instance.GetRole(option.Name, EventArgs.Guild);
                 if (currentRole != null)
                 {
@@ -68,7 +69,7 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
                         .AsEphemeral());
                 break;
             case ConfigType.Channel:
-                var channelSelect = await GetTextChannelSelect(option);
+                var channelSelect = GetTextChannelSelect(option);
                 var currentChannel = await ConfigHelper.Instance.GetChannel(option.Name, EventArgs.Guild);
                 if (currentChannel != null)
                 {
@@ -83,7 +84,7 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
                         .AsEphemeral());
                 break;
             case ConfigType.Enum:
-                var enumSelect = await GetEnumSelect(option);
+                var enumSelect = await GetEnumSelectAsync(option);
                 await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                     new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(enumSelect)
                         .AsEphemeral());
@@ -102,24 +103,24 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
         return embed.Build();
     }
 
-    private Task<DiscordRoleSelectComponent> GetRoleSelect(ConfigOption option)
+    private DiscordRoleSelectComponent GetRoleSelect(StaticField option)
     {
         // TODO support clearing config by selecting none
         var customId =
             ModalHelper.GetModalName(EventArgs.User.Id, "configOptionValueSelected", new[] {option.Id.ToString()});
-        return Task.FromResult(new DiscordRoleSelectComponent(customId, "Select role",
-            minOptions: 1, maxOptions: 1));
+        return new DiscordRoleSelectComponent(customId, "Select role",
+            minOptions: 1, maxOptions: 1);
     }
 
-    private Task<DiscordChannelSelectComponent> GetTextChannelSelect(ConfigOption option)
+    private DiscordChannelSelectComponent GetTextChannelSelect(StaticField option)
     {
         var customId =
             ModalHelper.GetModalName(EventArgs.User.Id, "configOptionValueSelected", new[] {option.Id.ToString()});
-        return Task.FromResult(new DiscordChannelSelectComponent(customId, "Select channel",
-            minOptions: 1, maxOptions: 1, channelTypes: new[] {ChannelType.Text}));
+        return new DiscordChannelSelectComponent(customId, "Select channel",
+            minOptions: 1, maxOptions: 1, channelTypes: new[] {ChannelType.Text});
     }
 
-    private async Task<DiscordSelectComponent> GetBoolSelect(ConfigOption option)
+    private async Task<DiscordSelectComponent> GetBoolSelectAsync(StaticField option)
     {
         var currentConfig = await ConfigHelper.Instance.GetBool(option.Name, EventArgs.Guild.Id);
         var options = new List<DiscordSelectComponentOption>
@@ -129,7 +130,7 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
         return new DiscordSelectComponent(customId, "Select value", options, minOptions: 1, maxOptions: 1);
     }
 
-    private async Task<DiscordSelectComponent> GetEnumSelect(ConfigOption option)
+    private async Task<DiscordSelectComponent> GetEnumSelectAsync(ConfigOption option)
     {
         if (option.EnumType == null)
         {
@@ -156,7 +157,7 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
         return new DiscordSelectComponent(customId, "Select value", options, minOptions: 1, maxOptions: 1);
     }
 
-    private async Task<DiscordInteractionResponseBuilder> GetModal(ConfigOption option)
+    private async Task<DiscordInteractionResponseBuilder> GetModalAsync(ConfigOption option)
     {
         var response = new DiscordInteractionResponseBuilder();
         response.WithTitle(option.Name);

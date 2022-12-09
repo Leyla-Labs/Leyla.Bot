@@ -37,7 +37,7 @@ internal sealed class ConfigurationCategorySelectedHandler : InteractionHandler
 
     private async Task<DiscordSelectComponent> GetOptionSelect(int categoryId)
     {
-        var modules = await EventArgs.Guild.GetGuildModules();
+        var modules = await EventArgs.Guild.GetGuildModulesAsync();
         var configOptions = ConfigOptions.Instance.Get().Where(x => x.ConfigOptionCategoryId == categoryId);
         configOptions = configOptions.Where(x => x.Module == null || modules.Contains(x.Module.Value));
         var options = configOptions.Select(x =>

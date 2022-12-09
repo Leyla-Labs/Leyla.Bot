@@ -9,6 +9,6 @@ internal abstract class ClientOnGuildMemberRemoved : IEventHandler<GuildMemberRe
 {
     public static async Task HandleEventAsync(DiscordClient sender, GuildMemberRemoveEventArgs e)
     {
-        await SilenceHelper.Instance.ProcessUserLeft(e.Guild, e.Member);
+        await SilenceHelper.Instance.ProcessUserLeftAsync(e.Guild, e.Member);
     }
 }

@@ -17,7 +17,7 @@ public sealed class SlashExecutionChecksFailedExceptionHandler : SlashCommandErr
         _ex = ex;
     }
 
-    public override async Task HandleException()
+    public override async Task HandleExceptionAsync()
     {
         var embed = _ex.FailedChecks[0] switch
         {

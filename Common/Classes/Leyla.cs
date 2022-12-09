@@ -15,7 +15,7 @@ public abstract class Leyla : IBot
 
     public async Task StartAsync()
     {
-        Client = await InitBot();
+        Client = await InitBotAsync();
         RegisterCommands();
         RegisterInteractivity();
         await Client.ConnectAsync();
@@ -37,8 +37,8 @@ public abstract class Leyla : IBot
     protected virtual SlashCommandsExtension RegisterCommands()
     {
         var commands = Client.UseSlashCommands();
-        commands.SlashCommandErrored += CommandsOnSlashCommandErroredEvent.CommandsOnSlashCommandErrored;
-        commands.ContextMenuErrored += CommandsOnContextMenuErroredEvent.CommandsOnContextMenuErrored;
+        commands.SlashCommandErrored += CommandsOnSlashCommandErroredEvent.CommandsOnSlashCommandErroredAsync;
+        commands.ContextMenuErrored += CommandsOnContextMenuErroredEvent.CommandsOnContextMenuErroredAsync;
         return commands;
     }
 
@@ -50,17 +50,17 @@ public abstract class Leyla : IBot
         });
     }
 
-    protected async Task ClientOnGuildDownloadCompleted(DiscordClient sender, GuildDownloadCompletedEventArgs e)
+    protected async Task ClientOnGuildDownloadCompletedAsync(DiscordClient sender, GuildDownloadCompletedEventArgs e)
     {
         if (Client != null)
         {
-            await new StartupHelper(Client).SendStartupMessage();
+            await new StartupHelper(Client).SendStartupMessageAsync();
         }
     }
 
     #region Abstract methods
 
-    protected abstract Task<DiscordClient> InitBot();
+    protected abstract Task<DiscordClient> InitBotAsync();
 
     #endregion
 }

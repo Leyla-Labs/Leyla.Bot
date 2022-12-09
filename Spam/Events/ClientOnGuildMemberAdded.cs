@@ -11,7 +11,7 @@ internal abstract class ClientOnGuildMemberAdded : IEventHandler<GuildMemberAddE
 {
     public static async Task HandleEventAsync(DiscordClient sender, GuildMemberAddEventArgs e)
     {
-        await SilenceHelper.Instance.ProcessUserJoined(e.Guild, e.Member);
+        await SilenceHelper.Instance.ProcessUserJoinedAsync(e.Guild, e.Member);
 
         var raidMode = await ConfigHelper.Instance.GetBool(Config.Raid.RaidMode.Name, e.Guild.Id);
 

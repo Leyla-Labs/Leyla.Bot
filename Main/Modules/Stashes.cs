@@ -52,7 +52,7 @@ internal sealed class StashesM : ApplicationCommandLogModule
     }
 
     [SlashCommand("create", "Create a new stash.")]
-    public async Task SlashCreate(InteractionContext ctx,
+    public async Task SlashCreateAsync(InteractionContext ctx,
         [Option("Name", "Name of the stash to create")]
         string title)
     {

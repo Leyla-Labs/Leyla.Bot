@@ -20,7 +20,7 @@ internal sealed class Manage : SlashCommand
 
     public override async Task RunAsync()
     {
-        var menu = await GetSelfAssignMenu();
+        var menu = await GetSelfAssignMenuAsync();
 
         if (menu == null)
         {
@@ -65,7 +65,7 @@ internal sealed class Manage : SlashCommand
         return embed.Build();
     }
 
-    private async Task<SelfAssignMenu?> GetSelfAssignMenu()
+    private async Task<SelfAssignMenu?> GetSelfAssignMenuAsync()
     {
         return await DbCtx.SelfAssignMenus.Where(x =>
                 x.GuildId == Ctx.Guild.Id &&

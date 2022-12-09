@@ -24,7 +24,7 @@ internal sealed class Delete : SlashCommand
     {
         await using var context = new DatabaseContext();
 
-        var userLog = await GetUserLog(context);
+        var userLog = await GetUserLogAsync(context);
 
         if (userLog == null)
         {
@@ -42,7 +42,7 @@ internal sealed class Delete : SlashCommand
 
     #region Instance methods
 
-    private async Task<UserLog?> GetUserLog(DatabaseContext context)
+    private async Task<UserLog?> GetUserLogAsync(DatabaseContext context)
     {
         return await context.UserLogs.Where(x =>
                 x.Member.GuildId == Ctx.Guild.Id &&

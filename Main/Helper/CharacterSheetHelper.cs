@@ -29,43 +29,43 @@ public class CharacterSheetHelper
     private CharacterExtended Character => _profile.Character;
     private Image Image { get; set; } = null!;
 
-    public static async Task<CharacterSheetHelper> Create(CharacterProfileExtended profile)
+    public static async Task<CharacterSheetHelper> CreateAsync(CharacterProfileExtended profile)
     {
         var helper = new CharacterSheetHelper(profile);
-        await helper.Initialize();
+        await helper.InitializeAsync();
         return helper;
     }
 
-    private async Task Initialize()
+    private async Task InitializeAsync()
     {
         var image = (await ResourceHelper.Instance).GetImage(Enums.CharacterSheet.Image.TemplateBase);
         Image = image.Clone(x => x.Brightness(1)); // idk how to clone without an operation
     }
 
-    public async Task<MemoryStream> GetCharacterSheet()
+    public async Task<MemoryStream> GetCharacterSheetAsync()
     {
         AddCharacterPortrait();
-        await AddPortraitFrame();
+        await AddPortraitFrameAsync();
 
-        await AddJobIcon();
-        await AddJobFrame();
-        await AddActiveJobLevel();
+        await AddJobIconAsync();
+        await AddJobFrameAsync();
+        await AddActiveJobLevelAsync();
 
-        await AddCharacterName();
-        await AddHomeWorld();
-        await AddILvlMinionsMounts();
-        await AddJobLevels();
+        await AddCharacterNameAsync();
+        await AddHomeWorldAsync();
+        await AddILvlMinionsMountsAsync();
+        await AddJobLevelsAsync();
 
-        var gc = await AddGrandCompany();
-        var fc = await AddFreeCompany();
-        await AddAttributes();
+        var gc = await AddGrandCompanyAsync();
+        var fc = await AddFreeCompanyAsync();
+        await AddAttributesAsync();
 
         if (!gc && !fc)
         {
-            await AddNewAdventurer();
+            await AddNewAdventurerAsync();
         }
 
-        return await ConvertToMemoryStream();
+        return await ConvertToMemoryStreamAsync();
     }
 
     public string GetFileName()
@@ -97,19 +97,19 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawImage(imgPortrait, new Point(16, 66), 1));
     }
 
-    private async Task AddPortraitFrame()
+    private async Task AddPortraitFrameAsync()
     {
         var imgFrame = (await ResourceHelper.Instance).GetImage(Enums.CharacterSheet.Image.TemplateFrame);
         Image.Mutate(x => x.DrawImage(imgFrame, 1));
     }
 
-    private async Task AddJobFrame()
+    private async Task AddJobFrameAsync()
     {
         var imgJob = (await ResourceHelper.Instance).GetImage(Enums.CharacterSheet.Image.TemplateJobCircle);
         Image.Mutate(x => x.DrawImage(imgJob, 1));
     }
 
-    private async Task AddJobIcon()
+    private async Task AddJobIconAsync()
     {
         if (Character.ActiveClassJob.Job.JobEnum == null)
         {
@@ -120,7 +120,7 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawImage(imgJob, CoordinatesOther.JobIcon, 1));
     }
 
-    private async Task AddActiveJobLevel()
+    private async Task AddActiveJobLevelAsync()
     {
         var circle = new EllipsePolygon(CoordinatesOther.ActiveJobLevelBackground, Values.ActiveJobLevelRadius);
         Image.Mutate(x => x.Draw(new Color(Values.ActiveJobLevelBackground), Values.ActiveJobLevelThickness, circle));
@@ -139,7 +139,7 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawText(textOptions, text, Color.White));
     }
 
-    private async Task AddCharacterName()
+    private async Task AddCharacterNameAsync()
     {
         var family = (await ResourceHelper.Instance).GetFontFamily(Enums.CharacterSheet.Font.Vollkorn);
         var nameProperties = new NameProperties(Character);
@@ -173,7 +173,7 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawText(optionsTitle, Character.Title.Name, Color.Black));
     }
 
-    private async Task AddHomeWorld()
+    private async Task AddHomeWorldAsync()
     {
         var family = (await ResourceHelper.Instance).GetFontFamily(Enums.CharacterSheet.Font.OpenSans);
         var font = family.CreateFont(Values.FontSizeHomeWorld, FontStyle.Regular);
@@ -189,7 +189,7 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawText(options, text, Color.White));
     }
 
-    private async Task AddILvlMinionsMounts()
+    private async Task AddILvlMinionsMountsAsync()
     {
         var minions = (int) _profile.MinionPercentage;
         var mounts = (int) _profile.MountPercentage;
@@ -223,7 +223,7 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawText(optionsMo, $"{mounts}%", Color.White));
     }
 
-    private async Task AddJobLevels()
+    private async Task AddJobLevelsAsync()
     {
         var family = (await ResourceHelper.Instance).GetFontFamily(Enums.CharacterSheet.Font.OpenSans);
         var font = family.CreateFont(28, FontStyle.Regular);
@@ -245,21 +245,21 @@ public class CharacterSheetHelper
         }
     }
 
-    private async Task<bool> AddGrandCompany()
+    private async Task<bool> AddGrandCompanyAsync()
     {
         if (Character.GrandCompany == null)
         {
             return false;
         }
 
-        var crest = await Character.GrandCompany.GrandCompanyEnum.GetCrest();
+        var crest = await Character.GrandCompany.GrandCompanyEnum.GetCrestAsync();
 
         if (Character.FreeCompanyId == null)
         {
             // if player not in any free company, use the fc space to show the gc logo and name
             var gcName = Character.GrandCompany.GrandCompanyEnum.GetAttribute<DisplayAttribute>()?.Name ??
                          throw new NullReferenceException(nameof(Character.GrandCompany.GrandCompanyEnum));
-            await PrintInTopValueArea(gcName, crest);
+            await PrintInTopValueAreaAsync(gcName, crest);
         }
         else
         {
@@ -270,21 +270,21 @@ public class CharacterSheetHelper
         return true;
     }
 
-    private async Task<bool> AddFreeCompany()
+    private async Task<bool> AddFreeCompanyAsync()
     {
         if (_profile.FreeCompany == null)
         {
             return false;
         }
 
-        var crest = await GetFreeCompanyCrest(_profile);
+        var crest = GetFreeCompanyCrest(_profile);
         crest.Mutate(x => x.Resize(Values.DimensionsGcFcCrest, Values.DimensionsGcFcCrest, KnownResamplers.Lanczos3));
         var fullName = $"{_profile.FreeCompany.Name} <{_profile.FreeCompany.Tag}>";
-        await PrintInTopValueArea(fullName, crest);
+        await PrintInTopValueAreaAsync(fullName, crest);
         return true;
     }
 
-    private async Task AddAttributes()
+    private async Task AddAttributesAsync()
     {
         var job = Character.ActiveClassJob.Job.JobEnum;
 
@@ -319,12 +319,12 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawText(options, text, Color.White));
     }
 
-    private async Task AddNewAdventurer()
+    private async Task AddNewAdventurerAsync()
     {
-        await PrintInTopValueArea("New Adventurer");
+        await PrintInTopValueAreaAsync("New Adventurer");
     }
 
-    private async Task PrintInTopValueArea(string text, Image? crest = null)
+    private async Task PrintInTopValueAreaAsync(string text, Image? crest = null)
     {
         var family = (await ResourceHelper.Instance).GetFontFamily(Enums.CharacterSheet.Font.OpenSans);
         var font = family.CreateFont(Values.FontSizeGrandCompany, FontStyle.Regular);
@@ -356,7 +356,7 @@ public class CharacterSheetHelper
         Image.Mutate(x => x.DrawImage(crest, coords, 1));
     }
 
-    private async Task<MemoryStream> ConvertToMemoryStream()
+    private async Task<MemoryStream> ConvertToMemoryStreamAsync()
     {
         var stream = new MemoryStream();
         await Image.SaveAsync(stream, new WebpEncoder());
@@ -369,7 +369,7 @@ public class CharacterSheetHelper
     /// </summary>
     /// <param name="profile">Free Company must not be null!</param>
     /// <returns>Free Company Crest</returns>
-    private static Task<Image> GetFreeCompanyCrest(CharacterProfileBase profile)
+    private static Image GetFreeCompanyCrest(CharacterProfileBase profile)
     {
         var client = new RestClient();
 
@@ -383,7 +383,7 @@ public class CharacterSheetHelper
             list[0].Mutate(x => x.DrawImage(layer, 1));
         }
 
-        return Task.FromResult(list[0] as Image);
+        return list[0];
     }
 
     private static string GetAttributeName(Attribute a, bool fullName)

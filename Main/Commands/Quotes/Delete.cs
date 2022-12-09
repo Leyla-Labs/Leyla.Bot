@@ -28,7 +28,7 @@ internal sealed class Delete : SlashCommand
             return;
         }
 
-        var quote = await QuoteHelper.GetQuote(Ctx.Guild.Id, _member.Id, (int) _n);
+        var quote = await QuoteHelper.GetQuoteAsync(Ctx.Guild.Id, _member.Id, (int) _n);
 
         if (quote == null)
         {
@@ -37,18 +37,22 @@ internal sealed class Delete : SlashCommand
             return;
         }
 
-        await DeleteFromDatabase(quote);
+        await DeleteFromDatabaseAsync(quote);
 
-        var displayName = await Ctx.GetDisplayName(quote.UserId);
+        var displayName = await Ctx.GetDisplayNameAsync(quote.UserId);
         var embed = GetConfirmationEmbed(quote, displayName);
         await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
-    private async Task DeleteFromDatabase(Quote quote)
+    #region Instance methods
+
+    private async Task DeleteFromDatabaseAsync(Quote quote)
     {
         DbCtx.Entry(quote).State = EntityState.Deleted;
         await DbCtx.SaveChangesAsync();
     }
+
+    #endregion
 
     #region Static methods
 

@@ -34,12 +34,12 @@ internal sealed class UserLogEditedHandler : ModalHandler
             return;
         }
 
-        await EditInDatabase(reason, additionalDetails, date.Value);
+        await EditInDatabaseAsync(reason, additionalDetails, date.Value);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
         // TODO post entry in logs
     }
 
-    private async Task EditInDatabase(string reason, string additionalDetails, DateTime date)
+    private async Task EditInDatabaseAsync(string reason, string additionalDetails, DateTime date)
     {
         var userLogId = Convert.ToInt32(_userLogId);
 

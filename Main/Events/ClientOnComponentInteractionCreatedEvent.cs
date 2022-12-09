@@ -6,7 +6,7 @@ namespace Main.Events;
 
 internal static class ClientOnComponentInteractionCreatedEvent
 {
-    public static async Task ClientOnComponentInteractionCreated(DiscordClient sender,
+    public static async Task ClientOnComponentInteractionCreatedAsync(DiscordClient sender,
         ComponentInteractionCreateEventArgs e)
     {
         // info consists of userId, name, and any further information after that
