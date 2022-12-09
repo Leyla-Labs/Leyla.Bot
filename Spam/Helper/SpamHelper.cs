@@ -73,12 +73,7 @@ internal class SpamHelper
             if (guildDict.Any(x => x.Key == userId))
             {
                 var pressureDecay = await ConfigHelper.Instance.GetDecimal(Common.Strings.Spam.PressureDecay, guildId);
-                if (pressureDecay == null)
-                {
-                    throw new NullReferenceException(nameof(pressureDecay));
-                }
-
-                guildDict[userId].IncreasePressure(value, pressureDecay.Value);
+                guildDict[userId].IncreasePressure(value, pressureDecay!.Value);
             }
             else
             {
@@ -115,19 +110,8 @@ internal class SpamHelper
     private static async Task<decimal> GetPressureConfig(PressureType type, ulong guildId)
     {
         var configOptionName = type.GetAttribute<DisplayAttribute>();
-        if (configOptionName?.Name == null)
-        {
-            throw new NullReferenceException(nameof(configOptionName));
-        }
-
-        var config = await ConfigHelper.Instance.GetDecimal(configOptionName.Name, guildId);
-
-        if (config == null)
-        {
-            throw new NullReferenceException(nameof(config));
-        }
-
-        return config.Value;
+        var config = await ConfigHelper.Instance.GetDecimal(configOptionName!.Name!, guildId);
+        return config!.Value;
     }
 
     #region Singleton
