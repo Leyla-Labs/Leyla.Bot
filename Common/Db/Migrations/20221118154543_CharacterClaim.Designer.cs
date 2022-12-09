@@ -4,6 +4,7 @@ using Common.Db;
 using Common.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Common.Db.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20221118154543_CharacterClaim")]
+    partial class CharacterClaim
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,7 +25,6 @@ namespace Common.Db.Migrations
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "discord_entity_type", new[] { "channel", "role" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "user_log_type", new[] { "warning", "silence", "ban" });
-            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Common.Db.Models.CharacterClaim", b =>
@@ -52,22 +53,18 @@ namespace Common.Db.Migrations
                         .HasColumnType("numeric(20,0)")
                         .HasColumnName("user_id");
 
-                    b.Property<DateTime>("ValidUntil")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("valid_until");
-
                     b.HasKey("Id")
-                        .HasName("pk_character_claims");
+                        .HasName("pk_character_claim");
 
                     b.HasIndex("CharacterId")
                         .IsUnique()
-                        .HasDatabaseName("ix_character_claims_character_id");
+                        .HasDatabaseName("ix_character_claim_character_id");
 
                     b.HasIndex("Code")
                         .IsUnique()
-                        .HasDatabaseName("ix_character_claims_code");
+                        .HasDatabaseName("ix_character_claim_code");
 
-                    b.ToTable("character_claims", (string)null);
+                    b.ToTable("character_claim", (string)null);
                 });
 
             modelBuilder.Entity("Common.Db.Models.CommandLog", b =>
