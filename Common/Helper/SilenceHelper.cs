@@ -17,7 +17,7 @@ public class SilenceHelper
         var silenceRole = await ConfigHelper.Instance.GetRole(Config.Roles.Silence.Name, guild);
 
         if (silenceRole != null && member.Roles.Select(x => x.Id).Contains(silenceRole.Id) &&
-            !_memberSilences.Any(x => x.Member.Guild.Id == member.Guild.Id && x.Member.Id == member.Id))
+            _memberSilences.All(x => x.Member.Guild.Id != member.Guild.Id || x.Member.Id != member.Id))
         {
             _memberSilences.Add(new MemberSilence(member));
         }

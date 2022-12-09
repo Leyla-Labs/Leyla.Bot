@@ -74,7 +74,7 @@ internal static class ClientOnMessageDeleted
                 continue;
             }
 
-            if (!DiscordHelper.ImageFormats().Any(x => mEmb.Url.ToString().EndsWith($".{x}")))
+            if (DiscordHelper.ImageFormats().All(x => !mEmb.Url.ToString().EndsWith($".{x}")))
             {
                 continue;
             }
