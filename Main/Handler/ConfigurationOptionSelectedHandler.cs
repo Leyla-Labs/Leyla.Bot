@@ -133,7 +133,7 @@ internal sealed class ConfigurationOptionSelectedHandler : InteractionHandler
     {
         if (option.EnumType == null)
         {
-            throw new NullReferenceException(nameof(option.EnumType));
+            throw new ArgumentNullException(nameof(option), nameof(option.EnumType));
         }
 
         var currentConfig = await ConfigHelper.Instance.GetString(option.Name, EventArgs.Guild.Id);
