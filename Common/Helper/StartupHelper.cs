@@ -28,6 +28,7 @@ public class StartupHelper
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle(_bot.CurrentApplication.Name);
 
+        // skipcq: PYL-W0613
         if (Assembly.GetExecutingAssembly().GetName().Version is { } v)
         {
             embed.AddField("Version", $"{v.Major}.{v.Minor}.{v.Build}");
