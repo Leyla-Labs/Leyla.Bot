@@ -1,4 +1,5 @@
 using Common.Helper;
+using Common.Interfaces;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -6,9 +7,9 @@ using Humanizer;
 
 namespace Logs.Events;
 
-internal static class ClientOnMessageDeleted
+internal abstract class ClientOnMessageDeleted : IEventHandler<MessageDeleteEventArgs>
 {
-    public static async Task HandleEvent(DiscordClient sender, MessageDeleteEventArgs e)
+    public static async Task HandleEventAsync(DiscordClient sender, MessageDeleteEventArgs e)
     {
         if (e.Guild == null)
         {

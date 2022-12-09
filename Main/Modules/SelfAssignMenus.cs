@@ -11,7 +11,7 @@ namespace Main.Modules;
 internal sealed class SelfAssignMenus : ApplicationCommandLogModule
 {
     [SlashCommand("create", "Create a new self assign menu.")]
-    public async Task SlashCreate(InteractionContext ctx,
+    public async Task SlashCreateAsync(InteractionContext ctx,
         [Option("Title", "Title of the self assign menu to create")]
         string title,
         [Option("Description", "Optional description of the menu")]
@@ -21,13 +21,13 @@ internal sealed class SelfAssignMenus : ApplicationCommandLogModule
     }
 
     [SlashCommand("list", "List all self assign menus.")]
-    public async Task SlashList(InteractionContext ctx)
+    public async Task SlashListAsync(InteractionContext ctx)
     {
         await new List(ctx).RunAsync();
     }
 
     [SlashCommand("rename", "Renames a self assign menu.")]
-    public async Task SlashRename(InteractionContext ctx,
+    public async Task SlashRenameAsync(InteractionContext ctx,
         [Option("Title", "Title of the self assign menu to rename")]
         string title)
     {
@@ -35,7 +35,7 @@ internal sealed class SelfAssignMenus : ApplicationCommandLogModule
     }
 
     [SlashCommand("manage", "Manages a self assign menu.")]
-    public async Task SlashManage(InteractionContext ctx,
+    public async Task SlashManageAsync(InteractionContext ctx,
         [Option("Title", "Title of the self assign menu to manage")]
         string title)
     {
@@ -43,7 +43,7 @@ internal sealed class SelfAssignMenus : ApplicationCommandLogModule
     }
 
     [SlashCommand("delete", "Deletes a self assign menu. This is irreversible!")]
-    public async Task SlashDelete(InteractionContext ctx,
+    public async Task SlashDeleteAsync(InteractionContext ctx,
         [Option("Title", "Title of the self assign menu to delete. This is irreversible!")]
         string title)
     {
@@ -51,7 +51,7 @@ internal sealed class SelfAssignMenus : ApplicationCommandLogModule
     }
 
     [SlashCommand("post", "Posts a self assign menu in given channel.")]
-    public async Task SlashPost(InteractionContext ctx,
+    public async Task SlashPostAsync(InteractionContext ctx,
         [Option("Title", "Title of the self assign menu to post.")]
         string title,
         [Option("Channel", "Channel to post self assign menu in.")]

@@ -19,7 +19,7 @@ internal sealed class Ban : SlashCommand
 
     public override async Task RunAsync()
     {
-        var raidMembers = await RaidHelper.Instance.GetRaidMembers(Ctx.Guild.Id);
+        var raidMembers = await RaidHelper.Instance.GetRaidMembersAsync(Ctx.Guild.Id);
 
         if (raidMembers == null)
         {

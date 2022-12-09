@@ -1,12 +1,13 @@
 using Common.Helper;
+using Common.Interfaces;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 
 namespace Spam.Events;
 
-internal static class ClientOnGuildMemberRemoved
+internal abstract class ClientOnGuildMemberRemoved : IEventHandler<GuildMemberRemoveEventArgs>
 {
-    public static async Task HandleEvent(DiscordClient sender, GuildMemberRemoveEventArgs e)
+    public static async Task HandleEventAsync(DiscordClient sender, GuildMemberRemoveEventArgs e)
     {
         await SilenceHelper.Instance.ProcessUserLeft(e.Guild, e.Member);
     }

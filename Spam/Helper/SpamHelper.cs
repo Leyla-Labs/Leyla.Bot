@@ -9,7 +9,7 @@ using Spam.Enums;
 
 namespace Spam.Helper;
 
-internal delegate void MaxPressureExceededHandler(DiscordClient sender, MaxPressureExceededEventArgs args);
+internal delegate Task MaxPressureExceededHandler(DiscordClient sender, MaxPressureExceededEventArgs args);
 
 internal class SpamHelper
 {
@@ -21,13 +21,13 @@ internal class SpamHelper
 
     public static event MaxPressureExceededHandler? MaxPressureExceeded;
 
-    public async Task ProcessMessage(DiscordClient sender, DiscordMessage message)
+    public async Task ProcessMessageAsync(DiscordClient sender, DiscordMessage message)
     {
         var guildId = message.Channel.GuildId ?? throw new ArgumentNullException(nameof(message.Channel.GuildId));
 
         foreach (var type in (PressureType[]) Enum.GetValues(typeof(PressureType)))
         {
-            await IncreasePressure(type, message, guildId);
+            await IncreasePressureAsync(type, message, guildId);
         }
 
         var pressure = _pressures[guildId][message.Author.Id];
@@ -43,9 +43,9 @@ internal class SpamHelper
         }
     }
 
-    private async Task IncreasePressure(PressureType type, DiscordMessage message, ulong guildId)
+    private async Task IncreasePressureAsync(PressureType type, DiscordMessage message, ulong guildId)
     {
-        var n = await GetPressureConfig(type, guildId);
+        var n = await GetPressureConfigAsync(type, guildId);
 
         var addValue = type switch
         {
@@ -62,11 +62,11 @@ internal class SpamHelper
 
         if (addValue > 0m)
         {
-            await AddPressure(guildId, message.Author.Id, addValue);
+            await AddPressureAsync(guildId, message.Author.Id, addValue);
         }
     }
 
-    private async Task AddPressure(ulong guildId, ulong userId, decimal value)
+    private async Task AddPressureAsync(ulong guildId, ulong userId, decimal value)
     {
         if (_pressures.TryGetValue(guildId, out var guildDict))
         {
@@ -107,7 +107,7 @@ internal class SpamHelper
         return isRepeated;
     }
 
-    private static async Task<decimal> GetPressureConfig(PressureType type, ulong guildId)
+    private static async Task<decimal> GetPressureConfigAsync(PressureType type, ulong guildId)
     {
         var configOptionName = type.GetAttribute<DisplayAttribute>();
         var config = await ConfigHelper.Instance.GetDecimal(configOptionName!.Name!, guildId);

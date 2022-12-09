@@ -14,7 +14,7 @@ internal sealed class Moderation : ApplicationCommandLogModule
     [SlashRequireBotPermissions(Permissions.ManageRoles)]
     [SlashRequireGuild]
     [MenuRequireTargetMember]
-    public async Task MenuVerify(ContextMenuContext ctx)
+    public async Task MenuVerifyAsync(ContextMenuContext ctx)
     {
         await new Verify(ctx).RunAsync();
     }
@@ -22,7 +22,7 @@ internal sealed class Moderation : ApplicationCommandLogModule
     [SlashCommand("silence", "Silences a member.")]
     [SlashRequireBotPermissions(Permissions.ManageRoles)]
     [SlashRequireGuild]
-    public async Task SlashSilence(InteractionContext ctx,
+    public async Task SlashSilenceAsync(InteractionContext ctx,
         [Option("member", "Member to silence")]
         DiscordUser user)
     {
@@ -32,7 +32,7 @@ internal sealed class Moderation : ApplicationCommandLogModule
     [SlashCommand("unsilence", "Unsilences a member.")]
     [SlashRequireBotPermissions(Permissions.ManageRoles)]
     [SlashRequireGuild]
-    public async Task SlashUnsilence(InteractionContext ctx,
+    public async Task SlashUnsilenceAsync(InteractionContext ctx,
         [Option("member", "Member to unsilence")]
         DiscordUser user)
     {
