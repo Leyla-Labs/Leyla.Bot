@@ -1,5 +1,6 @@
 using System.Text;
 using Common.Helper;
+using Common.Interfaces;
 using Common.Strings;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -9,9 +10,9 @@ using Spam.Helper;
 
 namespace Spam.Events;
 
-internal static class RaidHelperOnRaidDetected
+internal abstract class RaidHelperOnRaidDetected : IEventHandler<RaidDetectedEventArgs>
 {
-    public static async void HandleEvent(DiscordClient sender, RaidDetectedEventArgs args)
+    public static async Task HandleEventAsync(DiscordClient sender, RaidDetectedEventArgs args)
     {
         var guild = args.RaidMembers[0].Guild;
 

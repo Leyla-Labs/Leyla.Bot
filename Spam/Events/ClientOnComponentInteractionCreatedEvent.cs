@@ -1,12 +1,13 @@
+using Common.Interfaces;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 using Spam.Handler;
 
 namespace Spam.Events;
 
-internal static class ClientOnComponentInteractionCreatedEvent
+internal abstract class ClientOnComponentInteractionCreatedEvent : IEventHandler<ComponentInteractionCreateEventArgs>
 {
-    public static async Task HandleEvent(DiscordClient sender,
+    public static async Task HandleEventAsync(DiscordClient sender,
         ComponentInteractionCreateEventArgs e)
     {
         // info consists of userId, name, and any further information after that

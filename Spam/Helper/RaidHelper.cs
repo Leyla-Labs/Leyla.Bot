@@ -10,7 +10,7 @@ using static Common.Strings.Config.Raid;
 
 namespace Spam.Helper;
 
-internal delegate void RaidDetecedHandler(DiscordClient sender, RaidDetectedEventArgs args);
+internal delegate Task RaidDetecedHandler(DiscordClient sender, RaidDetectedEventArgs args);
 
 internal class RaidHelper
 {

@@ -14,7 +14,7 @@ internal sealed class List : SlashCommand
 
     public override async Task RunAsync()
     {
-        var raidMembers = await RaidHelper.Instance.GetRaidMembers(Ctx.Guild.Id);
+        var raidMembers = await RaidHelper.Instance.GetRaidMembersAsync(Ctx.Guild.Id);
         await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(GetEmbed(raidMembers)));
     }
 

@@ -9,7 +9,7 @@ using Spam.Enums;
 
 namespace Spam.Helper;
 
-internal delegate void MaxPressureExceededHandler(DiscordClient sender, MaxPressureExceededEventArgs args);
+internal delegate Task MaxPressureExceededHandler(DiscordClient sender, MaxPressureExceededEventArgs args);
 
 internal class SpamHelper
 {

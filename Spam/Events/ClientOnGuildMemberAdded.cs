@@ -1,4 +1,5 @@
 using Common.Helper;
+using Common.Interfaces;
 using Common.Strings;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
@@ -6,9 +7,9 @@ using Spam.Helper;
 
 namespace Spam.Events;
 
-internal static class ClientOnGuildMemberAdded
+internal abstract class ClientOnGuildMemberAdded : IEventHandler<GuildMemberAddEventArgs>
 {
-    public static async Task HandleEvent(DiscordClient sender, GuildMemberAddEventArgs e)
+    public static async Task HandleEventAsync(DiscordClient sender, GuildMemberAddEventArgs e)
     {
         await SilenceHelper.Instance.ProcessUserJoined(e.Guild, e.Member);
 

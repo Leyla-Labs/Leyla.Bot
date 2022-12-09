@@ -1,4 +1,5 @@
 using Common.Helper;
+using Common.Interfaces;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -6,9 +7,9 @@ using Humanizer;
 
 namespace Logs.Events;
 
-internal static class ClientOnGuildMemberRemoved
+internal abstract class ClientOnGuildMemberRemoved : IEventHandler<GuildMemberRemoveEventArgs>
 {
-    public static async Task HandleEvent(DiscordClient sender, GuildMemberRemoveEventArgs e)
+    public static async Task HandleEventAsync(DiscordClient sender, GuildMemberRemoveEventArgs e)
     {
         var channel = await ConfigHelper.Instance.GetChannel("Moderator Channel", e.Guild);
         if (channel == null)
