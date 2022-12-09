@@ -21,7 +21,7 @@ public static class EnumExtension
         var member = enumValue.ToString();
         if (member == null)
         {
-            throw new NullReferenceException(nameof(member));
+            throw new ArgumentNullException(nameof(enumValue), nameof(member));
         }
 
         return enumValue.GetType()

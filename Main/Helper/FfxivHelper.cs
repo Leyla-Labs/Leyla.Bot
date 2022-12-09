@@ -15,7 +15,7 @@ namespace Main.Helper;
 
 internal static class FfxivHelper
 {
-    public static async Task<T?> SearchAndGetCharacterData<T>(InteractionContext ctx,
+    public static async Task<T?> SearchAndGetCharacterDataAsync<T>(InteractionContext ctx,
         string name, string? server, string selectId, bool asEphemeral, Func<int, Task<T?>> func)
     {
         HomeWorld? homeWorld = null;
@@ -74,7 +74,7 @@ internal static class FfxivHelper
     /// <param name="characterId">FFXIV Lodestone character ID.</param>
     /// <param name="bio">Lodestone bio for given character.</param>
     /// <returns>Tuple of claim status and code. Code is only returned if claim belongs to given userId.</returns>
-    public static async Task<(CharacterClaimStatus status, string? code)> CreateClaimIfNotExist(ulong userId,
+    public static async Task<(CharacterClaimStatus status, string? code)> CreateClaimIfNotExistAsync(ulong userId,
         int characterId, string? bio)
     {
         var code = LodestoneBioToCode(bio);
@@ -151,10 +151,10 @@ internal static class FfxivHelper
         };
     }
 
-    public static async Task RespondToSlashWithSheet(InteractionContext ctx, CharacterProfileExtended profile)
+    public static async Task RespondToSlashWithSheetAsync(InteractionContext ctx, CharacterProfileExtended profile)
     {
-        var helper = await CharacterSheetHelper.Create(profile);
-        var stream = await helper.GetCharacterSheet();
+        var helper = await CharacterSheetHelper.CreateAsync(profile);
+        var stream = await helper.GetCharacterSheetAsync();
         var fileName = helper.GetFileName();
         var btn = GetLodestoneLinkButton(profile.Character.Id);
         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddFile(fileName, stream, true).AddComponents(btn));

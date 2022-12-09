@@ -9,7 +9,7 @@ namespace Spam;
 
 public class Bot : Leyla
 {
-    protected override Task<DiscordClient> InitBot()
+    protected override Task<DiscordClient> InitBotAsync()
     {
         var client = new DiscordClient(new DiscordConfiguration
         {
@@ -19,14 +19,14 @@ public class Bot : Leyla
                       DiscordIntents.GuildMessages |
                       DiscordIntents.GuildMembers
         });
-        client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
-        client.MessageCreated += ClientOnMessageCreated.HandleEvent;
-        client.GuildMemberAdded += ClientOnGuildMemberAdded.HandleEvent;
-        client.GuildMemberRemoved += ClientOnGuildMemberRemoved.HandleEvent;
+        client.GuildDownloadCompleted += ClientOnGuildDownloadCompletedAsync;
+        client.MessageCreated += ClientOnMessageCreated.HandleEventAsync;
+        client.GuildMemberAdded += ClientOnGuildMemberAdded.HandleEventAsync;
+        client.GuildMemberRemoved += ClientOnGuildMemberRemoved.HandleEventAsync;
         client.ComponentInteractionCreated +=
-            ClientOnComponentInteractionCreatedEvent.HandleEvent;
-        SpamHelper.MaxPressureExceeded += SpamHelperOnMaxPressureExceeded.HandleEvent;
-        RaidHelper.RaidDetected += RaidHelperOnRaidDetected.HandleEvent;
+            ClientOnComponentInteractionCreatedEvent.HandleEventAsync;
+        SpamHelper.MaxPressureExceeded += SpamHelperOnMaxPressureExceeded.HandleEventAsync;
+        RaidHelper.RaidDetected += RaidHelperOnRaidDetected.HandleEventAsync;
         return Task.FromResult(client);
     }
 

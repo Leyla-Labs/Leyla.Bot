@@ -22,12 +22,12 @@ public class ActionResetHandler : InteractionHandler
         var optionId = Convert.ToInt32(_optionId);
         await GuildConfigHelper.Instance.ResetAsync(optionId, EventArgs.Guild.Id);
 
-        var embed = await CreateEmbed(optionId);
+        var embed = CreateEmbed(optionId);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
-    private static async Task<DiscordEmbed> CreateEmbed(int optionId)
+    private static DiscordEmbed CreateEmbed(int optionId)
     {
         var option = GuildConfigOptions.Instance.Get(optionId);
 

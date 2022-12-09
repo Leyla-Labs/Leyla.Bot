@@ -23,7 +23,7 @@ internal sealed class Edit : SlashCommand
 
     public override async Task RunAsync()
     {
-        var userLog = await GetUserLog();
+        var userLog = await GetUserLogAsync();
 
         if (userLog == null)
         {
@@ -36,7 +36,7 @@ internal sealed class Edit : SlashCommand
         await Ctx.CreateResponseAsync(InteractionResponseType.Modal, modal);
     }
 
-    private async Task<UserLog?> GetUserLog()
+    private async Task<UserLog?> GetUserLogAsync()
     {
         await using var context = new DatabaseContext();
         return await context.UserLogs.Where(x =>

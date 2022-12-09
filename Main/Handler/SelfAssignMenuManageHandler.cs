@@ -25,7 +25,7 @@ internal sealed class SelfAssignMenuManageHandler : InteractionHandler
     {
         await using var context = new DatabaseContext();
 
-        var menu = await GetSelfAssignMenu(context);
+        var menu = await GetSelfAssignMenuAsync(context);
 
         if (menu == null)
         {
@@ -34,12 +34,14 @@ internal sealed class SelfAssignMenuManageHandler : InteractionHandler
             return;
         }
 
-        var roleIds = EventArgs.Values.Select(x => Convert.ToUInt64(x));
-        await SetValues(context, menu, roleIds);
-        await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+        var roleIds = EventArgs.Values.Select(x => Convert.ToUInt64(x)).ToArray(); // skipcq: CS-R1068
+        await SetValuesAsync(context, menu, roleIds);
+        var embed = CreateEmbed(menu, roleIds);
+        await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+            new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
-    private async Task<SelfAssignMenu?> GetSelfAssignMenu(DatabaseContext context)
+    private async Task<SelfAssignMenu?> GetSelfAssignMenuAsync(DatabaseContext context)
     {
         var id = Convert.ToInt32(_menuId);
         return await context.SelfAssignMenus.Where(x =>
@@ -48,7 +50,19 @@ internal sealed class SelfAssignMenuManageHandler : InteractionHandler
             .FirstOrDefaultAsync();
     }
 
-    private static async Task SetValues(DatabaseContext context, SelfAssignMenu menu, IEnumerable<ulong> roleIds)
+    private DiscordEmbed CreateEmbed(SelfAssignMenu menu, IEnumerable<ulong> roleIds)
+    {
+        var embed = new DiscordEmbedBuilder();
+        embed.WithTitle($"Updated: {menu.Title}");
+        embed.WithDescription("The previous roles have been overwritten by your new selection.");
+
+        var roles = EventArgs.Guild.Roles.Where(x => roleIds.Contains(x.Key)).Select(x => x.Value.Mention);
+        embed.AddField("Roles", string.Join(Environment.NewLine, roles));
+
+        return embed.Build();
+    }
+
+    private static async Task SetValuesAsync(DatabaseContext context, SelfAssignMenu menu, IEnumerable<ulong> roleIds)
     {
         // delete assignments for roles unselected by user
         foreach (var assignment in menu.SelfAssignMenuDiscordEntityAssignments.Where(x =>
@@ -62,7 +76,7 @@ internal sealed class SelfAssignMenuManageHandler : InteractionHandler
         foreach (var roleId in roleIds.Where(x =>
                      !menu.SelfAssignMenuDiscordEntityAssignments.Select(y => y.DiscordEntityId).Contains(x)))
         {
-            await DiscordEntityHelper.CreateIfNotExist(DiscordEntityType.Role, roleId, menu.GuildId);
+            await DiscordEntityHelper.CreateIfNotExistAsync(DiscordEntityType.Role, roleId, menu.GuildId);
 
             createList.Add(new SelfAssignMenuDiscordEntityAssignment
             {

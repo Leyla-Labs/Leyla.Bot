@@ -21,7 +21,7 @@ public class Me : SlashCommand
 
     public override async Task RunAsync()
     {
-        var claims = await GetCharacterClaims();
+        var claims = await GetCharacterClaimsAsync();
 
         if (!claims.Any())
         {
@@ -45,7 +45,7 @@ public class Me : SlashCommand
 
         if (confirmedClaims.Length > 1)
         {
-            var characterSelect = await GetCharacterSelect(claims);
+            var characterSelect = await GetCharacterSelectAsync(claims);
             await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddComponents(characterSelect));
             return;
         }
@@ -61,10 +61,12 @@ public class Me : SlashCommand
             return;
         }
 
-        await FfxivHelper.RespondToSlashWithSheet(Ctx, profileExtended);
+        await FfxivHelper.RespondToSlashWithSheetAsync(Ctx, profileExtended);
     }
 
-    private async Task<IReadOnlyCollection<CharacterClaim>> GetCharacterClaims()
+    #region Instance methods
+
+    private async Task<IReadOnlyCollection<CharacterClaim>> GetCharacterClaimsAsync()
     {
         await using var context = new DatabaseContext();
 
@@ -73,7 +75,7 @@ public class Me : SlashCommand
             .ToArrayAsync();
     }
 
-    private async Task<DiscordSelectComponent> GetCharacterSelect(IEnumerable<CharacterClaim> claims)
+    private async Task<DiscordSelectComponent> GetCharacterSelectAsync(IEnumerable<CharacterClaim> claims)
     {
         var list = new List<Character>();
 
@@ -95,4 +97,6 @@ public class Me : SlashCommand
             : $" ({list.Count} results).";
         return new DiscordSelectComponent(name, $"Select character {suffix}", options, minOptions: 1, maxOptions: 1);
     }
+
+    #endregion
 }

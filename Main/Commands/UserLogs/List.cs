@@ -21,7 +21,7 @@ internal sealed class List : ContextMenuCommand
     {
         var embedBuilder = GetEmbedBuilder();
 
-        var userLogs = await GetUserLogs();
+        var userLogs = await GetUserLogsAsync();
         if (userLogs.Count == 0)
         {
             embedBuilder.WithDescription("No logs");
@@ -29,9 +29,9 @@ internal sealed class List : ContextMenuCommand
         else
         {
             var sb = new StringBuilder();
-            await AddLogFields(sb, userLogs, UserLogType.Warning);
-            await AddLogFields(sb, userLogs, UserLogType.Silence);
-            await AddLogFields(sb, userLogs, UserLogType.Ban);
+            await AddLogFieldsAsync(sb, userLogs, UserLogType.Warning);
+            await AddLogFieldsAsync(sb, userLogs, UserLogType.Silence);
+            await AddLogFieldsAsync(sb, userLogs, UserLogType.Ban);
             embedBuilder.WithDescription(sb.ToString());
         }
 
@@ -39,7 +39,7 @@ internal sealed class List : ContextMenuCommand
             new DiscordInteractionResponseBuilder().AddEmbed(embedBuilder.Build()).AsEphemeral());
     }
 
-    private async Task<List<(int, UserLog)>> GetUserLogs()
+    private async Task<List<(int, UserLog)>> GetUserLogsAsync()
     {
         await using var context = new DatabaseContext();
 
@@ -59,7 +59,7 @@ internal sealed class List : ContextMenuCommand
         return embed;
     }
 
-    private async Task AddLogFields(StringBuilder sb, ICollection<(int, UserLog)> userLogs, UserLogType type)
+    private async Task AddLogFieldsAsync(StringBuilder sb, ICollection<(int, UserLog)> userLogs, UserLogType type)
     {
         if (userLogs.All(x => x.Item2.Type != type))
         {
@@ -69,7 +69,7 @@ internal sealed class List : ContextMenuCommand
         var logs = new List<string>();
         foreach (var userLog in userLogs.Where(x => x.Item2.Type == type))
         {
-            logs.Add(await GetUserLogString(userLog));
+            logs.Add(await GetUserLogStringAsync(userLog));
         }
 
         sb.Append($"**__{type.ToString()}__** ({logs.Count}){Environment.NewLine}{Environment.NewLine}");
@@ -78,10 +78,10 @@ internal sealed class List : ContextMenuCommand
         sb.Append(logStr);
     }
 
-    private async Task<string> GetUserLogString((int, UserLog) log)
+    private async Task<string> GetUserLogStringAsync((int, UserLog) log)
     {
         var dateStr = Formatter.Timestamp(log.Item2.Date, TimestampFormat.ShortDateTime);
-        var author = await Ctx.GetMember(log.Item2.AuthorId);
+        var author = await Ctx.GetMemberAsync(log.Item2.AuthorId);
         var authorName = author?.DisplayName ?? log.Item2.AuthorId.ToString();
         var n = Environment.NewLine;
 

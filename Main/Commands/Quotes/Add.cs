@@ -25,11 +25,11 @@ internal sealed class Add : ContextMenuCommand
         {
             await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AddErrorEmbed("Duplicate Quote",
-                    "That message has already been quoted."));
+                    "That message has already been quoted.").AsEphemeral());
             return;
         }
 
-        var displayName = await Ctx.GetDisplayName(Ctx.TargetMessage.Author.Id);
+        var displayName = await Ctx.GetDisplayNameAsync(Ctx.TargetMessage.Author.Id);
 
         // show modal
         var responseBuilder = GetModal(displayName);
@@ -46,7 +46,7 @@ internal sealed class Add : ContextMenuCommand
         // get value from modal and add to database
         var modalInteraction = userResponse.Result.Interaction;
         var text = userResponse.Result.Values["text"];
-        await AddToDatabase(msg, Ctx.TargetMessage.Author.Id, Ctx.Guild.Id, text);
+        await AddToDatabaseAsync(msg, Ctx.TargetMessage.Author.Id, Ctx.Guild.Id, text);
 
         // show confirmation embed
         var embed = GetConfirmationEmbed(msg, displayName, text);
@@ -80,10 +80,10 @@ internal sealed class Add : ContextMenuCommand
         return response;
     }
 
-    private async Task AddToDatabase(DiscordMessage m, ulong userId, ulong guildId,
+    private async Task AddToDatabaseAsync(DiscordMessage m, ulong userId, ulong guildId,
         string text)
     {
-        await MemberHelper.CreateIfNotExist(guildId, userId);
+        await MemberHelper.CreateIfNotExistAsync(guildId, userId);
 
         await DbCtx.Quotes.AddAsync(new Quote
         {

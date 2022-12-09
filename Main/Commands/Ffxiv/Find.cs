@@ -23,7 +23,7 @@ public sealed class Find : SlashCommand
     public override async Task RunAsync()
     {
         var profile =
-            await FfxivHelper.SearchAndGetCharacterData(Ctx, _name, _server, "ffxivCharacterSheet", false,
+            await FfxivHelper.SearchAndGetCharacterDataAsync(Ctx, _name, _server, "ffxivCharacterSheet", false,
                 async x => await new XivApiClient().CharacterProfileExtended(x,
                     CharacterProfileOptions.FreeCompany | CharacterProfileOptions.MinionsMounts));
 
@@ -32,7 +32,7 @@ public sealed class Find : SlashCommand
             return;
         }
 
-        await FfxivHelper.RespondToSlashWithSheet(Ctx, profile);
+        await FfxivHelper.RespondToSlashWithSheetAsync(Ctx, profile);
     }
 
     #region Instance methods

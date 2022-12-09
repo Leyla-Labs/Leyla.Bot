@@ -1,14 +1,15 @@
 using Common.Enums;
 using Common.Helper;
+using Common.Interfaces;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 
 namespace Main.Events;
 
-internal static class ClientOnGuildRoleDeleted
+internal abstract class ClientOnGuildRoleDeleted : IEventHandler<GuildRoleDeleteEventArgs>
 {
-    public static async Task HandleEvent(DiscordClient sender, GuildRoleDeleteEventArgs e)
+    public static async Task HandleEventAsync(DiscordClient sender, GuildRoleDeleteEventArgs e)
     {
-        await DiscordEntityHelper.DeleteIfExists(DiscordEntityType.Role, e.Role.Id, e.Guild.Id);
+        await DiscordEntityHelper.DeleteIfExistsAsync(DiscordEntityType.Role, e.Role.Id, e.Guild.Id);
     }
 }

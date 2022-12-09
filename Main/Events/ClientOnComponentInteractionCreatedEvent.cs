@@ -6,7 +6,7 @@ namespace Main.Events;
 
 internal static class ClientOnComponentInteractionCreatedEvent
 {
-    public static async Task ClientOnComponentInteractionCreated(DiscordClient sender,
+    public static async Task ClientOnComponentInteractionCreatedAsync(DiscordClient sender,
         ComponentInteractionCreateEventArgs e)
     {
         // info consists of userId, name, and any further information after that
@@ -31,7 +31,7 @@ internal static class ClientOnComponentInteractionCreatedEvent
             case "selfAssignMenuSelected" when additionalInfo.Length < 1:
             case "configCategories" when additionalInfo.Length < 1:
             case "configOptionAction" when additionalInfo.Length < 2:
-                throw new NullReferenceException(nameof(additionalInfo));
+                throw new ArgumentNullException(nameof(e), nameof(additionalInfo));
             case "configCategories":
                 await new ConfigurationCategorySelectedHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;

@@ -1,5 +1,6 @@
 using System.Text;
 using Common.Helper;
+using Common.Interfaces;
 using Common.Strings;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -9,9 +10,9 @@ using Spam.Helper;
 
 namespace Spam.Events;
 
-internal static class RaidHelperOnRaidDetected
+internal abstract class RaidHelperOnRaidDetected : IEventHandler<RaidDetectedEventArgs>
 {
-    public static async void HandleEvent(DiscordClient sender, RaidDetectedEventArgs args)
+    public static async Task HandleEventAsync(DiscordClient sender, RaidDetectedEventArgs args)
     {
         var guild = args.RaidMembers[0].Guild;
 
@@ -33,18 +34,16 @@ internal static class RaidHelperOnRaidDetected
         if (lockdownDuration > 0)
         {
             components.Add(GetLockdownButton(guild));
-            await RaidHelper.Instance.EnableLockdown(guild, lockdownDuration.Value);
+            await RaidHelper.Instance.EnableLockdownAsync(guild, lockdownDuration.Value);
             embed = AddLockdownToDescription(embed, guild, lockdownDuration.Value);
         }
 
         var builder = new DiscordMessageBuilder().AddEmbed(embed).AddComponents(components);
 
-        if (await GuildConfigHelper.Instance.GetBoolAsync(Config.Raid.NotifyModerators.Name, guild.Id) == true)
+        if (await GuildConfigHelper.Instance.GetBoolAsync(Config.Raid.NotifyModerators.Name, guild.Id) == true &&
+            await GuildConfigHelper.Instance.GetRoleAsync(Config.Roles.Mod.Name, guild) is { } role)
         {
-            if (await GuildConfigHelper.Instance.GetRoleAsync(Config.Roles.Mod.Name, guild) is { } role)
-            {
-                builder.WithContent(role.Mention);
-            }
+            builder.WithContent(role.Mention);
         }
 
         await modChannel.SendMessageAsync(builder);

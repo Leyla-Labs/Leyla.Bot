@@ -1,12 +1,13 @@
+using Common.Interfaces;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 using Spam.Handler;
 
 namespace Spam.Events;
 
-internal static class ClientOnComponentInteractionCreatedEvent
+internal abstract class ClientOnComponentInteractionCreatedEvent : IEventHandler<ComponentInteractionCreateEventArgs>
 {
-    public static async Task HandleEvent(DiscordClient sender,
+    public static async Task HandleEventAsync(DiscordClient sender,
         ComponentInteractionCreateEventArgs e)
     {
         // info consists of userId, name, and any further information after that
@@ -25,7 +26,7 @@ internal static class ClientOnComponentInteractionCreatedEvent
         {
             case "raidMode" when additionalInfo.Length < 1:
             case "disableLockdown" when additionalInfo.Length < 1:
-                throw new NullReferenceException(nameof(additionalInfo));
+                throw new ArgumentNullException(nameof(e), nameof(additionalInfo));
             case "raidMode":
                 await new RaidModeSelectedHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;

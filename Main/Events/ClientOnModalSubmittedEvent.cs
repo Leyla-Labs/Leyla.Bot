@@ -6,7 +6,7 @@ namespace Main.Events;
 
 internal static class ClientOnModalSubmittedEvent
 {
-    public static async Task ClientOnModalSubmitted(DiscordClient sender, ModalSubmitEventArgs e)
+    public static async Task ClientOnModalSubmittedAsync(DiscordClient sender, ModalSubmitEventArgs e)
     {
         // info consists of userId, name, and any further information after that
         var info = e.Interaction.Data.CustomId.Split("_");
@@ -26,7 +26,7 @@ internal static class ClientOnModalSubmittedEvent
             case "addUserLog" when additionalInfo.Length < 2:
             case "editUserLog" when additionalInfo.Length < 1:
             case "renameMenu" when additionalInfo.Length < 1:
-                throw new NullReferenceException(nameof(additionalInfo));
+                throw new ArgumentNullException(nameof(e), nameof(additionalInfo));
             case "configOptionValueGiven":
                 await new ConfigurationOptionValueGivenHandler(sender, e, additionalInfo[0]).RunAsync();
                 break;

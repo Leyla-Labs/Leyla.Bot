@@ -11,7 +11,7 @@ internal sealed class AniList : ApplicationCommandLogModule
 {
     [SlashCommand("anime", "Shows information for the given anime.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
-    public async Task SlashAnime(InteractionContext ctx,
+    public async Task SlashAnimeAsync(InteractionContext ctx,
         [Option("Title", "Title of the anime to search for")]
         string title)
     {
@@ -20,7 +20,7 @@ internal sealed class AniList : ApplicationCommandLogModule
 
     [SlashCommand("manga", "Shows information for the given manga.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
-    public async Task SlashManga(InteractionContext ctx,
+    public async Task SlashMangaAsync(InteractionContext ctx,
         [Option("Title", "Title of the manga to search for")]
         string title)
     {
@@ -29,7 +29,7 @@ internal sealed class AniList : ApplicationCommandLogModule
 
     [SlashCommand("character", "Shows information for the given character.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
-    public async Task SlashCharacter(InteractionContext ctx,
+    public async Task SlashCharacterAsync(InteractionContext ctx,
         [Option("Name", "Name of the character to search for")]
         string name)
     {

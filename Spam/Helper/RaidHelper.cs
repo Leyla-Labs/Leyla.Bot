@@ -10,7 +10,7 @@ using static Common.Strings.Config.Raid;
 
 namespace Spam.Helper;
 
-internal delegate void RaidDetecedHandler(DiscordClient sender, RaidDetectedEventArgs args);
+internal delegate Task RaidDetecedHandler(DiscordClient sender, RaidDetectedEventArgs args);
 
 internal class RaidHelper
 {
@@ -23,7 +23,7 @@ internal class RaidHelper
 
     public static event RaidDetecedHandler? RaidDetected;
 
-    public async Task AddMember(DiscordClient sender, DiscordMember member)
+    public async Task AddMemberAsync(DiscordClient sender, DiscordMember member)
     {
         var guildId = member.Guild.Id;
 
@@ -71,7 +71,7 @@ internal class RaidHelper
         }
     }
 
-    public async Task<List<DiscordMember>?> GetRaidMembers(ulong guildId)
+    public async Task<List<DiscordMember>?> GetRaidMembersAsync(ulong guildId)
     {
         var raidSize = await GuildConfigHelper.Instance.GetIntAsync(RaidSize.Name, guildId) ?? 0;
         return GetRaidMembers(guildId, raidSize);
@@ -83,7 +83,7 @@ internal class RaidHelper
         return guildJoins?.Count >= raidSize ? guildJoins : null;
     }
 
-    public async Task<DiscordEmbed> EnableRaidModeAndGetEmbed(DiscordGuild guild)
+    public async Task<DiscordEmbed> EnableRaidModeAndGetEmbedAsync(DiscordGuild guild)
     {
         await GuildConfigHelper.Instance.SetAsync(RaidMode.Name, guild.Id, true);
 
@@ -95,13 +95,13 @@ internal class RaidHelper
             ? guildList
             : new List<DiscordMember>();
 
-        await AddRaidRoleToMembers(guild, membersToSilence);
-        await MentionMembersInRaidChannel(guild, membersToSilence);
+        await AddRaidRoleToMembersAsync(guild, membersToSilence);
+        await MentionMembersInRaidChannelAsync(guild, membersToSilence);
 
         return GetRaidModeEnabledEmbed(membersToSilence);
     }
 
-    private static async Task AddRaidRoleToMembers(DiscordGuild guild, IEnumerable<DiscordMember> members)
+    private static async Task AddRaidRoleToMembersAsync(DiscordGuild guild, IEnumerable<DiscordMember> members)
     {
         var raidRole = await GuildConfigHelper.Instance.GetRoleAsync(RaidRole.Name, guild);
 
@@ -116,12 +116,12 @@ internal class RaidHelper
         }
     }
 
-    public static async Task MentionMembersInRaidChannel(DiscordGuild guild, DiscordMember member)
+    public static async Task MentionMembersInRaidChannelAsync(DiscordGuild guild, DiscordMember member)
     {
-        await MentionMembersInRaidChannel(guild, new List<DiscordMember> {member});
+        await MentionMembersInRaidChannelAsync(guild, new List<DiscordMember> {member});
     }
 
-    public static async Task MentionMembersInRaidChannel(DiscordGuild guild, List<DiscordMember> members)
+    public static async Task MentionMembersInRaidChannelAsync(DiscordGuild guild, List<DiscordMember> members)
     {
         var raidMessage =
             await GuildConfigHelper.Instance.GetStringAsync(RaidMessage.Name, guild.Id);
@@ -155,7 +155,7 @@ internal class RaidHelper
         return embed.Build();
     }
 
-    public async Task EnableLockdown(DiscordGuild guild, int duration)
+    public async Task EnableLockdownAsync(DiscordGuild guild, int duration)
     {
         var timer = new LockdownTimer(guild, duration);
         timer.Elapsed += TimerOnElapsed;
@@ -172,10 +172,10 @@ internal class RaidHelper
         lockdownTimer.Stop();
         _lockdownTimers.Remove(lockdownTimer);
         await lockdownTimer.DiscordGuild.ModifyAsync(x => x.VerificationLevel = lockdownTimer.VerificationLevel);
-        await SendLockdownDisabledMessage(lockdownTimer.DiscordGuild);
+        await SendLockdownDisabledMessageAsync(lockdownTimer.DiscordGuild);
     }
 
-    public static async Task SendLockdownDisabledMessage(DiscordGuild guild)
+    public static async Task SendLockdownDisabledMessageAsync(DiscordGuild guild)
     {
         var modChannel = await GuildConfigHelper.Instance.GetChannelAsync(Config.Channels.Mod.Name, guild);
         if (modChannel == null)

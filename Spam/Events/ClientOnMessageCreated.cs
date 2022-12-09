@@ -1,12 +1,13 @@
+using Common.Interfaces;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 using Spam.Helper;
 
 namespace Spam.Events;
 
-internal static class ClientOnMessageCreated
+internal abstract class ClientOnMessageCreated : IEventHandler<MessageCreateEventArgs>
 {
-    public static async Task HandleEvent(DiscordClient sender, MessageCreateEventArgs e)
+    public static async Task HandleEventAsync(DiscordClient sender, MessageCreateEventArgs e)
     {
         if (e.Channel?.GuildId == null)
         {
@@ -19,6 +20,6 @@ internal static class ClientOnMessageCreated
             return;
         }
 
-        await SpamHelper.Instance.ProcessMessage(sender, e.Message);
+        await SpamHelper.Instance.ProcessMessageAsync(sender, e.Message);
     }
 }

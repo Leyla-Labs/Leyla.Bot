@@ -12,21 +12,21 @@ internal sealed class UserLogs : ApplicationCommandLogModule
 {
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Add User Log")]
     [SlashRequireGuild]
-    public async Task MenuAdd(ContextMenuContext ctx)
+    public async Task MenuAddAsync(ContextMenuContext ctx)
     {
         await new Add(ctx).RunAsync();
     }
 
     [ContextMenu(ApplicationCommandType.UserContextMenu, "Show logs")]
     [SlashRequireGuild]
-    public async Task SlashList(ContextMenuContext ctx)
+    public async Task SlashListAsync(ContextMenuContext ctx)
     {
         await new List(ctx).RunAsync();
     }
 
     [SlashCommand("edit", "Edits a log.")]
     [SlashRequireGuild]
-    public async Task SlashEdit(InteractionContext ctx,
+    public async Task SlashEditAsync(InteractionContext ctx,
         [Option("user", "User to edit log of")]
         DiscordUser user,
         [Option("n", "Number of log to edit")] long n)
@@ -36,7 +36,7 @@ internal sealed class UserLogs : ApplicationCommandLogModule
 
     [SlashCommand("delete", "Deletes a log. This is irreversible!")]
     [SlashRequireGuild]
-    public async Task SlashDelete(InteractionContext ctx,
+    public async Task SlashDeleteAsync(InteractionContext ctx,
         [Option("user", "User to delete log of")]
         DiscordUser user,
         [Option("n", "Number of log to delete. This is irreversible!")]

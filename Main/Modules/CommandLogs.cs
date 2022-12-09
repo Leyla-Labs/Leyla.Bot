@@ -11,7 +11,7 @@ internal sealed class CommandLogs : ApplicationCommandLogModule
 {
     [SlashCommand("recent", "Shows recent user logs.")]
     [SlashRequireGuild]
-    public async Task SlashRecent(InteractionContext ctx,
+    public async Task SlashRecentAsync(InteractionContext ctx,
         [Option("n", "Number of entries to show (default 10, max 100)")]
         long n = 10)
     {
@@ -20,7 +20,7 @@ internal sealed class CommandLogs : ApplicationCommandLogModule
 
     [SlashCommand("user", "Shows 10 most recent logs for given user.")]
     [SlashRequireGuild]
-    public async Task SlashUser(InteractionContext ctx,
+    public async Task SlashUserAsync(InteractionContext ctx,
         [Option("user", "User to show entries of.")]
         DiscordUser user)
     {

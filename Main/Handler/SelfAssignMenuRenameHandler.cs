@@ -23,7 +23,7 @@ internal sealed class SelfAssignMenuRenameHandler : ModalHandler
     {
         await using var context = new DatabaseContext();
 
-        var menu = await GetSelfAssignMenu(context);
+        var menu = await GetSelfAssignMenuAsync(context);
 
         if (menu == null)
         {
@@ -34,26 +34,28 @@ internal sealed class SelfAssignMenuRenameHandler : ModalHandler
 
         var title = EventArgs.Values["title"] ?? string.Empty;
 
-        if (await context.SelfAssignMenus.AnyAsync(x => x.GuildId == menu.GuildId && x.Title.Equals(title)))
+        if (await context.SelfAssignMenus.AnyAsync(x =>
+                x.GuildId == menu.GuildId && x.Title.Equals(title) && x.Id != menu.Id))
         {
             await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder()
-                    .AddErrorEmbed("A Self Assign Menu with that title already exists.").AsEphemeral());
+                    .AddErrorEmbed($"A Self Assign Menu with that title ({title}) already exists.").AsEphemeral());
             return;
         }
 
         var description = EventArgs.Values["description"];
-        await EditInDatabase(context, menu, title, description);
+        await EditInDatabaseAsync(context, menu, title, description);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
     }
 
-    private async Task<SelfAssignMenu?> GetSelfAssignMenu(DatabaseContext context)
+    private async Task<SelfAssignMenu?> GetSelfAssignMenuAsync(DatabaseContext context)
     {
         var id = Convert.ToInt32(_menuId);
         return await context.SelfAssignMenus.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    private static async Task EditInDatabase(DbContext context, SelfAssignMenu menu, string title, string? description)
+    private static async Task EditInDatabaseAsync(DbContext context, SelfAssignMenu menu, string title,
+        string? description)
     {
         menu.Title = title;
         menu.Description = description;

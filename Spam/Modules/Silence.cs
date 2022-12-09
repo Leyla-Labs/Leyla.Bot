@@ -14,7 +14,7 @@ internal sealed class Silence : ApplicationCommandLogModule
     [SlashCommand("for", "Silences for the given duration.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
     [SlashRequireGuild]
-    public async Task SlashSilenceUntil(InteractionContext ctx,
+    public async Task SlashSilenceUntilAsync(InteractionContext ctx,
         [Option("member", "Member to silence")]
         DiscordUser user,
         [Option("n", "How long to silence. Minutes, hours, and days are defined next.")]

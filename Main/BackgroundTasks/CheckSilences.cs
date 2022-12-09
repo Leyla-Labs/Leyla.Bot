@@ -38,12 +38,12 @@ internal class CheckSilences : IScheduledTask
 
             if (updatedMember != null)
             {
-                await SendModMessage(updatedMember);
+                await SendModMessageAsync(updatedMember);
             }
         }
     }
 
-    private static async Task SendModMessage(DiscordMember member)
+    private static async Task SendModMessageAsync(DiscordMember member)
     {
         if (await GuildConfigHelper.Instance.GetChannelAsync(Config.Channels.Mod.Name, member.Guild) is { } modChannel)
         {

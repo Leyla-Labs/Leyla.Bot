@@ -22,7 +22,7 @@ internal sealed class Delete : SlashCommand
     {
         await using var context = new DatabaseContext();
 
-        if (await GetStash(context) is not { } stash)
+        if (await GetStashAsync(context) is not { } stash)
         {
             await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AddErrorEmbed("Stash not found").AsEphemeral());
@@ -38,7 +38,7 @@ internal sealed class Delete : SlashCommand
 
     #region Instance methods
 
-    private async Task<Stash?> GetStash(DatabaseContext context)
+    private async Task<Stash?> GetStashAsync(DatabaseContext context)
     {
         return await context.Stashes.Where(x =>
                 x.GuildId == Ctx.Guild.Id &&

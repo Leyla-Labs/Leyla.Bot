@@ -17,7 +17,7 @@ internal sealed class Configure : SlashCommand
 
     public override async Task RunAsync()
     {
-        var categories = await GetCategories();
+        var categories = await GetCategoriesAsync();
         var embed = CreateCategoryEmbed(categories);
         var buttons = CreateButtons(categories);
 
@@ -51,9 +51,9 @@ internal sealed class Configure : SlashCommand
 
     #region Instance methods
 
-    private async Task<ICollection<ConfigOptionCategory>> GetCategories()
+    private async Task<ICollection<ConfigOptionCategory>> GetCategoriesAsync()
     {
-        var modules = await Ctx.Guild.GetGuildModules();
+        var modules = await Ctx.Guild.GetGuildModulesAsync();
         return GuildConfigOptionCategories.Instance.Get().Where(x => modules.Contains(x.Module)).ToArray();
     }
 

@@ -17,7 +17,7 @@ internal sealed class PickStashSelectedHandler : InteractionHandler
 
     public override async Task RunAsync()
     {
-        var entry = await GetStashEntry();
+        var entry = await GetStashEntryAsync();
 
         if (entry == null)
         {
@@ -30,7 +30,7 @@ internal sealed class PickStashSelectedHandler : InteractionHandler
         await EventArgs.Channel.SendMessageAsync(entry.Value);
     }
 
-    private async Task<StashEntry?> GetStashEntry()
+    private async Task<StashEntry?> GetStashEntryAsync()
     {
         var id = Convert.ToInt32(EventArgs.Values[0]);
 

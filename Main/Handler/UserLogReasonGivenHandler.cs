@@ -38,18 +38,18 @@ internal sealed class UserLogReasonGivenHandler : ModalHandler
             return;
         }
 
-        await AddToDatabase(reason, additionalDetails, date.Value);
+        await AddToDatabaseAsync(reason, additionalDetails, date.Value);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
         // TODO post entry in logs
     }
 
-    private async Task AddToDatabase(string reason, string additionalDetails, DateTime date)
+    private async Task AddToDatabaseAsync(string reason, string additionalDetails, DateTime date)
     {
         var guildId = EventArgs.Interaction.Guild.Id;
         var authorId = EventArgs.Interaction.User.Id;
         var userId = Convert.ToUInt64(_userId);
-        await MemberHelper.CreateIfNotExist(guildId, userId); // create target user
-        await MemberHelper.CreateIfNotExist(guildId, authorId); // create author
+        await MemberHelper.CreateIfNotExistAsync(guildId, userId); // create target user
+        await MemberHelper.CreateIfNotExistAsync(guildId, authorId); // create author
 
         await using var context = new DatabaseContext();
         await context.UserLogs.AddAsync(new UserLog

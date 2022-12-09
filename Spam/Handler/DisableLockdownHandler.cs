@@ -22,6 +22,6 @@ internal sealed class DisableLockdownHandler : InteractionHandler
         var verificationLevel = (VerificationLevel) Convert.ToInt32(_verificationLevel);
         RaidHelper.Instance.StopLockdownTimer(EventArgs.Guild.Id);
         await EventArgs.Guild.ModifyAsync(x => x.VerificationLevel = verificationLevel);
-        await RaidHelper.SendLockdownDisabledMessage(EventArgs.Guild);
+        await RaidHelper.SendLockdownDisabledMessageAsync(EventArgs.Guild);
     }
 }

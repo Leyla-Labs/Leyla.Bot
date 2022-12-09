@@ -13,7 +13,7 @@ internal sealed class On : SlashCommand
 
     public override async Task RunAsync()
     {
-        var embed = await RaidHelper.Instance.EnableRaidModeAndGetEmbed(Ctx.Guild);
+        var embed = await RaidHelper.Instance.EnableRaidModeAndGetEmbedAsync(Ctx.Guild);
         await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed));
     }
 }

@@ -12,20 +12,18 @@ public class SilenceHelper
     {
     }
 
-    public async Task ProcessUserLeft(DiscordGuild guild, DiscordMember member)
+    public async Task ProcessUserLeftAsync(DiscordGuild guild, DiscordMember member)
     {
         var silenceRole = await GuildConfigHelper.Instance.GetRoleAsync(Config.Roles.Silence.Name, guild);
 
-        if (silenceRole != null && member.Roles.Select(x => x.Id).Contains(silenceRole.Id))
+        if (silenceRole != null && member.Roles.Select(x => x.Id).Contains(silenceRole.Id) &&
+            _memberSilences.All(x => x.Member.Guild.Id != member.Guild.Id || x.Member.Id != member.Id))
         {
-            if (!_memberSilences.Any(x => x.Member.Guild.Id == member.Guild.Id && x.Member.Id == member.Id))
-            {
-                _memberSilences.Add(new MemberSilence(member));
-            }
+            _memberSilences.Add(new MemberSilence(member));
         }
     }
 
-    public async Task ProcessUserJoined(DiscordGuild guild, DiscordMember member)
+    public async Task ProcessUserJoinedAsync(DiscordGuild guild, DiscordMember member)
     {
         var entry = _memberSilences.FirstOrDefault(x => x.Member.Guild.Id == guild.Id && x.Member.Id == member.Id);
 

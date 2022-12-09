@@ -14,7 +14,7 @@ namespace Common.Db.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
     [Migration("20221119124908_uuid")]
-    partial class uuid
+    partial class Uuid
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

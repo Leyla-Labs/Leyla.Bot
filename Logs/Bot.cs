@@ -6,7 +6,7 @@ namespace Logs;
 
 public class Bot : Leyla
 {
-    protected override Task<DiscordClient> InitBot()
+    protected override Task<DiscordClient> InitBotAsync()
     {
         var client = new DiscordClient(new DiscordConfiguration
         {
@@ -16,11 +16,11 @@ public class Bot : Leyla
                       | DiscordIntents.GuildMessages
                       | DiscordIntents.GuildMembers
         });
-        client.GuildDownloadCompleted += ClientOnGuildDownloadCompleted;
-        client.GuildMemberAdded += ClientOnGuildMemberAdded.HandleEvent;
-        client.GuildMemberRemoved += ClientOnGuildMemberRemoved.HandleEvent;
-        client.MessageDeleted += ClientOnMessageDeleted.HandleEvent;
-        client.MessageUpdated += ClientOnMessageUpdated.HandleEvent;
+        client.GuildDownloadCompleted += ClientOnGuildDownloadCompletedAsync;
+        client.GuildMemberAdded += ClientOnGuildMemberAdded.HandleEventAsync;
+        client.GuildMemberRemoved += ClientOnGuildMemberRemoved.HandleEventAsync;
+        client.MessageDeleted += ClientOnMessageDeleted.HandleEventAsync;
+        client.MessageUpdated += ClientOnMessageUpdated.HandleEventAsync;
         return Task.FromResult(client);
     }
 }

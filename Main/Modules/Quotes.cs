@@ -14,7 +14,7 @@ internal sealed class Quotes : ApplicationCommandLogModule
 {
     [SlashCommand("show", "Shows a specific quote.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
-    public async Task SlashShow(InteractionContext ctx,
+    public async Task SlashShowAsync(InteractionContext ctx,
         [Option("user", "User to show quote of")]
         DiscordUser user,
         [Option("n", "Number of the quote to show")]
@@ -25,7 +25,7 @@ internal sealed class Quotes : ApplicationCommandLogModule
     }
 
     [SlashCommand("list", "Lists all quotes from given user.")]
-    public async Task SlashList(InteractionContext ctx,
+    public async Task SlashListAsync(InteractionContext ctx,
         [Option("user", "User to list quotes of")]
         DiscordUser user)
     {
@@ -35,13 +35,13 @@ internal sealed class Quotes : ApplicationCommandLogModule
 
     [SlashCommand("random", "Shows a random quote.")]
     [SlashRequireBotPermissions(Permissions.SendMessages | Permissions.EmbedLinks)]
-    public async Task SlashRandom(InteractionContext ctx)
+    public async Task SlashRandomAsync(InteractionContext ctx)
     {
         await new Random(ctx).RunAsync();
     }
 
     [SlashCommand("search", "Search through quotes containing query.")]
-    public async Task SlashSearch(InteractionContext ctx,
+    public async Task SlashSearchAsync(InteractionContext ctx,
         [Option("query", "Query to search for")]
         string query)
     {
@@ -54,13 +54,13 @@ internal sealed class Quotes : ApplicationCommandLogModule
 internal sealed class QuotesM : ApplicationCommandModule
 {
     [ContextMenu(ApplicationCommandType.MessageContextMenu, "Add Quote")]
-    public async Task MenuAdd(ContextMenuContext ctx)
+    public async Task MenuAddAsync(ContextMenuContext ctx)
     {
         await new Add(ctx).RunAsync();
     }
 
     [SlashCommand("edit", "Edits a quote.")]
-    public async Task SlashEdit(InteractionContext ctx,
+    public async Task SlashEditAsync(InteractionContext ctx,
         [Option("user", "User to edit quote of")]
         DiscordUser user,
         [Option("n", "Number of the quote to edit")]
@@ -70,7 +70,7 @@ internal sealed class QuotesM : ApplicationCommandModule
     }
 
     [SlashCommand("delete", "Deletes a quote.")]
-    public async Task SlashDelete(InteractionContext ctx,
+    public async Task SlashDeleteAsync(InteractionContext ctx,
         [Option("user", "User to delete quote of")]
         DiscordUser user,
         [Option("n", "Number of the quote to delete")]

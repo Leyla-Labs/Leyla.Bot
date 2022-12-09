@@ -18,14 +18,14 @@ internal sealed class StashEntryValueGivenHandler : ModalHandler
 
     public override async Task RunAsync()
     {
-        await AddToDatabase(EventArgs.Values["value"]);
+        await AddToDatabaseAsync(EventArgs.Values["value"]);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
     }
 
-    private async Task AddToDatabase(string value)
+    private async Task AddToDatabaseAsync(string value)
     {
         // this is so wack i cannot even
-        var stashIds = _stashIds.Split(",").Select(x => Convert.ToInt32(x));
+        var stashIds = _stashIds.Split(",").Select(x => Convert.ToInt32(x)); // skipcq: CS-R1068
 
         await using var context = new DatabaseContext();
 

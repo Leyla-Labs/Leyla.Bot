@@ -13,7 +13,7 @@ public class StartupHelper
         _bot = bot;
     }
 
-    public async Task SendStartupMessage()
+    public async Task SendStartupMessageAsync()
     {
         var id = Convert.ToUInt64(Environment.GetEnvironmentVariable("MAIN_CHANNEL"));
         var channel = await _bot.GetChannelAsync(id);
@@ -28,6 +28,7 @@ public class StartupHelper
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle(_bot.CurrentApplication.Name);
 
+        // skipcq: CS-P1018
         if (Assembly.GetExecutingAssembly().GetName().Version is { } v)
         {
             embed.AddField("Version", $"{v.Major}.{v.Minor}.{v.Build}");

@@ -24,13 +24,13 @@ internal sealed class List : SlashCommand
     {
         if (_stashName == null)
         {
-            var stashSelect = await GetStashSelect();
+            var stashSelect = await GetStashSelectAsync();
             await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AddComponents(stashSelect).AsEphemeral());
             return;
         }
 
-        var stash = await GetStash();
+        var stash = await GetStashAsync();
 
         if (stash == null)
         {
@@ -46,6 +46,17 @@ internal sealed class List : SlashCommand
     }
 
     #region Static methods
+
+    private static DiscordEmbed GetEmbed(Stash stash)
+    {
+        var description = GetDescription(stash.StashEntries.ToList());
+
+        var embed = new DiscordEmbedBuilder();
+        embed.WithTitle(stash.Name);
+        embed.WithDescription(description);
+        embed.WithColor(DiscordColor.Blurple);
+        return embed.Build();
+    }
 
     private static string GetDescription(IReadOnlyList<StashEntry> stashEntries)
     {
@@ -64,7 +75,7 @@ internal sealed class List : SlashCommand
 
     #region Instance methods
 
-    private async Task<Stash?> GetStash()
+    private async Task<Stash?> GetStashAsync()
     {
         await using var context = new DatabaseContext();
         return await context.Stashes.Where(x =>
@@ -74,18 +85,7 @@ internal sealed class List : SlashCommand
             .FirstOrDefaultAsync();
     }
 
-    private DiscordEmbed GetEmbed(Stash stash)
-    {
-        var description = GetDescription(stash.StashEntries.ToList());
-
-        var embed = new DiscordEmbedBuilder();
-        embed.WithTitle(stash.Name);
-        embed.WithDescription(description);
-        embed.WithColor(DiscordColor.Blurple);
-        return embed.Build();
-    }
-
-    private async Task<DiscordSelectComponent> GetStashSelect()
+    private async Task<DiscordSelectComponent> GetStashSelectAsync()
     {
         await using var context = new DatabaseContext();
 
