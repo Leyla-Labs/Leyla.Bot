@@ -4,7 +4,7 @@
 
 namespace Common.Db.Migrations
 {
-    public partial class uuid : Migration
+    public partial class Uuid : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
