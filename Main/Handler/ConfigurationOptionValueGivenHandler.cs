@@ -64,12 +64,12 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
                 throw new ArgumentOutOfRangeException(nameof(option.ConfigType));
         }
 
-        var embed = await CreateEmbed(option);
+        var embed = await CreateEmbedAsync(option);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
-    private async Task<DiscordEmbed> CreateEmbed(ConfigOption option)
+    private async Task<DiscordEmbed> CreateEmbedAsync(ConfigOption option)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Value edited");

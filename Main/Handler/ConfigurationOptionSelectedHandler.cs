@@ -36,14 +36,14 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
 
         var optionId = Convert.ToInt32(optionIdString);
         var option = GuildConfigOptions.Instance.Get(optionId);
-        var embed = await CreateEmbed(option);
+        var embed = await CreateEmbedAsync(option);
         var buttons = await CreateButtonsAsync(option);
 
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AddComponents(buttons).AsEphemeral());
     }
 
-    private async Task<DiscordEmbed> CreateEmbed(ConfigOption option)
+    private async Task<DiscordEmbed> CreateEmbedAsync(ConfigOption option)
     {
         var placeholder = "/";
         var embed = new DiscordEmbedBuilder();

@@ -4,6 +4,7 @@ using Common.Enums;
 using Common.Extensions;
 using Common.GuildConfig;
 using Common.Helper;
+using Common.Interfaces;
 using Common.Records;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -33,17 +34,17 @@ public class ActionEditHandler : InteractionHandler
             case ConfigType.Int:
             case ConfigType.Char:
             case ConfigType.Decimal:
-                var modalBuilder = await GetModal(option);
+                var modalBuilder = await GetModalAsync(option);
                 await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.Modal, modalBuilder);
                 break;
             case ConfigType.Boolean:
-                var boolSelect = await GetBoolSelect(option);
+                var boolSelect = await GetBoolSelectAsync(option);
                 await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                     new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(boolSelect)
                         .AsEphemeral());
                 break;
             case ConfigType.Role:
-                var roleSelect = await GetRoleSelect(option);
+                var roleSelect = await GetRoleSelectAsync(option);
                 var currentRole = await GuildConfigHelper.Instance.GetRoleAsync(option.Name, EventArgs.Guild);
                 if (currentRole != null)
                 {
@@ -58,7 +59,7 @@ public class ActionEditHandler : InteractionHandler
                         .AsEphemeral());
                 break;
             case ConfigType.Channel:
-                var channelSelect = await GetTextChannelSelect(option);
+                var channelSelect = await GetTextChannelSelectAsync(option);
                 var currentChannel = await GuildConfigHelper.Instance.GetChannelAsync(option.Name, EventArgs.Guild);
                 if (currentChannel != null)
                 {
@@ -73,7 +74,7 @@ public class ActionEditHandler : InteractionHandler
                         .AsEphemeral());
                 break;
             case ConfigType.Enum:
-                var enumSelect = await GetEnumSelect(option);
+                var enumSelect = await GetEnumSelectAsync(option);
                 await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                     new DiscordInteractionResponseBuilder().AddEmbed(optionDetailsEmbed).AddComponents(enumSelect)
                         .AsEphemeral());
@@ -92,7 +93,7 @@ public class ActionEditHandler : InteractionHandler
         return embed.Build();
     }
 
-    private Task<DiscordRoleSelectComponent> GetRoleSelect(ConfigOption option)
+    private Task<DiscordRoleSelectComponent> GetRoleSelectAsync(IIdentifiable option)
     {
         // TODO support clearing config by selecting none
         var customId =
@@ -101,7 +102,7 @@ public class ActionEditHandler : InteractionHandler
             minOptions: 1, maxOptions: 1));
     }
 
-    private Task<DiscordChannelSelectComponent> GetTextChannelSelect(ConfigOption option)
+    private Task<DiscordChannelSelectComponent> GetTextChannelSelectAsync(IIdentifiable option)
     {
         var customId =
             ModalHelper.GetModalName(EventArgs.User.Id, "configOptionValueSelected", new[] {option.Id.ToString()});
@@ -109,7 +110,7 @@ public class ActionEditHandler : InteractionHandler
             minOptions: 1, maxOptions: 1, channelTypes: new[] {ChannelType.Text}));
     }
 
-    private async Task<DiscordSelectComponent> GetBoolSelect(ConfigOption option)
+    private async Task<DiscordSelectComponent> GetBoolSelectAsync(IIdentifiable option)
     {
         var currentConfig = await GuildConfigHelper.Instance.GetBoolAsync(option.Name, EventArgs.Guild.Id);
         var options = new List<DiscordSelectComponentOption>
@@ -119,11 +120,11 @@ public class ActionEditHandler : InteractionHandler
         return new DiscordSelectComponent(customId, "Select value", options, minOptions: 1, maxOptions: 1);
     }
 
-    private async Task<DiscordSelectComponent> GetEnumSelect(ConfigOption option)
+    private async Task<DiscordSelectComponent> GetEnumSelectAsync(ConfigOption option)
     {
         if (option.EnumType == null)
         {
-            throw new NullReferenceException(nameof(option.EnumType));
+            throw new ArgumentNullException(nameof(option), nameof(option.EnumType));
         }
 
         var currentConfig = await GuildConfigHelper.Instance.GetStringAsync(option.Name, EventArgs.Guild.Id);
@@ -146,7 +147,7 @@ public class ActionEditHandler : InteractionHandler
         return new DiscordSelectComponent(customId, "Select value", options, minOptions: 1, maxOptions: 1);
     }
 
-    private async Task<DiscordInteractionResponseBuilder> GetModal(ConfigOption option)
+    private async Task<DiscordInteractionResponseBuilder> GetModalAsync(ConfigOption option)
     {
         var response = new DiscordInteractionResponseBuilder();
         response.WithTitle(option.Name);

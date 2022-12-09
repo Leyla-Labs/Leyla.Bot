@@ -22,7 +22,7 @@ public sealed class GuildConfigHelper : IConfigHelper<DiscordGuild>
 
     public async Task InitialiseAsync()
     {
-        _guildConfigs = await LoadGuildConfigs();
+        _guildConfigs = await LoadGuildConfigsAsync();
     }
 
     public static string? GetString(string option)
@@ -145,18 +145,18 @@ public sealed class GuildConfigHelper : IConfigHelper<DiscordGuild>
     public async Task<bool> SetAsync(int optionId, ulong guildId, object value)
     {
         var opt = GuildConfigOptions.Instance.Get(optionId);
-        return await SetInternal(opt, guildId, value);
+        return await SetInternalAsync(opt, guildId, value);
     }
 
     public async Task<bool> SetAsync(string option, ulong guildId, object value)
     {
         var opt = GuildConfigOptions.Instance.Get(option);
-        return await SetInternal(opt, guildId, value);
+        return await SetInternalAsync(opt, guildId, value);
     }
 
     public async Task<bool> SetAsync(ConfigOption option, ulong guildId, object value)
     {
-        return await SetInternal(option, guildId, value);
+        return await SetInternalAsync(option, guildId, value);
     }
 
     public async Task ResetAsync(int optionId, ulong guildId)
@@ -208,7 +208,7 @@ public sealed class GuildConfigHelper : IConfigHelper<DiscordGuild>
         await SetAsync(option, guildId, string.Empty);
     }
 
-    private static async Task<Dictionary<ulong, List<Config>>> LoadGuildConfigs()
+    private static async Task<Dictionary<ulong, List<Config>>> LoadGuildConfigsAsync()
     {
         await using var context = new DatabaseContext();
 
@@ -218,7 +218,7 @@ public sealed class GuildConfigHelper : IConfigHelper<DiscordGuild>
         return guilds.ToDictionary(x => x, x => configs.Where(y => y.GuildId == x).ToList());
     }
 
-    private async Task<bool> SetInternal(ConfigOption opt, ulong guildId, object value)
+    private async Task<bool> SetInternalAsync(ConfigOption opt, ulong guildId, object value)
     {
         var valueStr = opt.ConfigType switch
         {
@@ -244,14 +244,14 @@ public sealed class GuildConfigHelper : IConfigHelper<DiscordGuild>
                 // config exists in cached guild config
                 // -> edit in cached config and database
                 curr.Value = valueStr;
-                return await EditConfig(curr);
+                return await EditConfigAsync(curr);
             }
 
             // config does not exist in cached guild config
             // -> create in cached configs and add to database
             var cCfg = new Config {ConfigOptionId = opt.Id, GuildId = guildId, Value = valueStr};
             guildConfigs.Add(cCfg);
-            return await AddConfig(cCfg);
+            return await AddConfigAsync(cCfg);
         }
 
         {
@@ -260,7 +260,7 @@ public sealed class GuildConfigHelper : IConfigHelper<DiscordGuild>
             var cCfg = new Config {ConfigOptionId = opt.Id, GuildId = guildId, Value = valueStr};
             var cConfigs = new List<Config> {cCfg};
             _guildConfigs.Add(guildId, cConfigs);
-            return await AddConfig(cCfg);
+            return await AddConfigAsync(cCfg);
         }
     }
 
@@ -274,7 +274,7 @@ public sealed class GuildConfigHelper : IConfigHelper<DiscordGuild>
         return s;
     }
 
-    private static async Task<bool> AddConfig(Config config)
+    private static async Task<bool> AddConfigAsync(Config config)
     {
         await using var context = new DatabaseContext();
         await context.Configs.AddAsync(config);
@@ -289,7 +289,7 @@ public sealed class GuildConfigHelper : IConfigHelper<DiscordGuild>
         }
     }
 
-    private static async Task<bool> EditConfig(Config config)
+    private static async Task<bool> EditConfigAsync(Config config)
     {
         await using var context = new DatabaseContext();
         context.Entry(config).Property(x => x.Value).IsModified = true;
