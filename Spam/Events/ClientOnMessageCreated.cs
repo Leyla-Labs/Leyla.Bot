@@ -19,6 +19,6 @@ internal static class ClientOnMessageCreated
             return;
         }
 
-        await SpamHelper.Instance.ProcessMessage(sender, e.Message);
+        await SpamHelper.Instance.ProcessMessageAsync(sender, e.Message);
     }
 }

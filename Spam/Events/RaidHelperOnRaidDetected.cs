@@ -32,7 +32,7 @@ internal static class RaidHelperOnRaidDetected
         if (lockdownDuration > 0)
         {
             components.Add(GetLockdownButton(guild));
-            await RaidHelper.Instance.EnableLockdown(guild, lockdownDuration.Value);
+            await RaidHelper.Instance.EnableLockdownAsync(guild, lockdownDuration.Value);
             embed = AddLockdownToDescription(embed, guild, lockdownDuration.Value);
         }
 

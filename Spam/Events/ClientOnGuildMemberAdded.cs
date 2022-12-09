@@ -19,11 +19,11 @@ internal static class ClientOnGuildMemberAdded
             var raidRole = await ConfigHelper.Instance.GetRole(Config.Raid.RaidRole.Name, e.Guild);
             await e.Member.GrantRoleAsync(raidRole);
 
-            await RaidHelper.MentionMembersInRaidChannel(e.Guild, e.Member);
+            await RaidHelper.MentionMembersInRaidChannelAsync(e.Guild, e.Member);
         }
         else
         {
-            await RaidHelper.Instance.AddMember(sender, e.Member);
+            await RaidHelper.Instance.AddMemberAsync(sender, e.Member);
         }
     }
 }
