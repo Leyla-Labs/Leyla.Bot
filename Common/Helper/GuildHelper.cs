@@ -6,7 +6,7 @@ namespace Common.Helper;
 
 public static class GuildHelper
 {
-    public static async Task CreateIfNotExist(ulong guildId)
+    public static async Task CreateIfNotExistAsync(ulong guildId)
     {
         await using var context = new DatabaseContext();
         if (!await context.Guilds.AnyAsync(x => x.Id == guildId))

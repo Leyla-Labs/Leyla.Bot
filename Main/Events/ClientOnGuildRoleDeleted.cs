@@ -10,6 +10,6 @@ internal abstract class ClientOnGuildRoleDeleted : IEventHandler<GuildRoleDelete
 {
     public static async Task HandleEventAsync(DiscordClient sender, GuildRoleDeleteEventArgs e)
     {
-        await DiscordEntityHelper.DeleteIfExists(DiscordEntityType.Role, e.Role.Id, e.Guild.Id);
+        await DiscordEntityHelper.DeleteIfExistsAsync(DiscordEntityType.Role, e.Role.Id, e.Guild.Id);
     }
 }

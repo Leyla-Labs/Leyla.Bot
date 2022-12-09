@@ -30,7 +30,7 @@ internal sealed class Edit : SlashCommand
             return;
         }
 
-        var quote = await QuoteHelper.GetQuote(Ctx.Guild.Id, _member.Id, (int) _n);
+        var quote = await QuoteHelper.GetQuoteAsync(Ctx.Guild.Id, _member.Id, (int) _n);
 
         if (quote == null)
         {
@@ -38,7 +38,7 @@ internal sealed class Edit : SlashCommand
             return;
         }
 
-        var displayName = await Ctx.GetDisplayName(quote.UserId);
+        var displayName = await Ctx.GetDisplayNameAsync(quote.UserId);
 
         // show modal
         var responseBuilder = GetModal(quote, displayName);
@@ -55,7 +55,7 @@ internal sealed class Edit : SlashCommand
         // get value from modal and edit in database
         var modalInteraction = userResponse.Result.Interaction;
         var text = userResponse.Result.Values["text"];
-        await EditInDatabase(quote, text);
+        await EditInDatabaseAsync(quote, text);
 
         // show confirmation embed
         var embed = GetConfirmationEmbed(quote, displayName);
@@ -89,7 +89,7 @@ internal sealed class Edit : SlashCommand
         return response;
     }
 
-    private async Task EditInDatabase(Quote quote, string text)
+    private async Task EditInDatabaseAsync(Quote quote, string text)
     {
         quote.Text = text;
         DbCtx.Entry(quote).State = EntityState.Modified;

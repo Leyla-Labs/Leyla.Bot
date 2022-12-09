@@ -22,7 +22,7 @@ internal sealed class Post : SlashCommand
 
     public override async Task RunAsync()
     {
-        if (await GetSelfAssignMenu() is not { } menu)
+        if (await GetSelfAssignMenuAsync() is not { } menu)
         {
             await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AddErrorEmbed("Self assign menu not found.").AsEphemeral());
@@ -42,7 +42,7 @@ internal sealed class Post : SlashCommand
 
     #region Instance methods
 
-    private async Task<SelfAssignMenu?> GetSelfAssignMenu()
+    private async Task<SelfAssignMenu?> GetSelfAssignMenuAsync()
     {
         return await DbCtx.SelfAssignMenus.FirstOrDefaultAsync(x =>
             x.GuildId == Ctx.Guild.Id && x.Title.Equals(_title));

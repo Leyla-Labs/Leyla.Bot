@@ -12,7 +12,7 @@ public class SilenceHelper
     {
     }
 
-    public async Task ProcessUserLeft(DiscordGuild guild, DiscordMember member)
+    public async Task ProcessUserLeftAsync(DiscordGuild guild, DiscordMember member)
     {
         var silenceRole = await ConfigHelper.Instance.GetRole(Config.Roles.Silence.Name, guild);
 
@@ -23,7 +23,7 @@ public class SilenceHelper
         }
     }
 
-    public async Task ProcessUserJoined(DiscordGuild guild, DiscordMember member)
+    public async Task ProcessUserJoinedAsync(DiscordGuild guild, DiscordMember member)
     {
         var entry = _memberSilences.FirstOrDefault(x => x.Member.Guild.Id == guild.Id && x.Member.Id == member.Id);
 

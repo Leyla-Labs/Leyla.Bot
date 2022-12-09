@@ -24,7 +24,7 @@ internal sealed class RemoveFrom : SlashCommand
     {
         await using var context = new DatabaseContext();
 
-        var entry = await FindEntry(context);
+        var entry = await FindEntryAsync(context);
 
         if (entry == null)
         {
@@ -42,7 +42,7 @@ internal sealed class RemoveFrom : SlashCommand
 
     #region Instance methods
 
-    private async Task<StashEntry?> FindEntry(DatabaseContext context)
+    private async Task<StashEntry?> FindEntryAsync(DatabaseContext context)
     {
         StashEntry? entry = null;
 

@@ -12,7 +12,7 @@ internal static class XivapiExtensions
     /// </summary>
     /// <param name="gc">Grand Company to get crest for.</param>
     /// <returns>ImageSharp Image, Grand Company crest.</returns>
-    public static async Task<Image> GetCrest(this GrandCompany gc)
+    public static async Task<Image> GetCrestAsync(this GrandCompany gc)
     {
         var img = gc switch
         {

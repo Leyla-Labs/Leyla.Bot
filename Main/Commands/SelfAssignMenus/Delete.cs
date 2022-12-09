@@ -19,7 +19,7 @@ internal sealed class Delete : SlashCommand
 
     public override async Task RunAsync()
     {
-        var menu = await GetSelfAssignMenu();
+        var menu = await GetSelfAssignMenuAsync();
 
         if (menu == null)
         {
@@ -38,7 +38,7 @@ internal sealed class Delete : SlashCommand
 
     #region Instance methods
 
-    private async Task<SelfAssignMenu?> GetSelfAssignMenu()
+    private async Task<SelfAssignMenu?> GetSelfAssignMenuAsync()
     {
         return await DbCtx.SelfAssignMenus.FirstOrDefaultAsync(x =>
             x.GuildId == Ctx.Guild.Id &&

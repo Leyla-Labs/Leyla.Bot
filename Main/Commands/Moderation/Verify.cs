@@ -30,13 +30,13 @@ internal sealed class Verify : ContextMenuCommand
             return;
         }
 
-        var embed = await GrantRoleAndGetEmbed(role);
+        var embed = await GrantRoleAndGetEmbedAsync(role);
         await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed));
     }
 
     #region Instance methods
 
-    private async Task<DiscordEmbed> GrantRoleAndGetEmbed(DiscordRole role)
+    private async Task<DiscordEmbed> GrantRoleAndGetEmbedAsync(DiscordRole role)
     {
         try
         {

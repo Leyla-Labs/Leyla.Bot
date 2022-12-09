@@ -14,6 +14,6 @@ public class TransferCommandLogs : IScheduledTask
             return;
         }
 
-        await CommandLogHelper.Instance.TransferToDb();
+        await CommandLogHelper.Instance.TransferToDbAsync();
     }
 }

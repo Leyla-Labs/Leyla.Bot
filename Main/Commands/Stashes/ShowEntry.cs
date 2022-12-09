@@ -22,7 +22,7 @@ internal sealed class ShowEntry : SlashCommand
 
     public override async Task RunAsync()
     {
-        var entry = await GetStashEntry();
+        var entry = await GetStashEntryAsync();
 
         if (entry == null)
         {
@@ -35,7 +35,7 @@ internal sealed class ShowEntry : SlashCommand
             new DiscordInteractionResponseBuilder().WithContent(entry.Value));
     }
 
-    private async Task<StashEntry?> GetStashEntry()
+    private async Task<StashEntry?> GetStashEntryAsync()
     {
         // TODO show error message if entire stash does not exist
 

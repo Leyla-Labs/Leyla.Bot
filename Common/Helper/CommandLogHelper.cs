@@ -28,17 +28,17 @@ public class CommandLogHelper
         return list;
     }
 
-    public async Task<List<CommandLogLocal>> GetRecent(ulong guildId, int n)
+    public async Task<List<CommandLogLocal>> GetRecentAsync(ulong guildId, int n)
     {
-        return await GetRecent(guildId, null, n);
+        return await GetRecentAsync(guildId, null, n);
     }
 
-    public async Task<List<CommandLogLocal>> GetRecent(DiscordMember member)
+    public async Task<List<CommandLogLocal>> GetRecentAsync(DiscordMember member)
     {
-        return await GetRecent(member.Guild.Id, member.Id, 10);
+        return await GetRecentAsync(member.Guild.Id, member.Id, 10);
     }
 
-    private async Task<List<CommandLogLocal>> GetRecent(ulong guildId, ulong? userId, int n)
+    private async Task<List<CommandLogLocal>> GetRecentAsync(ulong guildId, ulong? userId, int n)
     {
         var recentLocalEnumerable = _commandLogs.Where(x =>
             x.GuildId == guildId);
@@ -69,7 +69,7 @@ public class CommandLogHelper
         return recentLocal;
     }
 
-    public static async Task<DiscordEmbed> GetEmbed(DiscordGuild guild, IReadOnlyCollection<CommandLogLocal> logs,
+    public static async Task<DiscordEmbed> GetEmbedAsync(DiscordGuild guild, IReadOnlyCollection<CommandLogLocal> logs,
         bool nameInEntries)
     {
         var members = new List<DiscordMember>();
@@ -98,13 +98,13 @@ public class CommandLogHelper
         return $"{runAt} {memberStrFull}• {log.Command}";
     }
 
-    public async Task TransferToDb()
+    public async Task TransferToDbAsync()
     {
         var logs = GetAndClear();
 
         foreach (var guildLog in logs.GroupBy(x => x.GuildId))
         {
-            await MemberHelper.CreateIfNotExist(guildLog.Key, guildLog.Select(x => x.UserId));
+            await MemberHelper.CreateIfNotExistAsync(guildLog.Key, guildLog.Select(x => x.UserId));
         }
 
         var dbLogs = logs.Select(x => new CommandLog

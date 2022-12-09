@@ -32,8 +32,8 @@ public class FfxivCharacterSheetSelectedHandler : InteractionHandler
             return;
         }
 
-        var helper = await CharacterSheetHelper.Create(characterData);
-        var stream = await helper.GetCharacterSheet();
+        var helper = await CharacterSheetHelper.CreateAsync(characterData);
+        var stream = await helper.GetCharacterSheetAsync();
         var fileName = helper.GetFileName();
         var btn = FfxivHelper.GetLodestoneLinkButton(characterData.Character.Id);
         await EventArgs.Interaction.EditOriginalResponseAsync(

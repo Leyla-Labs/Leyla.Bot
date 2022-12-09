@@ -22,7 +22,7 @@ internal sealed class SelfAssignMenuButtonPressedHandler : InteractionHandler
 
     public override async Task RunAsync()
     {
-        if (await GetSelfAssignMenu() is not { } menu)
+        if (await GetSelfAssignMenuAsync() is not { } menu)
         {
             await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AddErrorEmbed("Self assign menu not found.").AsEphemeral());
@@ -35,7 +35,7 @@ internal sealed class SelfAssignMenuButtonPressedHandler : InteractionHandler
             new DiscordInteractionResponseBuilder().AddComponents(selectMenu).AsEphemeral());
     }
 
-    private async Task<SelfAssignMenu?> GetSelfAssignMenu()
+    private async Task<SelfAssignMenu?> GetSelfAssignMenuAsync()
     {
         var id = Convert.ToInt32(_menuId);
 

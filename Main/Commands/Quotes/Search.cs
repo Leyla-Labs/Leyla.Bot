@@ -26,7 +26,7 @@ internal sealed class Search : SlashCommand
             return;
         }
 
-        var guildQuotes = await GetQuotesForGuild(Ctx.Guild.Id);
+        var guildQuotes = await GetQuotesForGuildAsync(Ctx.Guild.Id);
         if (guildQuotes.Count == 0)
         {
             await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("Guild has no quotes.")
@@ -42,13 +42,13 @@ internal sealed class Search : SlashCommand
             return;
         }
 
-        var embed = await GetSearchEmbed(guildQuotes, filteredQuotes);
+        var embed = await GetSearchEmbedAsync(guildQuotes, filteredQuotes);
         await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
     #region Instance methods
 
-    private async Task<DiscordEmbed> GetSearchEmbed(ICollection<Quote> guildQuotes,
+    private async Task<DiscordEmbed> GetSearchEmbedAsync(ICollection<Quote> guildQuotes,
         List<Quote> filteredQuotes)
     {
         var embed = new DiscordEmbedBuilder();
@@ -57,7 +57,7 @@ internal sealed class Search : SlashCommand
         var quoteStrings = new List<string>();
         foreach (var quote in filteredQuotes)
         {
-            var member = await Ctx.GetMember(quote.UserId);
+            var member = await Ctx.GetMemberAsync(quote.UserId);
             var index = guildQuotes.Select((q, i) => new {quote = q, index = i}).First(x =>
                 x.quote.UserId == quote.UserId && x.quote.Text.Equals(quote.Text)).index;
             quoteStrings.Add($"**\"{quote.Text}\"**{Environment.NewLine}- {member?.DisplayName} • #{index}");
@@ -72,7 +72,7 @@ internal sealed class Search : SlashCommand
         return embed.Build();
     }
 
-    private async Task<List<Quote>> GetQuotesForGuild(ulong guildId)
+    private async Task<List<Quote>> GetQuotesForGuildAsync(ulong guildId)
     {
         return await DbCtx.Quotes.Where(x =>
                 x.GuildId == guildId)

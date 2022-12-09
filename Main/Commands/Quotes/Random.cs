@@ -15,13 +15,13 @@ internal sealed class Random : SlashCommand
 
     public override async Task RunAsync()
     {
-        var quote = await GetRandomQuote(Ctx.Guild.Id);
+        var quote = await GetRandomQuoteAsync(Ctx.Guild.Id);
         if (quote == null)
         {
             await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("No quotes found."));
         }
 
-        var member = await Ctx.GetMember(quote!.UserId);
+        var member = await Ctx.GetMemberAsync(quote!.UserId);
         if (member == null)
         {
             await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddErrorEmbed("Member not found."));
@@ -33,7 +33,7 @@ internal sealed class Random : SlashCommand
 
     #region Instance methods
 
-    private async Task<Quote?> GetRandomQuote(ulong guildId)
+    private async Task<Quote?> GetRandomQuoteAsync(ulong guildId)
     {
         return await DbCtx.Quotes.Where(x =>
                 x.Member.GuildId == guildId)

@@ -18,13 +18,13 @@ internal sealed class AddTo : ContextMenuCommand
     public override async Task RunAsync()
     {
         var selectId = ModalHelper.GetModalName(Ctx.User.Id, "addToStash", new[] {Ctx.TargetMessage.Content});
-        var selectComponent = GetStashSelectComponent(await GetStashes(Ctx.Guild.Id), selectId);
+        var selectComponent = GetStashSelectComponent(await GetStashesAsync(Ctx.Guild.Id), selectId);
 
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddComponents(selectComponent).AsEphemeral());
     }
 
-    private static async Task<List<Stash>> GetStashes(ulong guildId)
+    private static async Task<List<Stash>> GetStashesAsync(ulong guildId)
     {
         await using var context = new DatabaseContext();
         return await context.Stashes.Where(x =>

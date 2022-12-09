@@ -32,7 +32,7 @@ public class FfxivCharacterClaimSelectedHandler : InteractionHandler
         }
 
         var name = characterData.Character.Name;
-        var (status, code) = await FfxivHelper.CreateClaimIfNotExist(EventArgs.User.Id, characterData.Character.Id,
+        var (status, code) = await FfxivHelper.CreateClaimIfNotExistAsync(EventArgs.User.Id, characterData.Character.Id,
             characterData.Character.Bio);
         var embed = FfxivHelper.CreateCharacterClaimStatusEmbed(status, name, code);
 

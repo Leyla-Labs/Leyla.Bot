@@ -17,8 +17,8 @@ internal sealed class Recent : SlashCommand
 
     public override async Task RunAsync()
     {
-        var recent = await CommandLogHelper.Instance.GetRecent(Ctx.Guild.Id, _n);
-        var embed = await CommandLogHelper.GetEmbed(Ctx.Guild, recent, true);
+        var recent = await CommandLogHelper.Instance.GetRecentAsync(Ctx.Guild.Id, _n);
+        var embed = await CommandLogHelper.GetEmbedAsync(Ctx.Guild, recent, true);
 
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());

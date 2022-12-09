@@ -32,7 +32,7 @@ internal sealed class Create : SlashCommand
         }
 
 
-        await CreateInDatabase();
+        await CreateInDatabaseAsync();
         var embed = GetEmbed();
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
@@ -40,9 +40,9 @@ internal sealed class Create : SlashCommand
 
     #region Instance methods
 
-    private async Task CreateInDatabase()
+    private async Task CreateInDatabaseAsync()
     {
-        await GuildHelper.CreateIfNotExist(Ctx.Guild.Id);
+        await GuildHelper.CreateIfNotExistAsync(Ctx.Guild.Id);
 
         await DbCtx.SelfAssignMenus.AddAsync(new SelfAssignMenu
         {

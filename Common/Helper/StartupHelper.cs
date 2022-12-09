@@ -13,7 +13,7 @@ public class StartupHelper
         _bot = bot;
     }
 
-    public async Task SendStartupMessage()
+    public async Task SendStartupMessageAsync()
     {
         var id = Convert.ToUInt64(Environment.GetEnvironmentVariable("MAIN_CHANNEL"));
         var channel = await _bot.GetChannelAsync(id);

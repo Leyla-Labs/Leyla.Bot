@@ -20,11 +20,12 @@ public class Claim : SlashCommand
     public override async Task RunAsync()
     {
         var (profile, id) =
-            await FfxivHelper.SearchAndGetCharacterData(Ctx, _name, _server, "ffxivCharacterClaim", true, async x =>
-            {
-                var stone = await LodestoneClient.GetClientAsync();
-                return (await stone.GetCharacter(x.ToString()), x);
-            });
+            await FfxivHelper.SearchAndGetCharacterDataAsync(Ctx, _name, _server, "ffxivCharacterClaim", true,
+                async x =>
+                {
+                    var stone = await LodestoneClient.GetClientAsync();
+                    return (await stone.GetCharacter(x.ToString()), x);
+                });
 
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (profile == null)
@@ -35,7 +36,7 @@ public class Claim : SlashCommand
 
         var name = profile.Name;
         var (status, code) =
-            await FfxivHelper.CreateClaimIfNotExist(Ctx.User.Id, id, profile.Bio);
+            await FfxivHelper.CreateClaimIfNotExistAsync(Ctx.User.Id, id, profile.Bio);
         var embed = FfxivHelper.CreateCharacterClaimStatusEmbed(status, name, code);
 
         await Ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));

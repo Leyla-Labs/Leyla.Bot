@@ -16,7 +16,7 @@ internal static class QuoteHelper
         return embed.Build();
     }
 
-    public static async Task<Quote?> GetQuote(ulong guildId, ulong memberId, int i)
+    public static async Task<Quote?> GetQuoteAsync(ulong guildId, ulong memberId, int i)
     {
         await using var context = new DatabaseContext();
 

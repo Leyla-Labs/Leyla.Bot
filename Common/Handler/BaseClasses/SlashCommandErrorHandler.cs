@@ -11,5 +11,5 @@ public abstract class SlashCommandErrorHandler
         Args = e;
     }
 
-    public abstract Task HandleException();
+    public abstract Task HandleExceptionAsync();
 }

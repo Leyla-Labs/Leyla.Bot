@@ -25,7 +25,7 @@ internal sealed class SelfAssignMenuManageHandler : InteractionHandler
     {
         await using var context = new DatabaseContext();
 
-        var menu = await GetSelfAssignMenu(context);
+        var menu = await GetSelfAssignMenuAsync(context);
 
         if (menu == null)
         {
@@ -35,13 +35,13 @@ internal sealed class SelfAssignMenuManageHandler : InteractionHandler
         }
 
         var roleIds = EventArgs.Values.Select(x => Convert.ToUInt64(x)).ToArray(); // skipcq: CS-R1068
-        await SetValues(context, menu, roleIds);
+        await SetValuesAsync(context, menu, roleIds);
         var embed = CreateEmbed(menu, roleIds);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
     }
 
-    private async Task<SelfAssignMenu?> GetSelfAssignMenu(DatabaseContext context)
+    private async Task<SelfAssignMenu?> GetSelfAssignMenuAsync(DatabaseContext context)
     {
         var id = Convert.ToInt32(_menuId);
         return await context.SelfAssignMenus.Where(x =>
@@ -62,7 +62,7 @@ internal sealed class SelfAssignMenuManageHandler : InteractionHandler
         return embed.Build();
     }
 
-    private static async Task SetValues(DatabaseContext context, SelfAssignMenu menu, IEnumerable<ulong> roleIds)
+    private static async Task SetValuesAsync(DatabaseContext context, SelfAssignMenu menu, IEnumerable<ulong> roleIds)
     {
         // delete assignments for roles unselected by user
         foreach (var assignment in menu.SelfAssignMenuDiscordEntityAssignments.Where(x =>
@@ -76,7 +76,7 @@ internal sealed class SelfAssignMenuManageHandler : InteractionHandler
         foreach (var roleId in roleIds.Where(x =>
                      !menu.SelfAssignMenuDiscordEntityAssignments.Select(y => y.DiscordEntityId).Contains(x)))
         {
-            await DiscordEntityHelper.CreateIfNotExist(DiscordEntityType.Role, roleId, menu.GuildId);
+            await DiscordEntityHelper.CreateIfNotExistAsync(DiscordEntityType.Role, roleId, menu.GuildId);
 
             createList.Add(new SelfAssignMenuDiscordEntityAssignment
             {

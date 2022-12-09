@@ -6,7 +6,7 @@ namespace Common.Events;
 
 public static class CommandsOnContextMenuErroredEvent
 {
-    public static async Task CommandsOnContextMenuErrored(SlashCommandsExtension sender,
+    public static async Task CommandsOnContextMenuErroredAsync(SlashCommandsExtension sender,
         ContextMenuErrorEventArgs e)
     {
         if (e.Exception is ContextMenuExecutionChecksFailedException ex)

@@ -21,7 +21,7 @@ internal sealed class SelfAssignMenuRolesSelectedHandler : InteractionHandler
 
     public override async Task RunAsync()
     {
-        if (await GetSelfAssignMenu() is not { } menu)
+        if (await GetSelfAssignMenuAsync() is not { } menu)
         {
             await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AddErrorEmbed("Self assign menu not found.").AsEphemeral());
@@ -29,7 +29,7 @@ internal sealed class SelfAssignMenuRolesSelectedHandler : InteractionHandler
         }
 
         var (rolesAdd, rolesRemove) = GetRoles(menu);
-        await AssignRoles(rolesAdd, rolesRemove);
+        await AssignRolesAsync(rolesAdd, rolesRemove);
 
         if (rolesAdd.Any() || rolesRemove.Any())
         {
@@ -43,7 +43,7 @@ internal sealed class SelfAssignMenuRolesSelectedHandler : InteractionHandler
         }
     }
 
-    private async Task<SelfAssignMenu?> GetSelfAssignMenu()
+    private async Task<SelfAssignMenu?> GetSelfAssignMenuAsync()
     {
         var id = Convert.ToInt32(_menuId);
 
@@ -75,7 +75,7 @@ internal sealed class SelfAssignMenuRolesSelectedHandler : InteractionHandler
         return (rolesAdd, rolesRemove);
     }
 
-    private async Task AssignRoles(IEnumerable<DiscordRole> rolesAdd, IEnumerable<DiscordRole> rolesRemove)
+    private async Task AssignRolesAsync(IEnumerable<DiscordRole> rolesAdd, IEnumerable<DiscordRole> rolesRemove)
     {
         var member = (DiscordMember) EventArgs.User;
 

@@ -7,9 +7,9 @@ namespace Common.Helper;
 
 public static class DiscordEntityHelper
 {
-    public static async Task CreateIfNotExist(DiscordEntityType type, ulong id, ulong guildId)
+    public static async Task CreateIfNotExistAsync(DiscordEntityType type, ulong id, ulong guildId)
     {
-        await GuildHelper.CreateIfNotExist(guildId);
+        await GuildHelper.CreateIfNotExistAsync(guildId);
 
         await using var context = new DatabaseContext();
         if (!await context.DiscordEntities.AnyAsync(x =>
@@ -25,7 +25,7 @@ public static class DiscordEntityHelper
         }
     }
 
-    public static async Task DeleteIfExists(DiscordEntityType type, ulong id, ulong guildId)
+    public static async Task DeleteIfExistsAsync(DiscordEntityType type, ulong id, ulong guildId)
     {
         await using var context = new DatabaseContext();
 

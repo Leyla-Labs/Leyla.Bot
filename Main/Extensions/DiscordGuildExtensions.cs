@@ -6,7 +6,7 @@ namespace Main.Extensions;
 
 internal static class DiscordGuildExtensions
 {
-    public static async Task<List<LeylaModule>> GetGuildModules(this DiscordGuild guild)
+    public static async Task<List<LeylaModule>> GetGuildModulesAsync(this DiscordGuild guild)
     {
         var modules = new List<LeylaModule>();
 

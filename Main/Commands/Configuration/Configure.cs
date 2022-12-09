@@ -15,16 +15,16 @@ internal sealed class Configure : SlashCommand
 
     public override async Task RunAsync()
     {
-        var categorySelect = await GetCategorySelect();
+        var categorySelect = await GetCategorySelectAsync();
         await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddComponents(categorySelect)
             .AsEphemeral());
     }
 
     #region Instance methods
 
-    private async Task<DiscordSelectComponent> GetCategorySelect()
+    private async Task<DiscordSelectComponent> GetCategorySelectAsync()
     {
-        var modules = await Ctx.Guild.GetGuildModules();
+        var modules = await Ctx.Guild.GetGuildModulesAsync();
         var categories = ConfigOptionCategories.Instance.Get().Where(x => modules.Contains(x.Module));
         var options = categories.Select(x => new DiscordSelectComponentOption(x.Name, x.Id.ToString(), x.Description));
         var name = ModalHelper.GetModalName(Ctx.User.Id, "configCategories");

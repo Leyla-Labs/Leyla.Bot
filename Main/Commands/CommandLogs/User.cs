@@ -17,8 +17,8 @@ public class User : SlashCommand
 
     public override async Task RunAsync()
     {
-        var recent = await CommandLogHelper.Instance.GetRecent(_member);
-        var embed = await CommandLogHelper.GetEmbed(Ctx.Guild, recent, false);
+        var recent = await CommandLogHelper.Instance.GetRecentAsync(_member);
+        var embed = await CommandLogHelper.GetEmbedAsync(Ctx.Guild, recent, false);
 
         await Ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
             new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());

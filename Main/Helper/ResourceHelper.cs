@@ -8,7 +8,7 @@ namespace Main.Helper;
 
 public sealed class ResourceHelper
 {
-    public static AsyncLazy<ResourceHelper> Instance { get; } = new(CreateAndLoadData);
+    public static AsyncLazy<ResourceHelper> Instance { get; } = new(CreateAndLoadDataAsync);
 
     private IFontCollection FontCollection { get; } = new FontCollection();
 
@@ -24,21 +24,21 @@ public sealed class ResourceHelper
     {
     }
 
-    private static async Task<ResourceHelper> CreateAndLoadData()
+    private static async Task<ResourceHelper> CreateAndLoadDataAsync()
     {
         var ret = new ResourceHelper();
-        await ret.Initialize();
+        await ret.InitializeAsync();
         return ret;
     }
 
-    private async Task Initialize()
+    private async Task InitializeAsync()
     {
-        await LoadImages();
-        await LoadJobIcons();
+        await LoadImagesAsync();
+        await LoadJobIconsAsync();
         LoadFonts();
     }
 
-    private async Task LoadImages()
+    private async Task LoadImagesAsync()
     {
         Images.Add(Image.TemplateBase,
             await SixLabors.ImageSharp.Image.LoadAsync("Resources/characterTemplateBase.png"));
@@ -54,7 +54,7 @@ public sealed class ResourceHelper
             await SixLabors.ImageSharp.Image.LoadAsync("Resources/chat_messengericon_town03.png"));
     }
 
-    private async Task LoadJobIcons()
+    private async Task LoadJobIconsAsync()
     {
         foreach (var job in (Job[]) Enum.GetValues(typeof(Job)))
         {
