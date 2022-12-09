@@ -20,37 +20,37 @@ public sealed class GuildConfigHelper : IConfigHelper<DiscordGuild>
     {
     }
 
-    public async Task Initialise()
+    public async Task InitialiseAsync()
     {
         _guildConfigs = await LoadGuildConfigs();
     }
 
-    public static Task<string?> GetString(string option)
+    public static string? GetString(string option)
     {
         // when no guildId provided, return default value
-        return Task.FromResult(GuildConfigOptions.Instance.Get(option).DefaultValue);
+        return GuildConfigOptions.Instance.Get(option).DefaultValue;
     }
 
-    public static Task<string?> GetString(int optionId)
+    public static string? GetString(int optionId)
     {
         // when no guildId provided, return default value
-        return Task.FromResult(GuildConfigOptions.Instance.Get(optionId).DefaultValue);
+        return GuildConfigOptions.Instance.Get(optionId).DefaultValue;
     }
 
-    public static async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, bool allowMentions)
+    public static string? GetDisplayStringForDefaultValue(ConfigOption option, bool allowMentions)
     {
-        var defaultStr = await GetString(option.Name);
+        var defaultStr = GetString(option.Name);
         return defaultStr != null ? GetDisplayStringForGivenValue(option, null, defaultStr, allowMentions) : null;
     }
 
-    public static async Task<string?> GetDisplayStringForDefaultValue(ConfigOption option, bool allowMentions,
+    public static string GetDisplayStringForDefaultValue(ConfigOption option, bool allowMentions,
         string placeholder)
     {
-        var result = await GetDisplayStringForDefaultValue(option, allowMentions);
+        var result = GetDisplayStringForDefaultValue(option, allowMentions);
         return result ?? placeholder;
     }
 
-    public async Task<string?> GetString(string option, ulong entityId)
+    public async Task<string?> GetStringAsync(string option, ulong entityId)
     {
         var defaultOption = GuildConfigOptions.Instance.Get(option);
 
@@ -72,138 +72,140 @@ public sealed class GuildConfigHelper : IConfigHelper<DiscordGuild>
         // this avoids user confusion if default bot behaviour is ever changed
         if (!string.IsNullOrEmpty(defaultOption.DefaultValue))
         {
-            await Set(option, entityId, defaultOption.DefaultValue);
+            await SetAsync(option, entityId, defaultOption.DefaultValue);
         }
 
         return defaultOption.DefaultValue;
     }
 
-    public async Task<char?> GetChar(string option, ulong guildId)
+    public async Task<char?> GetCharAsync(string option, ulong guildId)
     {
-        return await GetString(option, guildId) is { } s ? s[0] : null;
+        return await GetStringAsync(option, guildId) is { } s ? s[0] : null;
     }
 
-    public async Task<int?> GetInt(string option, ulong guildId)
+    public async Task<int?> GetIntAsync(string option, ulong guildId)
     {
-        return await GetString(option, guildId) is { } s ? Convert.ToInt32(s) : null;
+        return await GetStringAsync(option, guildId) is { } s ? Convert.ToInt32(s) : null;
     }
 
-    public async Task<bool?> GetBool(string option, ulong guildId)
+    public async Task<bool?> GetBoolAsync(string option, ulong guildId)
     {
-        return await GetString(option, guildId) is { } s ? s.Equals("1") : null;
+        return await GetStringAsync(option, guildId) is { } s ? s.Equals("1") : null;
     }
 
-    public async Task<ulong?> GetUlong(string option, ulong guildId)
+    public async Task<ulong?> GetUlongAsync(string option, ulong guildId)
     {
-        return await GetString(option, guildId) is { } s ? Convert.ToUInt64(s) : null;
+        return await GetStringAsync(option, guildId) is { } s ? Convert.ToUInt64(s) : null;
     }
 
-    public async Task<decimal?> GetDecimal(string option, ulong guildId)
+    public async Task<decimal?> GetDecimalAsync(string option, ulong guildId)
     {
-        return await GetString(option, guildId) is { } s ? Convert.ToDecimal(s, CultureInfo.InvariantCulture) : null;
+        return await GetStringAsync(option, guildId) is { } s
+            ? Convert.ToDecimal(s, CultureInfo.InvariantCulture)
+            : null;
     }
 
-    public async Task<DiscordRole?> GetRole(string option, DiscordGuild guild)
+    public async Task<DiscordRole?> GetRoleAsync(string option, DiscordGuild guild)
     {
-        var roleId = await GetString(option, guild.Id) is { } s ? Convert.ToUInt64(s) : default;
+        var roleId = await GetStringAsync(option, guild.Id) is { } s ? Convert.ToUInt64(s) : default;
         return guild.Roles.TryGetValue(roleId, out var result) ? result : null;
     }
 
-    public async Task<DiscordChannel?> GetChannel(string option, DiscordGuild guild)
+    public async Task<DiscordChannel?> GetChannelAsync(string option, DiscordGuild guild)
     {
-        var channelId = await GetString(option, guild.Id) is { } s ? Convert.ToUInt64(s) : default;
+        var channelId = await GetStringAsync(option, guild.Id) is { } s ? Convert.ToUInt64(s) : default;
         return guild.Channels.TryGetValue(channelId, out var result) ? result : null;
     }
 
-    public async Task<T?> GetEnum<T>(string option, ulong guildId) where T : Enum
+    public async Task<T?> GetEnumAsync<T>(string option, ulong guildId) where T : Enum
     {
-        return await GetString(option, guildId) is { } s ? (T) (object) Convert.ToInt32(s) : default;
+        return await GetStringAsync(option, guildId) is { } s ? (T) (object) Convert.ToInt32(s) : default;
     }
 
-    public async Task<string?> GetDisplayStringForCurrentValue(ConfigOption option, DiscordGuild guild,
+    public async Task<string?> GetDisplayStringForCurrentValueAsync(ConfigOption option, DiscordGuild guild,
         bool allowMentions)
     {
-        var currStr = await GetString(option.Name, guild.Id);
+        var currStr = await GetStringAsync(option.Name, guild.Id);
         return currStr != null ? GetDisplayStringForGivenValue(option, guild, currStr, allowMentions) : null;
     }
 
-    public async Task<string?> GetDisplayStringForCurrentValue(ConfigOption option, DiscordGuild guild,
+    public async Task<string?> GetDisplayStringForCurrentValueAsync(ConfigOption option, DiscordGuild guild,
         bool allowMentions, string placeholder)
     {
-        var result = await GetDisplayStringForCurrentValue(option, guild, allowMentions);
+        var result = await GetDisplayStringForCurrentValueAsync(option, guild, allowMentions);
         return result ?? placeholder;
     }
 
-    public async Task<bool> IsDefaultValue(ConfigOption option, ulong guildId)
+    public async Task<bool> IsDefaultValueAsync(ConfigOption option, ulong guildId)
     {
-        var currValue = await GetString(option.Name, guildId);
+        var currValue = await GetStringAsync(option.Name, guildId);
         return option.DefaultValue == currValue;
     }
 
-    public async Task<bool> Set(int optionId, ulong guildId, object value)
+    public async Task<bool> SetAsync(int optionId, ulong guildId, object value)
     {
         var opt = GuildConfigOptions.Instance.Get(optionId);
         return await SetInternal(opt, guildId, value);
     }
 
-    public async Task<bool> Set(string option, ulong guildId, object value)
+    public async Task<bool> SetAsync(string option, ulong guildId, object value)
     {
         var opt = GuildConfigOptions.Instance.Get(option);
         return await SetInternal(opt, guildId, value);
     }
 
-    public async Task<bool> Set(ConfigOption option, ulong guildId, object value)
+    public async Task<bool> SetAsync(ConfigOption option, ulong guildId, object value)
     {
         return await SetInternal(option, guildId, value);
     }
 
-    public async Task Reset(int optionId, ulong guildId)
+    public async Task ResetAsync(int optionId, ulong guildId)
     {
-        var defaultValue = await GetString(optionId);
+        var defaultValue = GetString(optionId);
         if (defaultValue == null)
         {
             throw new InvalidOperationException("Option does not have a default value");
         }
 
-        await Set(optionId, guildId, defaultValue);
+        await SetAsync(optionId, guildId, defaultValue);
     }
 
-    public async Task Reset(string option, ulong guildId)
+    public async Task ResetAsync(string option, ulong guildId)
     {
-        var defaultValue = await GetString(option);
+        var defaultValue = GetString(option);
         if (defaultValue == null)
         {
             throw new InvalidOperationException("Option does not have a default value");
         }
 
-        await Set(option, guildId, defaultValue);
+        await SetAsync(option, guildId, defaultValue);
     }
 
-    public async Task Reset(ConfigOption option, ulong guildId)
+    public async Task ResetAsync(ConfigOption option, ulong guildId)
     {
-        await Reset(option.Id, guildId);
+        await ResetAsync(option.Id, guildId);
     }
 
-    public async Task Delete(int optionId, ulong guildId)
+    public async Task DeleteAsync(int optionId, ulong guildId)
     {
         var option = GuildConfigOptions.Instance.Get(optionId);
-        await Delete(option, guildId);
+        await DeleteAsync(option, guildId);
     }
 
-    public async Task Delete(string optionName, ulong guildId)
+    public async Task DeleteAsync(string optionName, ulong guildId)
     {
         var option = GuildConfigOptions.Instance.Get(optionName);
-        await Delete(option, guildId);
+        await DeleteAsync(option, guildId);
     }
 
-    public async Task Delete(ConfigOption option, ulong guildId)
+    public async Task DeleteAsync(ConfigOption option, ulong guildId)
     {
         if (!option.Nullable)
         {
             throw new InvalidOperationException("Option value cannot be deleted as it is not nullable.");
         }
 
-        await Set(option, guildId, string.Empty);
+        await SetAsync(option, guildId, string.Empty);
     }
 
     private static async Task<Dictionary<ulong, List<Config>>> LoadGuildConfigs()

@@ -11,7 +11,7 @@ public sealed class Bot : Leyla
 {
     protected override async Task<DiscordClient> InitBot()
     {
-        await GuildConfigHelper.Instance.Initialise();
+        await GuildConfigHelper.Instance.InitialiseAsync();
 
         var client = new DiscordClient(new DiscordConfiguration
         {

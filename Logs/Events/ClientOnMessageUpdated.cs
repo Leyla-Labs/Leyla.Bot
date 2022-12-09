@@ -22,7 +22,7 @@ internal static class ClientOnMessageUpdated
             return;
         }
 
-        var channel = await GuildConfigHelper.Instance.GetChannel("Log Channel", e.Guild);
+        var channel = await GuildConfigHelper.Instance.GetChannelAsync("Log Channel", e.Guild);
         if (channel == null)
         {
             return;

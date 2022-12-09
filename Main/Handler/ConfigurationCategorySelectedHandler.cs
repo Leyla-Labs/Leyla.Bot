@@ -58,7 +58,8 @@ internal sealed class ConfigurationCategorySelectedHandler : InteractionHandler
         foreach (var configOption in configOptions)
         {
             var currVal =
-                await GuildConfigHelper.Instance.GetDisplayStringForCurrentValue(configOption, EventArgs.Guild, false);
+                await GuildConfigHelper.Instance.GetDisplayStringForCurrentValueAsync(configOption, EventArgs.Guild,
+                    false);
             if (currVal != null)
             {
                 currentValues.Add(configOption.Id, currVal);

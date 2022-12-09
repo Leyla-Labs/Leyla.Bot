@@ -53,7 +53,7 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
         embed.AddField($"Type: {typeDisplayAttr.Name}", typeDisplayAttr.Description);
 
         var displayString =
-            await GuildConfigHelper.Instance.GetDisplayStringForCurrentValue(option, EventArgs.Guild, true,
+            await GuildConfigHelper.Instance.GetDisplayStringForCurrentValueAsync(option, EventArgs.Guild, true,
                 placeholder);
 
         embed.WithTitle(option.Name);
@@ -66,8 +66,7 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
         }
 
         // add default value if option has one
-        var defaultDisplayString =
-            await GuildConfigHelper.GetDisplayStringForDefaultValue(option, true, placeholder);
+        var defaultDisplayString = GuildConfigHelper.GetDisplayStringForDefaultValue(option, true, placeholder);
         embed.AddField("Default value", defaultDisplayString, true);
 
         return embed.Build();
@@ -81,7 +80,7 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
             new[] {ConfigurationAction.Edit.ToString(), option.Id.ToString()});
         list.Add(new DiscordButtonComponent(ButtonStyle.Primary, customIdEdit, "Edit"));
 
-        var isDefaultValue = await GuildConfigHelper.Instance.IsDefaultValue(option, EventArgs.Guild.Id);
+        var isDefaultValue = await GuildConfigHelper.Instance.IsDefaultValueAsync(option, EventArgs.Guild.Id);
 
         if (option.DefaultValue != null && !isDefaultValue)
         {
@@ -91,7 +90,7 @@ public class ConfigurationOptionSelectedHandler : InteractionHandler
             list.Add(new DiscordButtonComponent(ButtonStyle.Danger, customIdReset, "Revert to default"));
         }
 
-        if (option.Nullable && await GuildConfigHelper.Instance.GetString(option.Name, EventArgs.Guild.Id) != null)
+        if (option.Nullable && await GuildConfigHelper.Instance.GetStringAsync(option.Name, EventArgs.Guild.Id) != null)
         {
             // option is nullable and currently set value is not null
             var customIdDelete = ModalHelper.GetModalName(EventArgs.User.Id, "configOptionAction",

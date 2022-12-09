@@ -20,7 +20,7 @@ public class ActionResetHandler : InteractionHandler
     public override async Task RunAsync()
     {
         var optionId = Convert.ToInt32(_optionId);
-        await GuildConfigHelper.Instance.Reset(optionId, EventArgs.Guild.Id);
+        await GuildConfigHelper.Instance.ResetAsync(optionId, EventArgs.Guild.Id);
 
         var embed = await CreateEmbed(optionId);
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
@@ -34,8 +34,7 @@ public class ActionResetHandler : InteractionHandler
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Value reset");
         embed.WithDescription($"The value for {option.Name} has been reverted.");
-        embed.AddField("New value",
-            await GuildConfigHelper.GetDisplayStringForDefaultValue(option, true));
+        embed.AddField("New value", GuildConfigHelper.GetDisplayStringForDefaultValue(option, true));
         return embed.Build();
     }
 }
