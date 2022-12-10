@@ -7,6 +7,8 @@ using DSharpPlus.Entities;
 using Spam.Classes;
 using Spam.Extensions;
 using static Common.Strings.Config.Raid;
+using static Common.Strings.Config.Roles;
+using static Common.Strings.Config.Channels;
 
 namespace Spam.Helper;
 
@@ -27,8 +29,8 @@ internal class RaidHelper
     {
         var guildId = member.Guild.Id;
 
-        var raidSize = await ConfigHelper.Instance.GetInt(RaidSize.Name, guildId) ?? 0;
-        var raidTime = await ConfigHelper.Instance.GetInt(RaidTime.Name, guildId) ?? 0;
+        var raidSize = await GuildConfigHelper.Instance.GetIntAsync(RaidSize.Name, guildId) ?? 0;
+        var raidTime = await GuildConfigHelper.Instance.GetIntAsync(RaidTime.Name, guildId) ?? 0;
 
         if (raidTime == 0 || raidSize == 0)
         {
@@ -73,7 +75,7 @@ internal class RaidHelper
 
     public async Task<List<DiscordMember>?> GetRaidMembersAsync(ulong guildId)
     {
-        var raidSize = await ConfigHelper.Instance.GetInt(RaidSize.Name, guildId) ?? 0;
+        var raidSize = await GuildConfigHelper.Instance.GetIntAsync(RaidSize.Name, guildId) ?? 0;
         return GetRaidMembers(guildId, raidSize);
     }
 
@@ -85,9 +87,9 @@ internal class RaidHelper
 
     public async Task<DiscordEmbed> EnableRaidModeAndGetEmbedAsync(DiscordGuild guild)
     {
-        await ConfigHelper.Instance.Set(RaidMode.Name, guild.Id, true);
+        await GuildConfigHelper.Instance.SetAsync(RaidMode.Name, guild.Id, true);
 
-        var raidSize = await ConfigHelper.Instance.GetInt(RaidSize.Name, guild.Id) ?? 0;
+        var raidSize = await GuildConfigHelper.Instance.GetIntAsync(RaidSize.Name, guild.Id) ?? 0;
 
         // todo also check if people in list joined within raid time
 
@@ -103,7 +105,7 @@ internal class RaidHelper
 
     private static async Task AddRaidRoleToMembersAsync(DiscordGuild guild, IEnumerable<DiscordMember> members)
     {
-        var raidRole = await ConfigHelper.Instance.GetRole(RaidRole.Name, guild);
+        var raidRole = await GuildConfigHelper.Instance.GetRoleAsync(RaidRole.Name, guild);
 
         if (raidRole == null)
         {
@@ -124,8 +126,8 @@ internal class RaidHelper
     public static async Task MentionMembersInRaidChannelAsync(DiscordGuild guild, List<DiscordMember> members)
     {
         var raidMessage =
-            await ConfigHelper.Instance.GetString(RaidMessage.Name, guild.Id);
-        var raidChannel = await ConfigHelper.Instance.GetChannel(RaidChannel.Name, guild);
+            await GuildConfigHelper.Instance.GetStringAsync(RaidMessage.Name, guild.Id);
+        var raidChannel = await GuildConfigHelper.Instance.GetChannelAsync(RaidChannel.Name, guild);
 
         if (!string.IsNullOrWhiteSpace(raidMessage) && raidChannel != null)
         {
@@ -177,7 +179,7 @@ internal class RaidHelper
 
     public static async Task SendLockdownDisabledMessageAsync(DiscordGuild guild)
     {
-        var modChannel = await ConfigHelper.Instance.GetChannel(Config.Channels.Mod.Name, guild);
+        var modChannel = await GuildConfigHelper.Instance.GetChannelAsync(Config.Channels.Mod.Name, guild);
         if (modChannel == null)
         {
             // handle this differently?

@@ -17,12 +17,13 @@ internal abstract class SpamHelperOnMaxPressureExceeded : IEventHandler<MaxPress
         var lastMessage = args.SessionMessages.Last();
 
         var guild = lastMessage.Channel.Guild;
-        var silenceRole = await ConfigHelper.Instance.GetRole("Silence Role", guild);
-        var modChannel = await ConfigHelper.Instance.GetChannel("Moderator Channel", guild);
-        var silenceChannel = await ConfigHelper.Instance.GetChannel("Silence Channel", guild);
-        var silenceMessage = await ConfigHelper.Instance.GetString(Common.Strings.Spam.SilenceMessage, guild.Id);
+        var silenceRole = await GuildConfigHelper.Instance.GetRoleAsync("Silence Role", guild);
+        var modChannel = await GuildConfigHelper.Instance.GetChannelAsync("Moderator Channel", guild);
+        var silenceChannel = await GuildConfigHelper.Instance.GetChannelAsync("Silence Channel", guild);
+        var silenceMessage =
+            await GuildConfigHelper.Instance.GetStringAsync(Common.Strings.Spam.SilenceMessage, guild.Id);
         var timeoutDuration =
-            await ConfigHelper.Instance.GetEnum<TimeoutDuration>(Common.Strings.Spam.Timeout, guild.Id);
+            await GuildConfigHelper.Instance.GetEnumAsync<TimeoutDuration>(Common.Strings.Spam.Timeout, guild.Id);
 
         var member = (DiscordMember) lastMessage.Author;
         var reason = $"Pressure {args.UserPressure:N2} > {args.MaxPressure}";
@@ -48,7 +49,7 @@ internal abstract class SpamHelperOnMaxPressureExceeded : IEventHandler<MaxPress
         }
 
         var messagesDeleted = 0;
-        if (await ConfigHelper.Instance.GetBool(Common.Strings.Spam.DeleteMessages, guild.Id) ==
+        if (await GuildConfigHelper.Instance.GetBoolAsync(Common.Strings.Spam.DeleteMessages, guild.Id) ==
             true)
         {
             var messagesAfter = (await lastMessage.Channel.GetMessagesAfterAsync(lastMessage.Id))

@@ -15,7 +15,7 @@ internal sealed class Verify : ContextMenuCommand
 
     public override async Task RunAsync()
     {
-        var role = await ConfigHelper.Instance.GetRole("Verification Role", Ctx.Guild);
+        var role = await GuildConfigHelper.Instance.GetRoleAsync("Verification Role", Ctx.Guild);
         if (role == null)
         {
             await Ctx.CreateResponseAsync(

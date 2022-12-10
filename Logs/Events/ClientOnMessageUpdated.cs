@@ -23,7 +23,7 @@ internal abstract class ClientOnMessageUpdated : IEventHandler<MessageUpdateEven
             return;
         }
 
-        var channel = await ConfigHelper.Instance.GetChannel("Log Channel", e.Guild);
+        var channel = await GuildConfigHelper.Instance.GetChannelAsync("Log Channel", e.Guild);
         if (channel == null)
         {
             return;

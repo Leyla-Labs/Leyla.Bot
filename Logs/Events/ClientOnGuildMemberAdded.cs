@@ -11,7 +11,7 @@ internal abstract class ClientOnGuildMemberAdded : IEventHandler<GuildMemberAddE
 {
     public static async Task HandleEventAsync(DiscordClient sender, GuildMemberAddEventArgs e)
     {
-        var channel = await ConfigHelper.Instance.GetChannel("Moderator Channel", e.Guild);
+        var channel = await GuildConfigHelper.Instance.GetChannelAsync("Moderator Channel", e.Guild);
         if (channel == null)
         {
             return;

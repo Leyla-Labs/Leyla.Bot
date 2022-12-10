@@ -1,8 +1,10 @@
 using Common.Classes;
 using Common.Enums;
+using Common.GuildConfig;
 using Common.Helper;
-using Common.Statics;
+using Common.Records;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 
 namespace Main.Handler;
@@ -19,22 +21,22 @@ internal sealed class ConfigurationOptionValueSelectedHandler : InteractionHandl
 
     public override async Task RunAsync()
     {
-        var option = ConfigOptions.Instance.Get(Convert.ToInt32(_optionId));
+        var option = GuildConfigOptions.Instance.Get(Convert.ToInt32(_optionId));
         var value = EventArgs.Values[0];
 
         switch (option.ConfigType)
         {
             case ConfigType.Boolean:
                 var valueBool = value.Equals("1");
-                await ConfigHelper.Instance.Set(option, EventArgs.Guild.Id, valueBool);
+                await GuildConfigHelper.Instance.SetAsync(option, EventArgs.Guild.Id, valueBool);
                 break;
             case ConfigType.Role:
             case ConfigType.Channel:
                 var valueUlong = Convert.ToUInt64(value);
-                await ConfigHelper.Instance.Set(option, EventArgs.Guild.Id, valueUlong);
+                await GuildConfigHelper.Instance.SetAsync(option, EventArgs.Guild.Id, valueUlong);
                 break;
             case ConfigType.Enum:
-                await ConfigHelper.Instance.Set(option, EventArgs.Guild.Id, value);
+                await GuildConfigHelper.Instance.SetAsync(option, EventArgs.Guild.Id, value);
                 break;
             case ConfigType.String:
             case ConfigType.Int:
@@ -44,6 +46,18 @@ internal sealed class ConfigurationOptionValueSelectedHandler : InteractionHandl
                 throw new ArgumentOutOfRangeException();
         }
 
-        await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+        var embed = await CreateEmbedAsync(option);
+        await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+            new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
+    }
+
+    private async Task<DiscordEmbed> CreateEmbedAsync(ConfigOption option)
+    {
+        var embed = new DiscordEmbedBuilder();
+        embed.WithTitle("Value edited");
+        embed.WithDescription($"The value for {option.Name} has been edited.");
+        embed.AddField("New value",
+            await GuildConfigHelper.Instance.GetDisplayStringForCurrentValueAsync(option, EventArgs.Guild, true));
+        return embed.Build();
     }
 }

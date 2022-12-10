@@ -14,7 +14,7 @@ internal sealed class Off : SlashCommand
 
     public override async Task RunAsync()
     {
-        await ConfigHelper.Instance.Set(Config.Raid.RaidMode.Name, Ctx.Guild.Id, false);
+        await GuildConfigHelper.Instance.SetAsync(Config.Raid.RaidMode.Name, Ctx.Guild.Id, false);
         await Ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder().AddEmbed(GetEmbed()));
     }
 

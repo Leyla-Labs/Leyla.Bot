@@ -19,7 +19,7 @@ internal sealed class Unsilence : SlashCommand
 
     public override async Task RunAsync()
     {
-        var silenceRole = await ConfigHelper.Instance.GetRole(Config.Roles.Silence.Name, Ctx.Guild);
+        var silenceRole = await GuildConfigHelper.Instance.GetRoleAsync(Config.Roles.Silence.Name, Ctx.Guild);
 
         if (silenceRole == null)
         {

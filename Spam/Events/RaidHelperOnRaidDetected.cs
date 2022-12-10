@@ -16,7 +16,7 @@ internal abstract class RaidHelperOnRaidDetected : IEventHandler<RaidDetectedEve
     {
         var guild = args.RaidMembers[0].Guild;
 
-        var modChannel = await ConfigHelper.Instance.GetChannel(Config.Channels.Mod.Name, guild);
+        var modChannel = await GuildConfigHelper.Instance.GetChannelAsync(Config.Channels.Mod.Name, guild);
 
         if (modChannel == null)
         {
@@ -28,7 +28,8 @@ internal abstract class RaidHelperOnRaidDetected : IEventHandler<RaidDetectedEve
         var embed = GetEmbed(args.RaidMembers);
         var components = new List<DiscordButtonComponent> {GetRaidModeButton()};
 
-        var lockdownDuration = await ConfigHelper.Instance.GetInt(Config.Raid.LockdownDuration.Name, guild.Id);
+        var lockdownDuration =
+            await GuildConfigHelper.Instance.GetIntAsync(Config.Raid.LockdownDuration.Name, guild.Id);
 
         if (lockdownDuration > 0)
         {
@@ -39,8 +40,8 @@ internal abstract class RaidHelperOnRaidDetected : IEventHandler<RaidDetectedEve
 
         var builder = new DiscordMessageBuilder().AddEmbed(embed).AddComponents(components);
 
-        if (await ConfigHelper.Instance.GetBool(Config.Raid.NotifyModerators.Name, guild.Id) == true &&
-            await ConfigHelper.Instance.GetRole(Config.Roles.Mod.Name, guild) is { } role)
+        if (await GuildConfigHelper.Instance.GetBoolAsync(Config.Raid.NotifyModerators.Name, guild.Id) == true &&
+            await GuildConfigHelper.Instance.GetRoleAsync(Config.Roles.Mod.Name, guild) is { } role)
         {
             builder.WithContent(role.Mention);
         }

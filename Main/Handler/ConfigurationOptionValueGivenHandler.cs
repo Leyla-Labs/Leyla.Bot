@@ -1,12 +1,16 @@
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Common.Classes;
 using Common.Enums;
 using Common.Extensions;
+using Common.GuildConfig;
 using Common.Helper;
-using Common.Statics;
-using Common.Statics.BaseClasses;
+using Common.Interfaces;
+using Common.Records;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Main.Enums;
 
 namespace Main.Handler;
 
@@ -22,13 +26,13 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
 
     public override async Task RunAsync()
     {
-        var option = ConfigOptions.Instance.Get(Convert.ToInt32(_optionId));
+        var option = GuildConfigOptions.Instance.Get(Convert.ToInt32(_optionId));
         var value = EventArgs.Values.First(x => x.Key.Equals("value")).Value;
 
         switch (option.ConfigType)
         {
             case ConfigType.String:
-                await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, value);
+                await GuildConfigHelper.Instance.SetAsync(option, EventArgs.Interaction.Guild.Id, value);
                 break;
             case ConfigType.Int:
                 if (!int.TryParse(value, out var valueInt))
@@ -37,20 +41,20 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
                     return;
                 }
 
-                await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueInt);
+                await GuildConfigHelper.Instance.SetAsync(option, EventArgs.Interaction.Guild.Id, valueInt);
                 break;
             case ConfigType.Char:
                 var valueChar = Convert.ToChar(value);
-                await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueChar);
+                await GuildConfigHelper.Instance.SetAsync(option, EventArgs.Interaction.Guild.Id, valueChar);
                 break;
             case ConfigType.Decimal:
-                if (!decimal.TryParse(value, out var valueDecimal))
+                if (!decimal.TryParse(value, CultureInfo.InvariantCulture, out var valueDecimal))
                 {
                     await ShowErrorAsync(option);
                     return;
                 }
 
-                await ConfigHelper.Instance.Set(option, EventArgs.Interaction.Guild.Id, valueDecimal);
+                await GuildConfigHelper.Instance.SetAsync(option, EventArgs.Interaction.Guild.Id, valueDecimal);
                 break;
             case ConfigType.Boolean:
             case ConfigType.Role:
@@ -60,32 +64,45 @@ internal sealed class ConfigurationOptionValueGivenHandler : ModalHandler
                 throw new ArgumentOutOfRangeException(nameof(option.ConfigType));
         }
 
-        await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.DeferredMessageUpdate);
+        var embed = await CreateEmbedAsync(option);
+        await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
+            new DiscordInteractionResponseBuilder().AddEmbed(embed).AsEphemeral());
+    }
+
+    private async Task<DiscordEmbed> CreateEmbedAsync(ConfigOption option)
+    {
+        var embed = new DiscordEmbedBuilder();
+        embed.WithTitle("Value edited");
+        embed.WithDescription($"The value for {option.Name} has been edited.");
+        embed.AddField("New value",
+            await GuildConfigHelper.Instance.GetDisplayStringForCurrentValueAsync(option, EventArgs.Interaction.Guild,
+                true));
+        return embed.Build();
     }
 
     private async Task ShowErrorAsync(ConfigOption option)
     {
-        if (!new[] {ConfigType.Int, ConfigType.Decimal}.Contains(option.ConfigType))
-        {
-            throw new ArgumentOutOfRangeException(nameof(option), option.ConfigType,
-                "Only int and decimal have error handling.");
-        }
+        var embed = new DiscordEmbedBuilder();
+        embed.WithColor(DiscordColor.Red);
 
-        var description = option.ConfigType == ConfigType.Int
-            ? "The input needs to be a whole number. (eg. 2; 84; 0)"
-            : "The input needs to be a decimal number. (eg. 14; 8.4; 2.65)";
+        embed.WithTitle("Invalid input");
+        embed.WithDescription("The input was in a wrong format.");
+        var typeDisplayAttr = option.ConfigType.GetAttribute<DisplayAttribute>() ??
+                              throw new NullReferenceException("DisplayAttribute for ConfigType must not be null");
+
+        embed.AddField(typeDisplayAttr.Name, typeDisplayAttr.Description);
 
         var button = CreateButton(option);
 
         await EventArgs.Interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource,
-            new DiscordInteractionResponseBuilder().AddErrorEmbed("Invalid input", description).AddComponents(button)
-                .AsEphemeral());
+            new DiscordInteractionResponseBuilder().AddEmbed(embed.Build()).AddComponents(button).AsEphemeral());
     }
 
-    private DiscordButtonComponent CreateButton(StaticField option)
+    private DiscordButtonComponent CreateButton(IIdentifiable option)
     {
         var customId =
-            ModalHelper.GetModalName(EventArgs.Interaction.User.Id, "configOptions", new[] {option.Id.ToString()});
+            ModalHelper.GetModalName(EventArgs.Interaction.User.Id, "configOptionAction",
+                new[] {ConfigurationAction.Edit.ToString(), option.Id.ToString()});
         return new DiscordButtonComponent(ButtonStyle.Primary, customId, "Reopen modal");
     }
 }

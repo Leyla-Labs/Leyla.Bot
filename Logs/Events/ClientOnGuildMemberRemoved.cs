@@ -11,7 +11,7 @@ internal abstract class ClientOnGuildMemberRemoved : IEventHandler<GuildMemberRe
 {
     public static async Task HandleEventAsync(DiscordClient sender, GuildMemberRemoveEventArgs e)
     {
-        var channel = await ConfigHelper.Instance.GetChannel("Moderator Channel", e.Guild);
+        var channel = await GuildConfigHelper.Instance.GetChannelAsync("Moderator Channel", e.Guild);
         if (channel == null)
         {
             return;
