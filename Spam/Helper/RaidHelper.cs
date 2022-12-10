@@ -7,6 +7,8 @@ using DSharpPlus.Entities;
 using Spam.Classes;
 using Spam.Extensions;
 using static Common.Strings.Config.Raid;
+using static Common.Strings.Config.Roles;
+using static Common.Strings.Config.Channels;
 
 namespace Spam.Helper;
 

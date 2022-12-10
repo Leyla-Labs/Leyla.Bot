@@ -17,7 +17,7 @@ internal abstract class ClientOnGuildMemberAdded : IEventHandler<GuildMemberAddE
 
         if (raidMode == true)
         {
-            var raidRole = await GuildConfigHelper.Instance.GetRoleAsync(Config.Raid.RaidRole.Name, e.Guild);
+            var raidRole = await GuildConfigHelper.Instance.GetRoleAsync(Config.Roles.RaidRole.Name, e.Guild);
             await e.Member.GrantRoleAsync(raidRole);
 
             await RaidHelper.MentionMembersInRaidChannelAsync(e.Guild, e.Member);

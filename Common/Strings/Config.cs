@@ -11,16 +11,21 @@ public static class Config
         public static readonly ConfigStrings Category = new("Roles", "Various roles for different modules.", UrlRoles);
 
         public static readonly ConfigStrings Mod = new("Moderator Role",
-            "Common role for all moderators, required for bot operation.",
-            $"{UrlRoles}#moderator-role");
+            "Common role for all moderators. Leyla will mention this role in various situations.",
+            $"{UrlRoles}#moderator-role",
+            "Required for bot operation.");
 
         public static readonly ConfigStrings Verification = new("Verification Role",
-            "If your server uses a verification system, you can give this role to people by right clicking them.",
+            "If your server uses a manual verification system, you can give this role to people by right clicking them.",
             $"{UrlRoles}#verification-role");
 
         public static readonly ConfigStrings Silence = new("Silence Role",
             "When manually silencing or when anti-spam is triggered by a user, this role will be given to them.",
             $"{UrlRoles}#silence-role");
+
+        public static readonly ConfigStrings RaidRole = new("Raid Role",
+            "If `Raid Mode` is on, all members joining the server will be assigned this role.",
+            $"{UrlRoles}#raid-role");
 
         private static string UrlRoles => $"{UrlConfig}:-Roles";
     }
@@ -31,18 +36,23 @@ public static class Config
             UrlChannels);
 
         public static readonly ConfigStrings Mod = new("Moderator Channel",
-            "Common channel for all moderators, required for bot operation.",
+            "Leyla will post system messages and certain messages from the `Logs` and `Spam` modules in this channel.",
             $"{UrlChannels}#moderator-channel");
 
-        public static readonly ConfigStrings Log = new("Log Channel", "The `Leyla Logs` module will post logs here.",
+        public static readonly ConfigStrings Log = new("Log Channel",
+            "`Leyla Logs` will post various log messages in this channel, like message deletions and edits.",
             $"{UrlChannels}#log-channel");
 
         public static readonly ConfigStrings Archive = new("Archive Channel", "Currently unused.",
             $"{UrlChannels}#archive-channel");
 
         public static readonly ConfigStrings Silence = new("Silence Channel",
-            "To be used in combination with the `Silence Role`. When a user is silenced, they should only have access to this channel.",
+            "Members with the Silence Role will have access to this channel.",
             $"{UrlChannels}#silence-channel");
+
+        public static readonly ConfigStrings RaidChannel = new("Raid Channel",
+            "Members with the Raid Role will have access to this channel.",
+            $"{UrlChannels}#raid-channel");
 
         private static string UrlChannels => $"{UrlConfig}:-Channels";
     }
@@ -76,7 +86,7 @@ public static class Config
             $"{UrlSpam}#repeat-pressure");
 
         public static readonly ConfigStrings MaxPressure = new(Strings.Spam.MaxPressure,
-            "The maximum pressure a user can have. If a user exceeds this, they will be silenced.",
+            "The maximum pressure a user can have. If a user exceeds this, they will be silenced using the `Silence Role.`",
             $"{UrlSpam}#max-pressure");
 
         public static readonly ConfigStrings PressureDecay =
@@ -85,7 +95,7 @@ public static class Config
 
         public static readonly ConfigStrings DeleteMessages =
             new(Strings.Spam.DeleteMessages,
-                "If this is on, all messages that causes a user to get silenced will be deleted.",
+                "If this is on, all messages that caused a user to get silenced will be deleted.",
                 $"{UrlSpam}#delete-messages");
 
         public static readonly ConfigStrings SilenceMessage =
@@ -104,7 +114,7 @@ public static class Config
         public static readonly ConfigStrings Category = new("Raid", "Anti-raid settings.", UrlRaid);
 
         public static readonly ConfigStrings RaidMode = new("Raid Mode",
-            "If on, all members joining the server and members who were detected to be part of a raid will be assigned the `Raid Role`.",
+            "Whether raid mode is enabled. When raid mode is enabled, new members will be assigned the Raid Role as soon as they join the server.",
             $"{UrlRaid}#raid-mode");
 
         public static readonly ConfigStrings RaidSize = new("Raid Size",
@@ -115,14 +125,6 @@ public static class Config
             "The amount of minutes in which `Raid Size` members must join the server to trigger raid mode.",
             $"{UrlRaid}#raid-time");
 
-        public static readonly ConfigStrings RaidChannel = new("Raid Channel",
-            "To be used in combination with `Raid Role`. When a user is assigned the `Raid Role`, they should only have access to this channel.",
-            $"{UrlRaid}#raid-channel");
-
-        public static readonly ConfigStrings RaidRole = new("Raid Role",
-            "If `Raid Mode` is on, all members joining the server will be assigned this role.",
-            $"{UrlRaid}#raid-role");
-
         public static readonly ConfigStrings RaidMessage = new("Raid Message",
             "The message to send in the `Raid Channel` when a user is assigned the `Raid Role`.",
             $"{UrlRaid}#raid-message");
@@ -132,7 +134,7 @@ public static class Config
             $"{UrlRaid}#lockdown-duration");
 
         public static readonly ConfigStrings NotifyModerators = new("Notify Moderators",
-            "Leyla will always send a notification in the `Moderator Channel` when a raid is detected. This sets whether said notification should mention the `Moderator Role`.",
+            "Leyla will always send a message in the `Mod Channel` when a raid is detected. If this option is enabled, Leyla will mention the `Moderator Role` alongside said message.",
             $"{UrlRaid}#notify-moderators");
 
         private static string UrlRaid => $"{UrlConfig}:-Raid";

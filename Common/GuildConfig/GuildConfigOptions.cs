@@ -33,7 +33,7 @@ public class GuildConfigOptions : IdentifiableSetProvider<ConfigOption>, ISetPro
             new(1, 1, Roles.Mod, c, t, false, null, LeylaModule.Main),
             new(5, 2, Roles.Verification, c, t, true, null, LeylaModule.Main),
             new(14, 3, Roles.Silence, c, t, true, null, LeylaModule.Main),
-            new(23, 4, Raid.RaidRole, c, t, true, null, LeylaModule.Spam)
+            new(23, 4, Roles.RaidRole, c, t, true, null, LeylaModule.Spam)
         };
         set.UnionWith(roleOptions);
     }
@@ -49,7 +49,7 @@ public class GuildConfigOptions : IdentifiableSetProvider<ConfigOption>, ISetPro
             new(3, 2, Channels.Log, c, t, true, null, LeylaModule.Logs),
             new(4, 3, Channels.Archive, c, t, true, null, LeylaModule.Logs),
             new(16, 4, Channels.Silence, c, t, true, null, LeylaModule.Main),
-            new(22, 5, Raid.RaidChannel, c, t, true, null, LeylaModule.Spam)
+            new(22, 5, Channels.RaidChannel, c, t, true, null, LeylaModule.Spam)
         };
         set.UnionWith(channelOptions);
     }
@@ -87,7 +87,6 @@ public class GuildConfigOptions : IdentifiableSetProvider<ConfigOption>, ISetPro
             new(19, 1, Raid.RaidMode, c, ConfigType.Boolean, false, "false", m),
             new(20, 2, Raid.RaidSize, c, ConfigType.Int, false, null, m),
             new(21, 3, Raid.RaidTime, c, ConfigType.Int, false, null, m),
-            new(23, 3, Raid.RaidRole, c, ConfigType.Role, false, null, m),
             new(24, 4, Raid.RaidMessage, c, ConfigType.String, true, null, m),
             new(25, 5, Raid.LockdownDuration, c, ConfigType.Int, true, "15", m),
             new(26, 6, Raid.NotifyModerators, c, ConfigType.Boolean, false, "1", m)

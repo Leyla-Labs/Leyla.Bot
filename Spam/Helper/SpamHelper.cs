@@ -23,7 +23,8 @@ internal class SpamHelper
 
     public async Task ProcessMessageAsync(DiscordClient sender, DiscordMessage message)
     {
-        var guildId = message.Channel.GuildId ?? throw new ArgumentNullException(nameof(message.Channel.GuildId));
+        var guildId = message.Channel.GuildId ??
+                      throw new ArgumentNullException(nameof(message), nameof(message.Channel.GuildId));
 
         foreach (var type in (PressureType[]) Enum.GetValues(typeof(PressureType)))
         {
