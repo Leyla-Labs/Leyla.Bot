@@ -43,9 +43,6 @@ public static class Config
             "`Leyla Logs` will post various log messages in this channel, like message deletions and edits.",
             $"{UrlChannels}#log-channel");
 
-        public static readonly ConfigStrings Archive = new("Archive Channel", "Currently unused.",
-            $"{UrlChannels}#archive-channel");
-
         public static readonly ConfigStrings Silence = new("Silence Channel",
             "Members with the Silence Role will have access to this channel.",
             $"{UrlChannels}#silence-channel");

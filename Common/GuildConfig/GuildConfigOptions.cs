@@ -47,7 +47,6 @@ public class GuildConfigOptions : IdentifiableSetProvider<ConfigOption>, ISetPro
         {
             new(2, 1, Channels.Mod, c, t, false, null, LeylaModule.Main),
             new(3, 2, Channels.Log, c, t, true, null, LeylaModule.Logs),
-            new(4, 3, Channels.Archive, c, t, true, null, LeylaModule.Logs),
             new(16, 4, Channels.Silence, c, t, true, null, LeylaModule.Main),
             new(22, 5, Channels.RaidChannel, c, t, true, null, LeylaModule.Spam)
         };
