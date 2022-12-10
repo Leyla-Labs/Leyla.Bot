@@ -25,7 +25,7 @@ internal sealed class ConfigurationCategorySelectedHandler : InteractionHandler
         var categoryId = Convert.ToInt32(_categoryId);
         var category = GuildConfigOptionCategories.Instance.Get(categoryId);
         var optionEmbed = GetOptionEmbed(category);
-        var optionSelect = await GetOptionSelect(categoryId);
+        var optionSelect = await GetOptionSelectAsync(categoryId);
 
         var buttons = new List<DiscordComponent>();
 
@@ -48,7 +48,7 @@ internal sealed class ConfigurationCategorySelectedHandler : InteractionHandler
         return embed.Build();
     }
 
-    private async Task<DiscordSelectComponent> GetOptionSelect(int categoryId)
+    private async Task<DiscordSelectComponent> GetOptionSelectAsync(int categoryId)
     {
         var modules = await EventArgs.Guild.GetGuildModulesAsync();
         var configOptions = GuildConfigOptions.Instance.Get().Where(x => x.ConfigOptionCategory.Id == categoryId);

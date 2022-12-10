@@ -11,7 +11,7 @@ public static class CommandsOnContextMenuErroredEvent
     {
         if (e.Exception is ContextMenuExecutionChecksFailedException ex)
         {
-            await new ContextMenuExecutionChecksFailedExceptionHandler(e, ex).HandleException();
+            await new ContextMenuExecutionChecksFailedExceptionHandler(e, ex).HandleExceptionAsync();
         }
     }
 }

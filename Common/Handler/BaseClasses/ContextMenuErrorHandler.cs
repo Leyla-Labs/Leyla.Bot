@@ -11,5 +11,5 @@ public abstract class ContextMenuErrorHandler
         Args = e;
     }
 
-    public abstract Task HandleException();
+    public abstract Task HandleExceptionAsync();
 }
