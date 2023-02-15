@@ -20,7 +20,7 @@ internal sealed class List : SlashCommand
 
     #region Static members
 
-    private static DiscordEmbed GetEmbed(List<DiscordMember>? raidMembers)
+    private static DiscordEmbed GetEmbed(IEnumerable<DiscordMember>? raidMembers)
     {
         var embed = new DiscordEmbedBuilder();
         embed.WithTitle("Active Raid");

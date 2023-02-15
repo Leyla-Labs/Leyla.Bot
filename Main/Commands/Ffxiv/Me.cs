@@ -50,7 +50,7 @@ public class Me : SlashCommand
             return;
         }
 
-        var profileExtended = await new XivApiClient().CharacterProfileExtended(confirmedClaims.First().CharacterId,
+        var profileExtended = await new XivApiClient().GetCharacterProfileExtendedAsync(confirmedClaims.First().CharacterId,
             CharacterProfileOptions.FreeCompany | CharacterProfileOptions.MinionsMounts);
 
         if (profileExtended == null)
@@ -81,7 +81,7 @@ public class Me : SlashCommand
 
         foreach (var claim in claims)
         {
-            var character = await new XivApiClient().CharacterProfile(claim.CharacterId, CharacterProfileOptions.None);
+            var character = await new XivApiClient().GetCharacterProfileAsync(claim.CharacterId, CharacterProfileOptions.None);
 
             if (character != null)
             {

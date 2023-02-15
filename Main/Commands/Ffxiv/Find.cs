@@ -24,7 +24,7 @@ public sealed class Find : SlashCommand
     {
         var profile =
             await FfxivHelper.SearchAndGetCharacterDataAsync(Ctx, _name, _server, "ffxivCharacterSheet", false,
-                async x => await new XivApiClient().CharacterProfileExtended(x,
+                async x => await new XivApiClient().GetCharacterProfileExtendedAsync(x,
                     CharacterProfileOptions.FreeCompany | CharacterProfileOptions.MinionsMounts));
 
         if (profile == null)

@@ -22,7 +22,7 @@ public class FfxivCharacterSheetSelectedHandler : InteractionHandler
 
         var id = Convert.ToInt32(EventArgs.Values.First());
 
-        var characterData = await new XivApiClient().CharacterProfileExtended(id,
+        var characterData = await new XivApiClient().GetCharacterProfileExtendedAsync(id,
             CharacterProfileOptions.FreeCompany | CharacterProfileOptions.MinionsMounts);
 
         if (characterData == null)

@@ -39,8 +39,8 @@ internal static class FfxivHelper
         await ctx.DeferAsync(asEphemeral);
 
         var characterSearch = homeWorld != null
-            ? await new XivApiClient().CharacterSearch(name, homeWorld.Value)
-            : await new XivApiClient().CharacterSearch(name);
+            ? await new XivApiClient().SearchCharacterAsync(name, homeWorld.Value)
+            : await new XivApiClient().SearchCharacterAsync(name);
 
         if (characterSearch == null || !characterSearch.Results.Any())
         {

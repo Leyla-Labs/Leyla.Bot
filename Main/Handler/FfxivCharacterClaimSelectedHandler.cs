@@ -22,7 +22,7 @@ public class FfxivCharacterClaimSelectedHandler : InteractionHandler
 
         var id = Convert.ToInt32(EventArgs.Values.First());
 
-        var characterData = await new XivApiClient().CharacterProfile(id, CharacterProfileOptions.None);
+        var characterData = await new XivApiClient().GetCharacterProfileAsync(id, CharacterProfileOptions.None);
 
         if (characterData == null)
         {
